@@ -61,6 +61,7 @@ jobs:
               echo "Tidak ada data baru untuk di-commit."
             else
               git commit -m "Auto: Update observasi oseanografi Copernicus Banten"
+              git pull --rebase origin main
               git push
             fi
           else
