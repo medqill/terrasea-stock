@@ -1,0 +1,33 @@
+# Jangan di-deploy ke Vercel
+node_modules/
+.env
+.venv/
+API_*.txt
+
+# Database lokal — Vercel pakai Turso (remote)
+data/*.sqlite*
+data/*.db*
+data/db.json
+data/sessions.json
+
+# Data mentah besar — tidak diperlukan di runtime Vercel
+data/raw/
+data/unprocessed*/
+
+# File dgrid harian dikecualikan (terlalu banyak, disajikan dari Turso/artifacts)
+data/processed/dgrid_*.json
+data/processed/grids/dgrid_*.json
+data/processed/ocean_window.json
+data/processed/ocean_forecast_stations.json
+
+# Dev/CI artifacts
+ml/
+bot/
+scripts/
+test/
+npm-debug.log*
+.DS_Store
+__pycache__/
+.pytest_cache/
+*.nc
+
