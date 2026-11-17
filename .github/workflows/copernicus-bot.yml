@@ -52,13 +52,16 @@ jobs:
         run: |
           git config --global user.name "copernicus-bot[bot]"
           git config --global user.email "copernicus-bot@users.noreply.github.com"
-          if [ -f data/raw/copernicus_ocean.csv ]; then
-            git add data/raw/copernicus_ocean.csv
+          BACKUP_FILE="data/ingest_backup/copernicus_ocean.csv"
+          if [ -f "$BACKUP_FILE" ]; then
+            git add "$BACKUP_FILE"
             if git diff --staged --quiet; then
               echo "Tidak ada data baru untuk di-commit."
             else
               git commit -m "Auto: Update observasi oseanografi Copernicus Banten"
               git push
             fi
+          else
+            echo "File cadangan tidak ditemukan: $BACKUP_FILE"
           fi
 
