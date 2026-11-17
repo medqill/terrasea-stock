@@ -20,10 +20,9 @@ data/processed/grids/dgrid_*.json
 data/processed/ocean_window.json
 data/processed/ocean_forecast_stations.json
 
-# Dev/CI artifacts
+# Dev/CI artifacts (scripts/ harus ada untuk postinstall)
 ml/
 bot/
-scripts/
 test/
 npm-debug.log*
 .DS_Store
