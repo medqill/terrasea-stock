@@ -85,7 +85,7 @@ BBOX = {
 }
 
 DEFAULT_START_DATE = os.getenv("COPERNICUS_START_DATE", "2026-10-29")
-CSV_BACKUP_PATH = ROOT_DIR / "data" / "raw" / "copernicus_ocean.csv"
+CSV_BACKUP_PATH = ROOT_DIR / "data" / "ingest_backup" / "copernicus_ocean.csv"
 API_URL = os.getenv("APP_URL", "http://localhost:3000")
 API_KEY = os.getenv("INGEST_API_KEY", "")
 
@@ -131,7 +131,7 @@ def fetch_dataset_for_date_range(dataset_key: str, start_dt: str, end_dt: str, u
         logger.warning(f"open_dataset streaming gagal ({err}), beralih ke subset file...")
 
     # Fallback ke copernicusmarine.subset (unduh file netcdf temporer)
-    tmp_dir = ROOT_DIR / "data" / "raw" / "tmp_cmems"
+    tmp_dir = ROOT_DIR / "data" / "ingest_backup" / "tmp_cmems"
     tmp_dir.mkdir(parents=True, exist_ok=True)
     filename = f"{dataset_key}_{start_dt}_{end_dt}.nc"
 
