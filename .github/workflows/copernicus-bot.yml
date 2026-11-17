@@ -1,0 +1,64 @@
+# Workflow Pengunduh Data Copernicus Otomatis (Mode Online Cloud)
+# Berjalan otomatis setiap 12 jam atau via tombol manual (workflow_dispatch).
+name: Copernicus Ocean Ingest Bot
+
+on:
+  schedule:
+    - cron: "0 */12 * * *"
+  workflow_dispatch:
+    inputs:
+      start_date:
+        description: "Tanggal awal (YYYY-MM-DD), kosongkan untuk auto-incremental"
+        required: false
+        default: ""
+
+concurrency:
+  group: copernicus-ingest
+  cancel-in-progress: false
+
+jobs:
+  download-and-ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repositori
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependensi Bot
+        run: |
+          python -m pip install --upgrade pip
+          pip install copernicusmarine requests python-dotenv pandas xarray netcdf4
+
+      - name: Jalankan Bot Copernicus
+        env:
+          COPERNICUS_USERNAME: ${{ secrets.COPERNICUS_USERNAME }}
+          COPERNICUS_PASSWORD: ${{ secrets.COPERNICUS_PASSWORD }}
+          APP_URL: ${{ secrets.APP_URL }}
+          INGEST_API_KEY: ${{ secrets.INGEST_API_KEY }}
+        run: |
+          if [ -n "${{ github.event.inputs.start_date }}" ]; then
+            python bot/copernicus_bot.py --mode once --start-date "${{ github.event.inputs.start_date }}"
+          else
+            python bot/copernicus_bot.py --mode once
+          fi
+
+      - name: Commit & Push Cadangan Data Terbaru (Bila Ada Perubahan)
+        run: |
+          git config --global user.name "copernicus-bot[bot]"
+          git config --global user.email "copernicus-bot@users.noreply.github.com"
+          if [ -f data/raw/copernicus_ocean.csv ]; then
+            git add data/raw/copernicus_ocean.csv
+            if git diff --staged --quiet; then
+              echo "Tidak ada data baru untuk di-commit."
+            else
+              git commit -m "Auto: Update observasi oseanografi Copernicus Banten"
+              git push
+            fi
+          fi
+

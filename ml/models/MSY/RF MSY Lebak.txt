@@ -1,0 +1,189 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import warnings
+import pickle as pkl
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+
+warnings.filterwarnings('ignore')
+
+# ==========================================
+# 1. FUNGSI-FUNGSI PREPROCESSING
+# ==========================================
+def load_ocean_data(filepath):
+    df_ocean = pd.read_excel(filepath)
+    col_time = [c for c in df_ocean.columns if 'time' in c.lower() or 'tanggal' in c.lower()][0]
+    df_ocean[col_time] = pd.to_datetime(df_ocean[col_time], errors='coerce')
+    df_ocean = df_ocean.dropna(subset=[col_time]).reset_index(drop=True)
+    df_ocean['YearMonth'] = df_ocean[col_time].dt.to_period('M')
+
+    df_ocean_monthly = df_ocean.groupby('YearMonth').agg({
+        'SST (degC)': 'mean', 'Chlorophyll-a (mg m-3)': 'mean',
+        'uo': 'mean', 'vo': 'mean'
+    }).reset_index()
+
+    df_ocean_monthly.rename(columns={'SST (degC)': 'sst', 'Chlorophyll-a (mg m-3)': 'chl'}, inplace=True)
+    df_ocean_monthly['current_speed'] = np.sqrt(df_ocean_monthly['uo']**2 + df_ocean_monthly['vo']**2)
+    df_ocean_monthly['sst_lag1'] = df_ocean_monthly['sst'].shift(1)
+    df_ocean_monthly['chl_lag1'] = df_ocean_monthly['chl'].shift(1)
+    return df_ocean_monthly.dropna().reset_index(drop=True)
+
+def load_effort_data(filepath, lokasi):
+    df_effort = pd.read_excel(filepath)
+    df_effort = df_effort[df_effort['lokasi'].str.contains(lokasi, case=False, na=False)]
+    df_effort = df_effort[~df_effort['unit'].str.contains('Total', case=False, na=False)]
+
+    col_time = [c for c in df_effort.columns if 'periode' in c.lower() or 'waktu' in c.lower()][0]
+    df_effort[col_time] = pd.to_datetime(df_effort[col_time], errors='coerce')
+    df_effort = df_effort.dropna(subset=[col_time]).reset_index(drop=True)
+    df_effort['YearMonth'] = df_effort[col_time].dt.to_period('M')
+
+    df_pivot = df_effort.pivot_table(index='YearMonth', columns='unit', values='trip', aggfunc='sum').reset_index()
+    df_pivot = df_pivot.fillna(0)
+    return df_pivot, [c for c in df_pivot.columns if c != 'YearMonth']
+
+def load_catch_data(filepath):
+    df_ikan = pd.read_excel(filepath)
+    col_time = [c for c in df_ikan.columns if 'periode' in c.lower()][0]
+    df_ikan[col_time] = pd.to_datetime(df_ikan[col_time], errors='coerce')
+    df_ikan = df_ikan.dropna(subset=[col_time]).reset_index(drop=True)
+    df_ikan['YearMonth'] = df_ikan[col_time].dt.to_period('M')
+    df_ikan['kelompok'] = df_ikan['kelompok'].str.strip().str.title()
+    df_ikan['bulan'] = df_ikan[col_time].dt.month
+    df_ikan['bulan_sin'] = np.sin(2 * np.pi * df_ikan['bulan'] / 12)
+    df_ikan['bulan_cos'] = np.cos(2 * np.pi * df_ikan['bulan'] / 12)
+    return df_ikan
+
+# ==========================================
+# 2. KONFIGURASI SKENARIO (DISEDERHANAKAN)
+# ==========================================
+file_effort_gabungan = 'Data_ML_Effort_Gabungan.xlsx'
+
+# Memastikan nama file Karangantu menggunakan spasi sesuai file asli
+scenarios = {
+    'Stasiun Lebak': {'catch': 'Clean_lebak 2020-2025.xlsx', 'ocean': 'data_log_titik_4.xlsx', 'lokasi': 'Lebak'},
+    'Stasiun Karangantu': {'catch': 'Clean_Karangantu 2021-2026.xlsx', 'ocean': 'data_log_titik_6.xlsx', 'lokasi': 'Karangantu'}
+}
+
+kelompok_ikan = ['Pelagis Besar', 'Pelagis Kecil', 'Demersal']
+
+print("="*85)
+print(" PREDIKSI MSY DENGAN RANDOM FOREST: STASIUN LEBAK & KARANGANTU")
+print("="*85)
+
+# ==========================================
+# 3. PROSES PELATIHAN & PICKLE DUMP
+# ==========================================
+for scenario_name, config in scenarios.items():
+    print(f"\n\n{'='*85}")
+    print(f" MENGUJI SKENARIO: {scenario_name.upper()}")
+    print(f"{'='*85}")
+
+    try:
+        df_ocean = load_ocean_data(config['ocean'])
+        df_effort, fitur_alat = load_effort_data(file_effort_gabungan, config['lokasi'])
+        df_ikan_full = load_catch_data(config['catch'])
+    except Exception as e:
+        print(f"Error memuat data {scenario_name}: {e}")
+        continue
+
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(12, 14))
+    fig.suptitle(f"Hasil Prediksi Random Forest - {scenario_name}", fontsize=16, fontweight='bold', y=0.98)
+
+    for i, target_kelompok in enumerate(kelompok_ikan):
+        print(f"\n🔹 KELOMPOK: {target_kelompok}")
+        df_ikan = df_ikan_full[df_ikan_full['kelompok'] == target_kelompok].copy()
+
+        if df_ikan.empty:
+            print(f"   [!] Data {target_kelompok} tidak ditemukan.")
+            continue
+
+        target_col = [c for c in df_ikan.columns if 'catch' in c.lower() or 'produksi' in c.lower() or 'ton' in c.lower()][0]
+
+        df_master = pd.merge(df_ikan, df_effort, on='YearMonth', how='inner')
+        df_master = pd.merge(df_master, df_ocean, on='YearMonth', how='inner').sort_values('YearMonth')
+        df_master['catch_lag1'] = df_master[target_col].shift(1)
+
+        features = ['bulan_sin', 'bulan_cos'] + fitur_alat + ['sst', 'sst_lag1', 'chl', 'chl_lag1', 'current_speed', 'catch_lag1']
+        df_target = df_master.dropna(subset=features + [target_col]).reset_index(drop=True)
+
+        if len(df_target) < 10:
+            print(f"   [!] Data kurang (hanya {len(df_target)} baris).")
+            continue
+
+        # Split Data (85% Latih, 15% Uji)
+        train_size = int(len(df_target) * 0.85)
+        train_data, test_data = df_target.iloc[:train_size], df_target.iloc[train_size:]
+
+        X_train, y_train = train_data[features].values, train_data[target_col].values
+        X_test, y_test = test_data[features].values, test_data[target_col].values
+
+        # Scalling Input
+        scaler_X = MinMaxScaler()
+        X_train_scaled = scaler_X.fit_transform(X_train)
+        X_test_scaled = scaler_X.transform(X_test)
+
+        # Modeling Random Forest Regressor
+        rf_model = RandomForestRegressor(n_estimators=100, random_state=42, max_depth=10)
+        rf_model.fit(X_train_scaled, y_train)
+
+        # Simpan Model dan Scaler
+        safe_scenario = scenario_name.replace(' ', '_').lower()
+        safe_kelompok = target_kelompok.replace(' ', '_').lower()
+        file_scaler = f"scaler_rf_{safe_scenario}_{safe_kelompok}.pkl"
+        file_model = f"model_rf_{safe_scenario}_{safe_kelompok}.pkl"
+        with open(file_scaler, 'wb') as f:
+            pkl.dump(scaler_X, f)
+        with open(file_model, 'wb') as f:
+            pkl.dump(rf_model, f)
+        print(f"   [+] Tersimpan: {file_model} & {file_scaler}")
+
+        # Prediksi Data Uji
+        y_pred_test = np.maximum(rf_model.predict(X_test_scaled), 0)
+
+        # Evaluasi
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred_test))
+        mae = mean_absolute_error(y_test, y_pred_test)
+        rata_aktual = np.mean(y_test)
+        akurasi = max(0, 100 - (mae / rata_aktual * 100)) if rata_aktual != 0 else 0
+
+        print(f"   - RMSE      : {rmse:.2f} Ton")
+        print(f"   - MAE       : {mae:.2f} Ton")
+        print(f"   - Akurasi   : {akurasi:.2f}%")
+
+        # Prediksi Bulan Depan
+        last_row = df_target.iloc[-1].copy()
+        next_date = last_row['YearMonth'] + 1
+
+        next_features = last_row[features].copy()
+        next_features['bulan_sin'] = np.sin(2 * np.pi * next_date.month / 12)
+        next_features['bulan_cos'] = np.cos(2 * np.pi * next_date.month / 12)
+        next_features['catch_lag1'] = last_row[target_col]
+        next_features['sst_lag1'] = last_row['sst']
+        next_features['chl_lag1'] = last_row['chl']
+
+        X_next = scaler_X.transform(next_features.values.reshape(1, -1))
+        pred_next = max(0, rf_model.predict(X_next)[0])
+        print(f"   🚀 PREDIKSI ({next_date}) : {pred_next:.2f} Ton")
+
+        # Plot Subplot
+        ax = axes[i]
+        waktu_train = train_data['YearMonth'].dt.to_timestamp()
+        waktu_test = test_data['YearMonth'].dt.to_timestamp()
+
+        ax.plot(waktu_train, y_train, label='Data Latih', color='gray')
+        ax.plot(waktu_test, y_test, label='Data Uji (Aktual)', color='black', marker='o')
+        ax.plot(waktu_test, y_pred_test, label='Prediksi Random Forest', color='green', linestyle='--', linewidth=2)
+        ax.scatter([next_date.to_timestamp()], [pred_next], color='red', s=80, zorder=5, label='Bulan Depan')
+
+        ax.set_title(f"Ikan {target_kelompok}", fontweight='bold')
+        ax.set_ylabel("Tangkapan (Ton)")
+        ax.legend(loc='best')
+        ax.grid(True, alpha=0.3)
+
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
+    plt.show()
+
+print("\nSeluruh model Random Forest dan format .pkl telah berhasil digenerate.")

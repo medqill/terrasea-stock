@@ -1,0 +1,65 @@
+name: ML Pipeline & Artifacts Sync
+
+on:
+  schedule:
+    # Terjadwal setiap tanggal 1 pukul 02:00 UTC (09:00 WIB)
+    - cron: '0 2 1 * *'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Alasan pemicuan manual'
+        required: false
+        default: 'Pembaruan data observasi'
+
+jobs:
+  pipeline:
+    name: Ekspor Observasi, Pipeline ML, dan Publikasi Artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Repositori
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependensi Node
+        run: npm ci
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependensi Python ML
+        run: pip install -r ml/requirements.txt
+
+      - name: Ekspor Observasi Mentah dari Turso ke data/raw/
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+        run: npm run export-observations
+
+      - name: Jalankan Pipeline ML (Bila Skrip Siap)
+        run: |
+          if [ -f "ml/06_export.py" ]; then
+            echo "Menjalankan pipeline ML Python..."
+            cd ml && python 06_export.py
+          else
+            echo "Skrip ml/06_export.py belum ada di repositori; menggunakan data/processed yang tersedia."
+          fi
+
+      - name: Validasi Kontrak Data Olahan
+        run: npm run validate
+
+      - name: Publikasi Hasil Olahan ke Tabel Artifacts Turso
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+        run: npm run publish-artifacts
+

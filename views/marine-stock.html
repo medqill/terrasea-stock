@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marine Stock | terrasea-stock</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="/css/map.css">
+</head>
+<body data-page="marine-stock">
+<a class="skip-link" href="#isi">Lewati ke konten</a>
+<header class="site-header" id="site-header"></header>
+<main id="isi" class="mapapp">
+  <aside class="sidebar" id="sidebar" aria-label="Kontrol layer">
+    <div class="sidebar__bar"><h2>Layer peta</h2><button class="icon-btn" id="sidebar-toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Lipat panel layer"></button></div>
+    <div class="sidebar__body">
+      <fieldset>
+        <legend class="label">Variabel</legend>
+        <label class="radio"><input type="radio" name="var" value="sst" checked> Suhu permukaan laut (°C)</label>
+        <label class="radio"><input type="radio" name="var" value="chl"> Klorofil-a (mg/m³)</label>
+        <label class="radio"><input type="radio" name="var" value="current"> Kecepatan arus (m/s)</label>
+        <label class="radio"><input type="radio" name="var" value="bathymetry"> Batimetri / Kedalaman (m)</label>
+      </fieldset>
+      <fieldset id="time-window" hidden>
+        <legend class="label">Rentang waktu</legend>
+        <div class="time-card">
+          <div class="time-card__top">
+            <span class="time-card__offset" id="time-offset-badge">Hari ini</span>
+            <span class="time-card__status is-observed" id="time-status-badge">● Terukur</span>
+          </div>
+          <div class="time-card__date" id="time-date-display"></div>
+        </div>
+        <div class="time-slider-wrap">
+          <button class="icon-btn time-nav-btn" id="time-prev" type="button" aria-label="Hari sebelumnya"></button>
+          <input type="range" class="time-slider" id="time-slider" min="0" max="6" step="1" aria-label="Pilih hari rentang waktu">
+          <button class="icon-btn time-nav-btn" id="time-next" type="button" aria-label="Hari berikutnya"></button>
+        </div>
+        <div class="time-ticks" id="time-ticks" aria-hidden="true"></div>
+        <p class="muted mono" id="last-measured" style="font-size:12px;margin:var(--s2) 0 0"></p>
+        <p class="note" id="stale-warning" role="status" hidden></p>
+      </fieldset>
+      <button class="btn btn--ghost" id="eco-btn" type="button" aria-pressed="false" data-icon="layers">Eco: tampilkan zona</button>
+      <div id="legend" class="legend" aria-live="polite"></div>
+    </div>
+  </aside>
+  <div class="lockbar" id="lockbar" hidden><span id="lockbar-label"></span><button class="icon-btn" id="lockbar-close" type="button" aria-label="Lepas kunci zona"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div id="map" role="application" aria-label="Peta zona perairan pesisir Banten"></div>
+  <div class="panels" id="panels" aria-live="polite"></div>
+</main>
+<script src="/vendor/chart.umd.js"></script>
+<script src="/vendor/leaflet/leaflet.js"></script>
+<script type="module" src="/js/map.js?v=2.2"></script></body></html>

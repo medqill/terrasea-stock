@@ -1,0 +1,33 @@
+/* Satu-satunya tempat nilai hex boleh muncul (DESIGN_SYSTEM bagian 2, 3, 5). */
+:root {
+  --ink-deep: #10232A; --slate: #3D4D55; --taupe: #A79E93;
+  --sand: #D3C3B9; --copper: #B58863; --black: #161616;
+
+  --bg: var(--ink-deep); --surface: #17323B; --surface-2: var(--slate);
+  --text: var(--sand); --text-muted: var(--taupe);
+  --accent: var(--copper); --accent-hover: #C99A74;
+  --line: rgba(211, 195, 185, .18);
+  --paper: var(--sand); --paper-text: var(--black);
+
+  --abund-high: #7DB88A; --abund-mid: #E0B84A; --abund-low: #D9695E;
+  --focus: 2px solid var(--copper);
+
+  --holo-blue: #00D2FF; --holo-blue-glow: #38BDF8; --holo-blue-fill: rgba(0, 210, 255, 0.32);
+
+  /* ramp peta sekuensial: gelap = rendah */
+  --sst-0: #2E4A62; --sst-1: #6F8A93; --sst-2: #A79E93; --sst-3: #B58863; --sst-4: #E0A06A;
+  --chl-0: #10232A; --chl-1: #2F6F6A; --chl-2: #8FBF9F; --chl-3: #E3E39A;
+  --cur-0: #3D4D55; --cur-1: #5E8B99; --cur-2: #8FC3CF; --cur-3: #D3C3B9;
+  --bathy-0: #A8DADC; --bathy-1: #64B5F6; --bathy-2: #1E88E5; --bathy-3: #1565C0; --bathy-4: #0D2C35;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --radius: 2px; --header-h: 64px; --sidebar-w: 430px;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 80px;
+}
+:focus-visible { outline: var(--focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

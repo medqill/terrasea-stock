@@ -1,0 +1,20 @@
+node_modules/
+.env
+.venv/
+API_*.txt
+# database lokal (akun, sesi, dan libSQL lokal)
+data/*.sqlite*
+data/*.db*
+data/db.json
+data/sessions.json
+# data mentah besar/berlisensi: hapus baris ini bila tim memutuskan menyimpannya di git
+data/raw/
+data/unprocessed*/
+# keluaran harian pipeline ocean-daily (dibuat ulang di CI, tidak di-commit)
+data/processed/dgrid_*.json
+data/processed/ocean_window.json
+data/processed/ocean_forecast_stations.json
+npm-debug.log*
+.DS_Store
+__pycache__/
+.pytest_cache/

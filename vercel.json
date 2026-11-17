@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "regions": ["sin1"],
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/css/(.*)", "destination": "/css/$1" },
+    { "source": "/js/(.*)", "destination": "/js/$1" },
+    { "source": "/vendor/(.*)", "destination": "/vendor/$1" },
+    { "source": "/img/(.*)", "destination": "/img/$1" },
+    { "source": "/(.*)", "destination": "/api/index.js" }
+  ]
+}
+

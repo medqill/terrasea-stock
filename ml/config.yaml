@@ -1,0 +1,12 @@
+# Dimiliki Nazma. Express dan frontend tidak boleh membaca atau menghitung dari sini.
+tac_factor: 0.8          # TAC = tac_factor x MSY (PRD bagian 3)
+zone:
+  max_area_ha: 350
+  count_min: 5
+  count_max: 7
+  must_touch_coast: true
+split:
+  train: 0.85            # kronologis, tidak diacak
+  test: 0.15
+abundance:
+  method: tertile        # default PRD bagian 4.5, ganti ambang literatur dari Devina bila ada

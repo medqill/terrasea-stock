@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard | terrasea-stock</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+
+</head>
+<body data-page="dashboard">
+<a class="skip-link" href="#isi">Lewati ke konten</a>
+<header class="site-header" id="site-header"></header>
+<main id="isi" class="container" style="padding-bottom:var(--s8)">
+  <div class="page-head"><h1>Dashboard admin</h1><p>Akun, antrean verifikasi, log unduhan, dan versi model aktif.</p></div>
+  <div class="stats" id="stats"></div>
+  
+  <section class="panel" id="sec-model">
+    <h2 style="font-size:20px">Status data olahan (Model aktif)</h2>
+    <div id="model-banner" style="margin-bottom:var(--s4)"></div>
+    <div id="model"></div>
+  </section>
+
+  <section class="panel" id="sec-pending">
+    <h2 style="font-size:20px">Antrean verifikasi</h2>
+    <p class="muted" style="margin-bottom:var(--s4)">Pendaftaran akun yang belum diverifikasi. Anda dapat mengaktifkan akun secara manual jika pengiriman email terkendala atau menghapus pendaftaran.</p>
+    <div id="pending"></div>
+  </section>
+
+  <section class="panel" id="sec-users">
+    <h2 style="font-size:20px">Manajemen akun</h2>
+    <p class="muted" style="margin-bottom:var(--s4)">Daftar seluruh akun terdaftar. Anda dapat menonaktifkan atau mengaktifkan kembali akses pengguna kapan saja.</p>
+    <div id="users"></div>
+  </section>
+
+  <section class="panel" id="sec-downloads">
+    <h2 style="font-size:20px">Log unduhan</h2>
+    <p class="muted" style="margin-bottom:var(--s4)">Riwayat pengunduhan data oleh pengguna dengan filter periode dan jenis data serta ringkasan unduhan terbanyak.</p>
+    
+    <div id="downloads-summary" style="margin-bottom:var(--s4)"></div>
+
+    <form id="form-filter-downloads" style="display:flex; flex-wrap:wrap; gap:var(--s3); align-items:flex-end; margin-bottom:var(--s4); padding:var(--s3); background:var(--surface-2); border-radius:var(--radius)">
+      <div class="field" style="margin:0; min-width:160px">
+        <label for="filter-type" style="font-size:12px">Jenis data</label>
+        <select id="filter-type" style="padding:var(--s2) var(--s3); font-size:14px">
+          <option value="all">Semua jenis</option>
+          <option value="msy">MSY / TAC (Peramalan)</option>
+          <option value="ocean">Oseanografi</option>
+          <option value="catch">Tangkapan</option>
+          <option value="effort">Upaya Penangkapan</option>
+        </select>
+      </div>
+      <div class="field" style="margin:0; min-width:140px">
+        <label for="filter-from" style="font-size:12px">Dari periode</label>
+        <input type="month" id="filter-from" style="padding:var(--s2) var(--s3); font-size:14px">
+      </div>
+      <div class="field" style="margin:0; min-width:140px">
+        <label for="filter-to" style="font-size:12px">Sampai periode</label>
+        <input type="month" id="filter-to" style="padding:var(--s2) var(--s3); font-size:14px">
+      </div>
+      <div style="display:flex; gap:var(--s2)">
+        <button type="submit" class="btn btn--primary" style="padding:var(--s2) var(--s4); font-size:14px">Filter</button>
+        <button type="button" id="btn-reset-downloads" class="btn btn--outline" style="padding:var(--s2) var(--s4); font-size:14px">Reset</button>
+      </div>
+    </form>
+
+    <div id="downloads"></div>
+  </section>
+  <section class="panel">
+    <h2 style="font-size:20px">Kunci API Bot (Ingest &amp; Pipeline)</h2>
+    <p class="muted" style="margin-bottom:var(--s4)">Digunakan oleh bot ingest observasi atau workflow GitHub Actions pipeline ML.</p>
+    
+    <div id="new-key-box" style="display:none; margin-bottom:var(--s4); padding:var(--s4); border:1px solid var(--accent); border-radius:var(--radius); background:var(--surface-2)">
+      <strong style="color:var(--accent); display:block; margin-bottom:var(--s2)">Kunci API Baru Dibuat:</strong>
+      <div style="display:flex; gap:var(--s2); align-items:center; margin-bottom:var(--s2)">
+        <code id="new-key-val" style="font-family:var(--font-mono); font-size:14px; background:var(--bg); padding:var(--s2) var(--s3); border-radius:var(--radius); flex:1; overflow-x:auto;"></code>
+        <button type="button" class="btn btn--outline" id="btn-copy-key">Salin</button>
+      </div>
+      <small class="muted">Simpan kunci ini sekarang. Nilai rahasia ini tidak akan dapat ditampilkan lagi.</small>
+    </div>
+
+    <form id="form-create-key" style="margin-bottom:var(--s5); display:grid; gap:var(--s3); max-width:560px">
+      <div class="field">
+        <label for="key-name">Nama Kunci (Bot / Workflow)</label>
+        <input type="text" id="key-name" name="name" required placeholder="mis. Bot BMKG Stasiun Serang">
+      </div>
+      <div class="field">
+        <label>Izin (Scopes)</label>
+        <div style="display:flex; flex-wrap:wrap; gap:var(--s3); margin-top:var(--s1)">
+          <label style="display:inline-flex; align-items:center; gap:var(--s1); font-size:14px">
+            <input type="checkbox" name="scopes" value="observations:write" checked> observations:write
+          </label>
+          <label style="display:inline-flex; align-items:center; gap:var(--s1); font-size:14px">
+            <input type="checkbox" name="scopes" value="observations:read" checked> observations:read
+          </label>
+          <label style="display:inline-flex; align-items:center; gap:var(--s1); font-size:14px">
+            <input type="checkbox" name="scopes" value="artifacts:write"> artifacts:write
+          </label>
+        </div>
+      </div>
+      <div>
+        <button type="submit" class="btn btn--primary" id="btn-submit-key">Buat Kunci API</button>
+      </div>
+    </form>
+
+    <div id="api-keys"></div>
+  </section>
+
+  <section class="panel">
+    <h2 style="font-size:20px">Log Ingest Bot (20 Terakhir)</h2>
+    <div id="ingest-logs"></div>
+  </section>
+</main>
+<footer class="site-footer" id="site-footer"></footer>
+<script type="module" src="/js/dashboard.js"></script></body></html>

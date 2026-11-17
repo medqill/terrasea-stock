@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stock Prediction | terrasea-stock</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+
+</head>
+<body data-page="stock-prediction">
+<a class="skip-link" href="#isi">Lewati ke konten</a>
+<header class="site-header" id="site-header"></header>
+<main id="isi" class="container" style="padding-bottom:var(--s8)">
+  <div class="page-head"><h1>Stock Prediction</h1><p>Hasil tangkapan, forecast dua bulan ke depan (November & Desember), dan batas MSY per zona.</p></div>
+  <div class="field" style="max-width:360px"><label for="zone-select">Zona</label>
+    <select id="zone-select"><option value="">Pilih zona</option></select></div>
+  <p class="empty" id="empty">Pilih zona untuk melihat grafik.</p>
+  <div id="stage" hidden>
+    <div class="predict-grid">
+      <section class="panel" aria-labelledby="t-main">
+        <div class="tabs" id="fish-tabs" role="tablist" aria-label="Kelompok Ikan">
+          <button class="tab fish-tab" role="tab" data-group="pelagis_besar" aria-selected="true">Pelagis Besar</button>
+          <button class="tab fish-tab" role="tab" data-group="pelagis_kecil" aria-selected="false">Pelagis Kecil</button>
+          <button class="tab fish-tab" role="tab" data-group="demersal" aria-selected="false">Demersal</button>
+        </div>
+        <h2 id="t-main" style="font-size:20px">Tangkapan vs MSY <span id="fixture-mark"></span></h2>
+        <div class="chart-box"><canvas id="main-chart" role="img" aria-label="Grafik tangkapan aktual, forecast, dan MSY per bulan"></canvas></div>
+        <dl class="metrics" id="metrics"></dl>
+      </section>
+      <section class="panel" aria-labelledby="sub-title">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--s3);border-bottom:1px solid var(--line);margin-bottom:var(--s4)">
+          <div class="tabs" id="param-tabs" role="tablist" aria-label="Parameter" style="border-bottom:none;margin-bottom:0">
+            <button class="tab param-tab" role="tab" data-tab="chl" aria-selected="true">Klorofil</button>
+            <button class="tab param-tab" role="tab" data-tab="sst" aria-selected="false">SST</button>
+            <button class="tab param-tab" role="tab" data-tab="current" aria-selected="false">Arus</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--s2)">
+            <span class="muted" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Prediksi:</span>
+            <div class="tabs" id="horizon-tabs" role="tablist" aria-label="Rentang Prediksi" style="border-bottom:none;margin-bottom:0">
+              <button class="tab horizon-tab" role="tab" data-days="1" aria-selected="false">1 Hari</button>
+              <button class="tab horizon-tab" role="tab" data-days="3" aria-selected="true">3 Hari</button>
+              <button class="tab horizon-tab" role="tab" data-days="7" aria-selected="false">7 Hari</button>
+            </div>
+          </div>
+        </div>
+        <h2 id="sub-title" style="font-size:16px"></h2>
+        <div class="chart-box"><canvas id="sub-chart" role="img" aria-label="Grafik parameter oseanografi harian dan prediksi"></canvas></div>
+        <div id="windrose" style="display:flex;flex-direction:column;align-items:center;margin-top:var(--s4)"></div>
+      </section>
+    </div>
+  </div>
+</main>
+<footer class="site-footer" id="site-footer"></footer>
+<script src="/vendor/chart.umd.js"></script><script type="module" src="/js/charts.js"></script></body></html>

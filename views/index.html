@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pemetaan stok ikan pesisir Banten | terrasea-stock</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+
+</head>
+<body data-page="landing">
+<a class="skip-link" href="#isi">Lewati ke konten</a>
+<header class="site-header" id="site-header"></header>
+<main id="isi">
+<section class="hero" aria-roledescription="carousel" aria-label="Fitur utama">
+  <div class="hero__track">
+    <article class="slide is-active" aria-roledescription="slide" aria-label="1 dari 3">
+      <p class="label">WebGIS stok perikanan pesisir Banten</p>
+      <h1>Batas tangkap bulanan per zona pesisir</h1>
+      <p>Peta zona prioritas dengan estimasi MSY dan TAC, serta indikator kelimpahan tiga kelompok ikan.</p>
+      <a class="btn btn--primary" href="/marine-stock">Buka peta Marine Stock</a>
+    </article>
+    <article class="slide" aria-roledescription="slide" aria-label="2 dari 3" aria-hidden="true">
+      <p class="label">Model hibrida</p>
+      <h1>Random Forest, kesesuaian habitat, dan klaster spasial</h1>
+      <p>Hasil hindcasting dan prakiraan satu bulan ke depan, lengkap dengan MSY dan TAC.</p>
+      <a class="btn btn--primary" href="/stock-prediction">Lihat Stock Prediction</a>
+    </article>
+    <article class="slide" aria-roledescription="slide" aria-label="3 dari 3" aria-hidden="true">
+      <p class="label">Data olahan</p>
+      <h1>Unduh data dalam format Excel</h1>
+      <p>Pilih jenis data, periode, dan kelompok ikan. Setiap berkas memuat sheet metadata dan limitasi.</p>
+      <a class="btn btn--primary" href="/download">Buka Download Data</a>
+    </article>
+  </div>
+  <div class="hero__ctrl"></div>
+</section>
+
+<section class="section">
+  <div class="container cols">
+    <div>
+      <p class="label">Model</p>
+      <h2>Tiga komponen dalam satu model hibrida</h2>
+      <p>Random Forest (RF) menduga besaran tangkapan dan tahan terhadap fitur yang saling berkorelasi, seperti suhu dan suhu bulan lalu. Indeks kesesuaian habitat menentukan sebaran dan kelas kelimpahan. Klaster spasial membentuk zona.</p>
+      <ul class="plain-list">
+        <li>Evaluasi dengan split kronologis 85/15, bukan acak.</li>
+        <li>hindcasting dan Forecasting selalu tampil di samping grafik.</li>
+        <li>TAC ditetapkan 0,8 dari MSY sebagai faktor kehati-hatian.</li>
+      </ul>
+    </div>
+    <img src="/img/zona-ilustrasi.svg" alt="Ilustrasi garis kontur kedalaman dengan tiga zona pesisir menempel pada garis pantai" width="480" height="360">
+  </div>
+</section>
+
+<section class="section section--paper">
+  <div class="container cols">
+    <div>
+      <p class="label">Zona</p>
+      <h2>Zona prioritas pesisir, bukan seluruh perairan</h2>
+      <p>Ada 5 sampai 7 zona. Tiap zona paling luas 350 ha dan harus menempel garis pantai, sehingga total cakupan paling banyak 2.450 ha.</p>
+      <p>Klik zona untuk melihat MSY, TAC, indikator kelimpahan, musim, serta lokasi terumbu karang dan lamun. Klik titik di dalam zona untuk membaca klorofil, suhu, dan arus di titik itu.</p>
+      <a class="btn btn--primary" href="/marine-stock">Buka peta</a>
+    </div>
+    <img src="/img/kontur.svg" alt="" width="480" height="240" style="background:var(--ink-deep)">
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="label">Limitasi</p>
+    <h2>Yang perlu diketahui sebelum memakai hasilnya</h2>
+    <ul class="plain-list">
+      <li>Data tangkapan beresolusi wilayah dan bulanan; nilai zona adalah hasil alokasi, bukan pengukuran.</li>
+      <li>Model dilatih pada rentang waktu terbatas; akurasi dilaporkan, bukan dijamin.</li>
+      <li>Kelas kelimpahan bersifat relatif dan berbasis aturan.</li>
+      <li>Hasil adalah alat bantu keputusan, bukan regulasi resmi.</li>
+    </ul>
+  </div>
+</section>
+</main>
+<footer class="site-footer" id="site-footer"></footer>
+<script type="module" src="/js/app.js"></script></body></html>

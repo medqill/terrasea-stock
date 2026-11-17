@@ -1,0 +1,116 @@
+================================================================================
+DOKUMEN CARA KERJA BOT PENGUNDUH DATA COPERNICUS (ONLINE / OFFLINE)
+Sistem WebGIS Terrasea-Stock - Pesisir Banten
+================================================================================
+
+1. DESKRIPSI & TUJUAN BOT
+--------------------------------------------------------------------------------
+Bot ini bertugas mengunduh data oseanografi harian (daily) secara otomatis dari
+Copernicus Marine Service (CMEMS) untuk 6 titik stasiun pengamatan di perairan
+Banten. 
+
+Data yang diambil mencakup 3 parameter utama:
+- Klorofil-a (Chl-a)
+- Suhu Permukaan Laut / Sea Surface Temperature (SST)
+- Kecepatan dan Komponen Arus Laut (uo, vo, dan kecepatan arus)
+
+Bot dirancang fleksibel sehingga dapat dijalankan dalam 2 mode:
+a. Mode Offline (Lokal): Dijalankan di komputer/laptop lokal kapan saja (manual
+   atau terjadwal via loop Python / Windows Task Scheduler).
+b. Mode Online (Cloud / Server): Dijalankan otomatis secara berkala di cloud
+   (misal via GitHub Actions Cron Job atau background daemon di server/VPS).
+
+
+2. DATASET COPERNICUS MARINE SERVICE (CMEMS)
+--------------------------------------------------------------------------------
+Bot akan mengakses 3 dataset resmi Copernicus Marine Service berikut:
+
+1. Klorofil-a (Chl-a):
+   - Dataset ID : cmems_mod_glo_bgc-pft_anfc_0.25deg_P1D-m
+   - Variabel   : chl (Mass concentration of chlorophyll a in sea water, mg/m³)
+   - Resolusi   : 0.25 derajat (~28 km), harian
+
+2. Suhu Permukaan Laut (SST):
+   - Dataset ID : cmems_mod_glo_phy-thetao_anfc_0.083deg_P1D-m
+   - Variabel   : thetao (Sea water potential temperature, °C)
+   - Resolusi   : 0.083 derajat (~9 km), kedalaman teratas (depth = 0.5 m), harian
+
+3. Arus Permukaan (Current Velocity / SWV):
+   - Dataset ID : cmems_mod_glo_phy-cur_anfc_0.083deg_P1D-m
+   - Variabel   : 
+     * uo (Eastward sea water velocity, m/s)
+     * vo (Northward sea water velocity, m/s)
+     * swv / current speed = sqrt(uo^2 + vo^2)
+   - Resolusi   : 0.083 derajat (~9 km), kedalaman teratas (depth = 0.5 m), harian
+
+
+3. LOKASI 6 TITIK STASIUN & INTERPOLASI SEGITIGA
+--------------------------------------------------------------------------------
+Pengunduhan dibatasi hanya pada koordinat 6 titik stasiun (point extraction):
+
+- Titik 1 : Lon = 106.0994, Lat = -7.2230  (Banten Selatan)
+- Titik 2 : Lon = 105.2976, Lat = -7.0236  (Banten Selatan / Selat Sunda Selatan)
+- Titik 3 : Lon = 104.9594, Lat = -6.6195  (Ujung Kulon / Barat Daya)
+- Titik 4 : Lon = 105.6083, Lat = -6.5007  (Pesisir Barat Banten / Labuan)
+- Titik 5 : Lon = 105.6736, Lat = -5.9519  (Selat Sunda Utara / Anyer-Cilegon)
+- Titik 6 : Lon = 106.6378, Lat = -5.7564  (Teluk Banten / Karangantu / Utara)
+
+Segitiga Interpolasi Wilayah:
+- Area Bawah Banten (Selatan & Selat Sunda Selatan):
+  * Segitiga A : Titik 1, Titik 2, Titik 4
+  * Segitiga B : Titik 2, Titik 3, Titik 4
+- Area Atas Banten (Utara & Teluk Banten):
+  * Segitiga C : Titik 3, Titik 4, Titik 5
+  * Segitiga D : Titik 4, Titik 5, Titik 6
+
+
+4. LOGIKA & ALUR KERJA BOT (INCREMENTAL FETCHING)
+--------------------------------------------------------------------------------
+Alur kerja bot dirancang cerdas agar tidak mengunduh ulang data yang sudah ada:
+
+Langkah 1: Inisialisasi & Cek Riwayat Terakhir
+- Bot membaca database lokal / file riwayat penyimpanan (misal `data/raw/copernicus_ocean.csv`).
+- Menentukan tanggal mulai:
+  * Jika riwayat belum ada: mulai dari tanggal 29 Oktober (mis. 2026-10-29 atau tahun target).
+  * Jika riwayat sudah ada: tanggal mulai = (tanggal terakhir tersimpan + 1 hari).
+
+Langkah 2: Cek Ketersediaan Data Baru di Copernicus
+- Bot mengecek ketersediaan data terbaru di Copernicus Marine Service hingga tanggal hari ini (UTC).
+- Jika tanggal terakhir tersimpan >= tanggal terbaru di Copernicus, bot mencatat: "Data sudah up-to-date", lalu masuk ke mode tidur (standby/sleep).
+- Jika ada tanggal baru, bot menyusun daftar rentang tanggal yang perlu diunduh.
+
+Langkah 3: Ekstraksi Data Per Titik (Point Extraction)
+- Untuk setiap tanggal baru dan setiap 6 titik:
+  * Menggunakan modul Python `copernicusmarine.subset` (atau API resmi CMEMS).
+  * Mengambil nilai parameter `chl`, `thetao` (sst), `uo`, dan `vo` pada kedalaman permukaan.
+  * Menghitung kecepatan arus gabungan: current_speed = sqrt(uo^2 + vo^2).
+
+Langkah 4: Validasi & Penyimpanan Data
+- Nilai dicek sesuai batasan validasi domain Banten:
+  * SST: 15 s.d. 35 °C
+  * Chl-a: 0 s.d. 50 mg/m³
+  * uo & vo: -5 s.d. 5 m/s
+- Data disimpan ke file penyimpanan lokal (`data/raw/`) dalam format CSV / JSON.
+- (Opsional) Mengirim data secara otomatis ke backend Terrasea-Stock melalui endpoint:
+  `POST /api/ingest/ocean` dengan otentikasi Bearer API Key.
+
+Langkah 5: Perulangan / Jadwal Rutin
+- Mode Offline: Script dapat dijalankan berulang via background timer (misal mengecek setiap 6 atau 12 jam) atau dieksekusi secara manual kapan pun pengguna menyalakan bot.
+- Mode Online: GitHub Actions workflow yang dieksekusi terjadwal via cron (misal setiap pukul 02:00 dan 14:00 UTC) untuk mengambil data terbaru dan melakukan git commit / ingest API.
+
+
+5. MODE OPERASIONAL: ONLINE VS OFFLINE
+--------------------------------------------------------------------------------
+A. Mode Offline (Lokal Komputer Pengguna):
+   - Dijalankan via terminal:
+     python bot/copernicus_bot.py --mode manual
+     atau
+     python bot/copernicus_bot.py --mode daemon --interval-hours 6
+   - Bekerja secara lokal, menyimpan langsung ke folder `data/raw/` dan database lokal `local.db`.
+
+B. Mode Online (GitHub Actions / Server):
+   - File workflow di `.github/workflows/copernicus-bot.yml`.
+   - Menggunakan GitHub Secrets untuk menyimpan kredensial Copernicus (`COPERNICUS_USERNAME`, `COPERNICUS_PASSWORD`).
+   - Berjalan secara headless tanpa membutuhkan komputer pengguna menyala.
+   - Hasil unduhan dapat langsung di-commit ke repository atau dikirim via HTTP POST API Ingest.
+

@@ -1,0 +1,50 @@
+{
+  "name": "terrasea-stock",
+  "version": "1.1.0",
+  "private": true,
+  "description": "WebGIS stok perikanan pesisir Banten: peta zona, MSY/TAC, indikator kelimpahan, hindcasting PLS",
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "migrate": "node scripts/migrate.js",
+    "import-observations": "node scripts/import-observations.js",
+    "export-observations": "node scripts/export-observations.js",
+    "seed-artifacts": "node scripts/seed-artifacts.js",
+    "replace-lebak": "node scripts/replace-lebak.js",
+    "publish-artifacts": "node scripts/publish-artifacts.js",
+    "create-api-key": "node scripts/create-api-key.js",
+    "postinstall": "node scripts/copy-vendor.js",
+    "validate": "node scripts/validate-processed.js",
+    "test": "node --test test/",
+    "create-admin": "node scripts/create-admin.js",
+    "migrate-old-accounts": "node scripts/migrate-db-json.js",
+    "make-fixtures": "node scripts/make-fixtures.js",
+    "bot": "python bot/copernicus_bot.py --mode once",
+    "bot:daemon": "python bot/copernicus_bot.py --mode daemon --interval 6"
+  },
+  "author": "Aqill, Devina, Najla, Nazma - UPI SIK",
+  "license": "MIT",
+  "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "@upstash/ratelimit": "^2.2.0",
+    "@upstash/redis": "^1.41.0",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "nodemailer": "^6.9.16",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@fontsource/fraunces": "^5.1.0",
+    "@fontsource/ibm-plex-mono": "^5.1.0",
+    "@fontsource/ibm-plex-sans": "^5.1.0",
+    "chart.js": "^4.4.7",
+    "leaflet": "^1.9.4"
+  }
+}

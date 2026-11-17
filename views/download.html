@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download Data | terrasea-stock</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="/css/map.css">
+</head>
+<body data-page="download">
+<a class="skip-link" href="#isi">Lewati ke konten</a>
+<header class="site-header" id="site-header"></header>
+<main id="isi" class="container" style="padding-bottom:var(--s8)">
+  <div class="page-head"><h1>Download Data</h1><p>Pilih jenis data, periode, dan kelompok ikan. Hasil berupa berkas Excel (.xlsx).</p></div>
+  <div class="download-grid">
+    <div id="minimap" role="img" aria-label="Peta mini zona dan variabel terpilih"></div>
+    <form class="panel" id="dl-form" novalidate>
+      <div class="field"><label for="dl-type">Jenis data</label>
+        <select id="dl-type"><option value="msy">MSY dan hasil tangkapan</option><option value="sst">Suhu permukaan laut (SST)</option><option value="chl">Klorofil-a</option><option value="current">Kecepatan dan arah arus</option><option value="ecosystem">Terumbu karang dan lamun</option></select></div>
+      <div class="field" id="group-field"><label for="dl-group">Kelompok ikan</label>
+        <select id="dl-group"><option value="all">Semua kelompok</option><option value="pelagis_besar">Pelagis besar</option><option value="pelagis_kecil">Pelagis kecil</option><option value="demersal">Demersal</option></select></div>
+      <div class="field"><label for="dl-from">Dari bulan</label><input id="dl-from" type="month"></div>
+      <div class="field"><label for="dl-to">Sampai bulan</label><input id="dl-to" type="month"></div>
+      <p id="dl-status" class="form-msg" role="status"></p>
+      <button class="btn btn--primary" type="submit" data-icon="download">Unduh .xlsx</button>
+    </form>
+  </div>
+</main>
+<footer class="site-footer" id="site-footer"></footer>
+<script src="/vendor/leaflet/leaflet.js"></script><script type="module" src="/js/download.js"></script></body></html>

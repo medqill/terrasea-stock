@@ -1,0 +1,152 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import warnings
+import pickle # Tambahkan import pickle
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+
+warnings.filterwarnings('ignore')
+
+# List file data log titik 1 sampai 6
+titik_files = {
+    'Titik 1': 'data_log_titik_1.xlsx',
+    'Titik 2': 'data_log_titik_2.xlsx',
+    'Titik 3': 'data_log_titik_3.xlsx',
+    'Titik 4': 'data_log_titik_4.xlsx',
+    'Titik 5': 'data_log_titik_5.xlsx',
+    'Titik 6': 'data_log_titik_6.xlsx'
+}
+
+def prepare_ts_features(df_node, target_col, lag=3):
+    # Buat lag features untuk peramalan runtun waktu
+    df = df_node.copy()
+    for l in range(1, lag + 1):
+        df[f'{target_col}_lag{l}'] = df[target_col].shift(l)
+    df = df.dropna().reset_index(drop=True)
+
+    feature_cols = [f'{target_col}_lag{l}' for l in range(1, lag + 1)] + ['bulan_sin', 'bulan_cos']
+    return df, feature_cols
+
+for name, filepath in titik_files.items():
+    print(f"\n{'='*80}\n PROSES PREDIKSI OSEANOGRAFI: {name.upper()}\n{'='*80}")
+
+    # 1. Load & Preprocess
+    try:
+        df_raw = pd.read_excel(filepath)
+    except FileNotFoundError:
+        print(f"File {filepath} tidak ditemukan. Melewati {name}...")
+        continue
+
+    col_time = [c for c in df_raw.columns if 'time' in c.lower() or 'tanggal' in c.lower()][0]
+    df_raw[col_time] = pd.to_datetime(df_raw[col_time], errors='coerce')
+    df_raw = df_raw.dropna(subset=[col_time]).reset_index(drop=True)
+    df_raw['YearMonth'] = df_raw[col_time].dt.to_period('M')
+
+    # Aggregasi bulanan
+    df_monthly = df_raw.groupby('YearMonth').agg({
+        'SST (degC)': 'mean',
+        'Chlorophyll-a (mg m-3)': 'mean',
+        'uo': 'mean',
+        'vo': 'mean'
+    }).reset_index()
+
+    df_monthly.rename(columns={'SST (degC)': 'sst', 'Chlorophyll-a (mg m-3)': 'chl'}, inplace=True)
+    df_monthly['swv'] = np.sqrt(df_monthly['uo']**2 + df_monthly['vo']**2) # Sea Water Velocity / Current Speed
+    df_monthly['bulan'] = df_monthly['YearMonth'].dt.month
+    df_monthly['bulan_sin'] = np.sin(2 * np.pi * df_monthly['bulan'] / 12)
+    df_monthly['bulan_cos'] = np.cos(2 * np.pi * df_monthly['bulan'] / 12)
+
+    targets = ['sst', 'chl', 'swv']
+    fig, axes = plt.subplots(3, 1, figsize=(12, 11))
+    fig.suptitle(f"Prediksi Parameter Oseanografi - {name}", fontsize=14, fontweight='bold')
+
+    for idx, target in enumerate(targets):
+        # Buat dataset lag
+        df_target, features = prepare_ts_features(df_monthly, target, lag=3)
+
+        # Split Latih & Uji (80% & 20%)
+        split_idx = int(len(df_target) * 0.8)
+        train_df = df_target.iloc[:split_idx]
+        test_df = df_target.iloc[split_idx:]
+
+        X_train, y_train = train_df[features].values, train_df[target].values
+        X_test, y_test = test_df[features].values, test_df[target].values
+
+        # Scalling fitur (Opsional untuk RF, tapi kita simpan agar format input konsisten)
+        scaler = MinMaxScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_test_scaled = scaler.transform(X_test)
+
+        # Model Random Forest untuk Time Series
+        model = RandomForestRegressor(n_estimators=50, random_state=42)
+        model.fit(X_train_scaled, y_train)
+
+        # ==========================================
+        # PENYIMPANAN MODEL & SCALER KE PICKLE (.pkl)
+        # ==========================================
+        safe_name = name.replace(' ', '_').lower()
+
+        # Penamaan file dinamis berdasarkan titik dan target (contoh: model_rf_titik_1_sst.pkl)
+        model_filename = f"model_rf_{safe_name}_{target}.pkl"
+        scaler_filename = f"scaler_rf_{safe_name}_{target}.pkl"
+
+        with open(model_filename, 'wb') as f_model:
+            pickle.dump(model, f_model)
+
+        with open(scaler_filename, 'wb') as f_scaler:
+            pickle.dump(scaler, f_scaler)
+
+        print(f"   [+] Tersimpan: {model_filename} & {scaler_filename}")
+        # ==========================================
+
+        # Prediksi
+        y_pred = model.predict(X_test_scaled)
+
+        # Perhitungan Evaluasi Validasi
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+        mae = mean_absolute_error(y_test, y_pred)
+        rata_aktual = np.mean(y_test)
+        akurasi = max(0, 100 - (mae / rata_aktual * 100)) if rata_aktual != 0 else 0
+
+        # Prediksi 1 Bulan ke Depan
+        last_row = df_target.iloc[-1]
+        next_month = last_row['YearMonth'] + 1
+
+        # Input untuk bulan depan (menggeser lag)
+        next_input = []
+        # Lag 1 bulan depan adalah nilai aktual terakhir
+        next_input.append(last_row[target])
+        # Lag 2 dan 3
+        next_input.append(last_row[f'{target}_lag1'])
+        next_input.append(last_row[f'{target}_lag2'])
+        # Fitur bulan
+        next_input.append(np.sin(2 * np.pi * next_month.month / 12))
+        next_input.append(np.cos(2 * np.pi * next_month.month / 12))
+
+        # Skalakan data input sebelum diprediksi
+        next_input_scaled = scaler.transform(np.array(next_input).reshape(1, -1))
+        pred_next = model.predict(next_input_scaled)[0]
+
+        print(f"   * {target.upper():<3} -> Prediksi {next_month}: {pred_next:.4f} (Nilai terakhir: {last_row[target]:.4f})")
+        print(f"         - RMSE    : {rmse:.4f}")
+        print(f"         - MAE     : {mae:.4f}")
+        print(f"         - Akurasi : {akurasi:.2f}%")
+
+        # Plotting
+        ax = axes[idx]
+        time_train = train_df['YearMonth'].dt.to_timestamp()
+        time_test = test_df['YearMonth'].dt.to_timestamp()
+
+        ax.plot(time_train, y_train, label='Data Latih', color='blue')
+        ax.plot(time_test, y_test, label='Data Uji Aktual', color='black', marker='o')
+        ax.plot(time_test, y_pred, label='Prediksi Model', color='green', linestyle='--')
+        ax.scatter([next_month.to_timestamp()], [pred_next], color='red', s=100, zorder=5, label='Proyeksi Bulan Depan')
+
+        ax.set_title(f"Parameter: {target.upper()} | RMSE: {rmse:.3f} | MAE: {mae:.3f} | Akurasi: {akurasi:.2f}%", fontweight='bold', fontsize=10)
+        ax.legend(loc='best')
+        ax.grid(True, alpha=0.3)
+
+    plt.tight_layout()
+    plt.show()

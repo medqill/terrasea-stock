@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Masuk | terrasea-stock</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+
+</head>
+<body data-page="login">
+<a class="skip-link" href="#isi">Lewati ke konten</a>
+<header class="site-header" id="site-header"></header>
+<main id="isi" class="container" style="max-width:480px;padding-top:var(--s7);padding-bottom:var(--s8)">
+  <h1 style="font-size:40px">Masuk</h1>
+  <p id="top-msg" class="form-msg" role="status"></p>
+  <section id="login-panel" class="panel">
+    <form id="login-form" novalidate>
+      <div class="field"><label for="l-email">Email</label><input id="l-email" name="email" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="l-pass">Kata sandi</label><input id="l-pass" name="password" type="password" autocomplete="current-password" required></div>
+      <p id="login-msg" class="form-msg" role="status"></p>
+      <button class="btn btn--primary" type="submit">Masuk</button>
+    </form>
+    <p style="margin:var(--s4) 0 0">Belum punya akun? <button class="btn btn--ghost" id="to-register" type="button">Daftar</button></p>
+  </section>
+  <section id="register-panel" class="panel" hidden>
+    <form id="register-form" novalidate>
+      <div class="field"><label for="r-name">Nama lengkap</label><input id="r-name" name="name" autocomplete="name" required></div>
+      <div class="field"><label for="r-email">Email</label><input id="r-email" name="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="r-pass">Kata sandi (minimal 8 karakter)</label><input id="r-pass" name="password" type="password" autocomplete="new-password" minlength="8" required></div>
+      <p id="register-msg" class="form-msg" role="status"></p>
+      <button class="btn btn--primary" type="submit">Daftar dan kirim tautan verifikasi</button>
+    </form>
+    <p style="margin:var(--s4) 0 0">Sudah punya akun? <button class="btn btn--ghost" id="to-login" type="button">Masuk</button></p>
+  </section>
+</main>
+<footer class="site-footer" id="site-footer"></footer>
+<script type="module" src="/js/auth-ui.js"></script></body></html>

@@ -1,0 +1,50 @@
+# Konfigurasi prakiraan oseanografi harian (milik Nazma). Terpisah dari ml/config.yaml (PLS/zona).
+# Semua path relatif terhadap root repo.
+version: "0.1.0"
+seed: 42
+
+paths:
+  raw_ocean_csv: data/raw/observations_ocean.csv
+  stations_csv: data/raw/stations.csv
+  land_geojson: data/geo/land.geojson
+  out_dir: data/processed
+  report_dir: ml/reports
+
+data:
+  max_gap_days: 2          # celah interior <= ini diisi interpolasi linear
+  min_series_days: 400     # panjang minimum rentang lengkap (hari)
+
+split:                     # kronologis, tidak diacak
+  train_end: "2024-12-31"
+  val_days: 90             # ujung latih dipakai validasi (early stopping)
+  test_start: "2025-01-01"
+  test_end: "2025-12-31"
+  holdout_start: "2026-01-01"
+
+model:
+  window_days: 60
+  horizon_days: 30         # keluaran langsung (multi-horizon), bukan rekursif
+  hidden_units: 48
+  num_layers: 2
+  dropout: 0.2
+  ensemble_size: 5
+  epochs: 60
+  patience: 8
+  batch_size: 128
+  lr: 0.001
+  torch_threads: 2
+  min_train_samples: 200
+  max_train_minutes: 10    # lebih dari ini: laporan menandai needs_decision (tanyakan Nazma)
+
+eval:
+  horizons: [1, 2, 3, 7, 14, 30]
+  clim_smooth_days: 15
+
+# Dipakai ml/05b_grids_idw.py
+idw:
+  power: 2.0
+  max_distance_km: 150
+  bbox: [104.8, -7.4, 106.8, -5.6]   # [barat, selatan, timur, utara]
+  nx: 80
+  ny: 72
+  scale_percentiles: [2, 98]

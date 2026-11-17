@@ -1,0 +1,249 @@
+================================================================================
+ PANDUAN CHECKLIST PENGUJIAN LENGKAP: TERRASEA-STOCK
+ (Sebelum, Saat, dan Sesudah Integrasi Basis Data Cloud & Deploy Vercel)
+================================================================================
+
+Gunakan berkas ini sebagai lembar kendali (checklist) untuk memastikan keandalan,
+keamanan, dan fungsionalitas sistem sebelum dirilis ke publik.
+
+--------------------------------------------------------------------------------
+TAHAP 1: SEBELUM INTEGRASI & DEPLOY (Pengujian di Lingkungan Lokal)
+--------------------------------------------------------------------------------
+
+[ ] 1.1 Verifikasi Kerapian & Keamanan Repositori (Git Cleanliness)
+    - Pastikan berkas rahasia TIDAK masuk ke Git:
+      Cek berkas .gitignore memuat:
+        .env
+        API_*.txt
+        data/*.db*
+        data/*.sqlite*
+        data/raw/
+        data/unprocessed*/
+    - Pastikan .env.example hanya berisi placeholder nilai kosong/xxxx (bukan rahasia asli).
+    - Pastikan tidak ada "console.error" atau token hardcoded di kode JavaScript.
+
+[ ] 1.2 Eksekusi Test Suite Otomatis Lokal
+    Jalankan perintah:
+    > npm run validate
+    - Hasil harus: "OK: skema valid" (12 berkas data contract lolos uji).
+
+    Jalankan perintah:
+    > npm test
+    - Hasil harus: "pass 22, fail 0" (seluruh 22 skenario pengujian lulus).
+
+[ ] 1.3 Uji Tampilan Antarmuka (Responsivitas & Kontras)
+    Jalankan server lokal: > npm run dev (buka http://localhost:3000)
+    - Uji pada Inspect Element browser dengan 3 ukuran layar:
+      * Layar HP (Mobile): 360 px (menu navigasi dan panel responsif, tidak meluber).
+      * Layar Tablet: 768 px (tata letak grid menyesuaikan).
+      * Layar Desktop: 1280 px (tampilan penuh nyaman).
+    - Status kelimpahan ikan wajib menggunakan kombinasi simbol dan warna:
+      * Hijau dengan simbol segitiga naik (▲)
+      * Kuning dengan simbol sama dengan (=)
+      * Merah dengan simbol segitiga turun (▼)
+      (Tidak boleh hanya mengandalkan warna saja).
+
+[ ] 1.4 Uji Basemap MapTiler Lokal
+    - Buka halaman peta /marine-stock setelah login.
+    - Pastikan tile peta laut (style Dataviz Dark) tampil penuh dan jernih.
+    - Pastikan tidak muncul tulisan watermark "Invalid Key" di peta.
+
+
+--------------------------------------------------------------------------------
+TAHAP 2: SAAT INTEGRASI DATABASE PIHAK KETIGA (Turso libSQL & Upstash Redis)
+--------------------------------------------------------------------------------
+
+[ ] 2.1 Persiapan Akun & Database Pihak Ketiga (Third-Party)
+    A. Basis Data Turso (libSQL):
+       - Masuk ke dashboard Turso (turso.tech) atau lewat Turso CLI.
+       - Buat database baru (misal: "terrasea-stock-db") di region terdekat: "sin" (Singapura).
+       - Dapatkan Database URL: libsql://<nama-db>-<user>.turso.io
+       - Dapatkan Auth Token: eyJhbGciOi... (simpan aman).
+
+    B. Upstash Redis (Rate Limiter Terdistribusi):
+       - Masuk ke dashboard Upstash (upstash.com).
+       - Buat database Redis baru di region Singapura.
+       - Dapatkan UPSTASH_REDIS_REST_URL dan UPSTASH_REDIS_REST_TOKEN.
+
+[ ] 2.2 Migrasi Skema ke Database Turso Cloud
+    Dari terminal komputer Anda, jalankan perintah migrasi ke cloud:
+    (PowerShell):
+    > $env:TURSO_DATABASE_URL = "libsql://<DATABASE-ANDA>.turso.io"
+    > $env:TURSO_AUTH_TOKEN   = "<TOKEN-TURSO-ANDA>"
+    > npm run migrate
+    
+    Verifikasi:
+    - Muncul pesan migrasi 001 dan 002 berhasil terpasang.
+    - Tabel berikut wajib terbentuk di Turso:
+      * schema_migrations
+      * users, sessions, email_tokens, download_log
+      * regions, stations
+      * obs_ocean, obs_catch, obs_catch_species, obs_effort
+      * api_keys, ingest_log, artifacts
+
+[ ] 2.3 Impor Data Lapangan Mentah ke Turso Cloud
+    Jalankan perintah impor data observasi riil:
+    (PowerShell):
+    > npm run import-observations
+
+    Verifikasi Jumlah Baris yang Terimpor (Harus Tepat):
+    - stations          : 6 stasiun (T1 s.d. T6)
+    - obs_ocean         : 10.520 baris (424 baris kosong terlewati otomatis)
+    - obs_catch         : 423 baris (Karangantu: 207, Lebak: 216)
+    - obs_catch_species : 414 baris
+    - obs_effort        : 693 baris (Karangantu: 621, Lebak: 72)
+    - Jalankan ulang sekali lagi: status harus 100% diperbarui / 0 duplikasi (idempoten).
+
+[ ] 2.4 Seeding Data Olahan ke Tabel Artifacts Turso Cloud
+    Jalankan perintah seeding model:
+    (PowerShell):
+    > npm run seed-artifacts
+    
+    Verifikasi:
+    - 12 artifact berhasil tersimpan di tabel "artifacts":
+      zones, ecosystem, 6 forecast zona (Z-01..Z-06), 3 grid (sst, chl, current), 1 abundance.
+
+[ ] 2.5 Buat Akun Admin Pertama di Turso Cloud
+    Jalankan perintah:
+    (PowerShell):
+    > npm run create-admin -- "Admin" admin@gmail.com
+    - Masukkan kata sandi minimal 12 karakter.
+    - Pastikan pesan "Admin siap: email.admin@instansi.ac.id" muncul.
+
+
+--------------------------------------------------------------------------------
+TAHAP 3: SAAT DEPLOYMENT KE VERCEL (Hosting Serverless)
+--------------------------------------------------------------------------------
+
+[ ] 3.1 Pendaftaran Environment Variables di Vercel Dashboard
+    Masuk ke Project Settings -> Environment Variables di Vercel.
+    Tambahkan semua variabel berikut untuk environment "Production":
+    
+    Nama Variabel             | Contoh / Keterangan
+    --------------------------+--------------------------------------------------
+    TURSO_DATABASE_URL        | libsql://<database-anda>.turso.io
+    TURSO_AUTH_TOKEN          | <token-turso-anda>
+    UPSTASH_REDIS_REST_URL    | https://<database-anda>.upstash.io
+    UPSTASH_REDIS_REST_TOKEN  | <token-rest-upstash-anda>
+    MAPTILER_KEY              | z5qRlFQu7qV44IlTeZHw (atau key kustom Anda)
+    MAPTILER_MAP_ID           | 01a1b64a-14ea-71b6-b302-10912b921ef0
+    SESSION_SECRET            | <String acak rahasia minimal 32 karakter>
+    TRUST_PROXY               | 1
+    APP_URL                   | https://<nama-projek>.vercel.app
+    NODE_ENV                  | production
+    SMTP_HOST                 | (opsional, server SMTP untuk email verifikasi)
+    SMTP_PORT                 | 587
+    SMTP_USER                 | (opsional)
+    SMTP_PASS                 | (opsional)
+    SMTP_FROM                 | "terrasea-stock <no-reply@domain.ac.id>"
+
+[ ] 3.2 Eksekusi Deploy ke Vercel
+    - Push kode ke repositori GitHub utama, ATAU jalankan perintah Vercel CLI:
+      > vercel --prod
+    - Pastikan build selesai tanpa error (Exit Code 0).
+    - Catat URL publik aplikasi (misal: https://terrasea-stock.vercel.app).
+
+
+--------------------------------------------------------------------------------
+TAHAP 4: SESUDAH DEPLOY KE VERCEL (Pengujian Penerimaan / Live Smoke Test)
+--------------------------------------------------------------------------------
+
+[ ] 4.1 Uji Keamanan dan Isolasi Halaman Tertutup (Security Bypass Test)
+    Buka URL live menggunakan browser mode Incognito / Private Window (tanpa login):
+    - Akses langsung: https://<domain-anda>/marine-stock
+      -> Harus otomatis terlempar (302 redirect) ke /login.
+    - Akses langsung: https://<domain-anda>/stock-prediction
+      -> Harus otomatis terlempar (302 redirect) ke /login.
+    - Akses langsung ke folder views / pages:
+      * https://<domain-anda>/views/marine-stock.html -> Harus 404 Not Found.
+      * https://<domain-anda>/pages/marine-stock.html -> Harus 404 Not Found.
+      (Membuktikan CDN Vercel tidak membocorkan HTML tertutup).
+    - Akses API privat tanpa sesi:
+      * https://<domain-anda>/api/zones -> Harus 401 Unauthorized {"message": "Sesi berakhir..."}.
+
+[ ] 4.2 Uji Sesi dan Autentikasi Pengguna
+    - Buka https://<domain-anda>/login.
+    - Masuk menggunakan akun admin yang telah dibuat di langkah 2.5.
+    - Pastikan berhasil masuk dan diarahkan ke halaman utama peta.
+    - Cek masa kedaluwarsa sesi:
+      Diamkan peramban selama 20 menit tanpa aktivitas -> lakukan klik atau refresh -> sistem harus otomatis meminta login kembali.
+
+[ ] 4.3 Uji Peta Marine Stock & Interaktivitas Zona
+    - Pastikan basemap MapTiler memuat cepat (latar gelap).
+    - Pastikan layer daratan pesisir Banten berada di posisi paling atas (z-index tertinggi).
+    - Periksa 6 zona perikanan (Z-01 s.d. Z-06) terarsir di pesisir.
+    - Klik salah satu zona (misal Z-01 Teluk Banten):
+      * Pinbox / panel info zona harus muncul.
+      * Memuat nama zona, luas area (<= 350 ha), status menyentuh garis pantai.
+      * Nilai MSY dan TAC tertulis dengan keterangan "alokasi".
+      * Indikator kelimpahan tertulis dengan simbol dan warna (▲ hijau / = kuning / ▼ merah).
+    - Klik di sembarang titik di dalam zona:
+      * Titik koordinat terdeteksi.
+      * Parameter SST (°C), Klorofil-a (mg/m³), kecepatan dan arah arus tampil sesuai interpolasi stasiun.
+
+[ ] 4.4 Uji Prediksi Stok (Stock Prediction)
+    - Masuk ke menu "Stock Prediction" (/stock-prediction).
+    - Pilih zona Z-01 s.d. Z-06:
+      * Grafik time-series Chart.js memuat data dengan benar.
+      * Label terpisah jelas antara "Hindcast" (riwayat model) vs "Forecast" (prakiraan ke depan).
+      * Metrik keandalan model terpampang jelas: nilai RMSE dan MAE.
+      * Tab parameter oseanografi (SST, Klorofil-a, Arus) dapat diklik dan grafik berganti tanpa glitch.
+
+[ ] 4.5 Uji Fitur Unduhan Data (Excel Export)
+    - Masuk ke menu "Unduh Data" (/download).
+    - Pilih salah satu jenis data (misal: "MSY dan hasil tangkapan"), tentukan rentang bulan.
+    - Klik tombol "Unduh Berkas Excel (.xlsx)".
+    - Buka berkas Excel yang terunduh di laptop Anda:
+      * Lembar kerja tersusun rapi.
+      * Catatan limitasi data tertulis di lembar keterangan.
+      * Data angka dapat dibaca dan sesuai rentang waktu.
+
+[ ] 4.6 Uji Dashboard Admin & Manajemen Kunci API Bot
+    - Masuk ke menu Dashboard (/dashboard) menggunakan akun Admin.
+    - Statistik sistem menampilkan jumlah akun total, akun aktif, dan log unduhan.
+    - Bagian "Kunci API Bot (Ingest & Pipeline)":
+      1. Masukkan nama kunci: "Bot Pengujian Lapangan".
+      2. Pilih scope: centang "observations:write" dan "observations:read".
+      3. Klik "Buat Kunci API".
+      4. Kotak kunci baru muncul menampilkan token berawalan "tsk_...".
+      5. Klik tombol "Salin" (pastikan tersalin ke clipboard).
+      6. Refresh halaman: kunci baru terdaftar di tabel, namun teks rahasia sudah tersembunyi (hanya hash di DB).
+      7. Klik tombol "Cabut" pada salah satu kunci uji coba: status berubah menjadi "Dicabut".
+
+[ ] 4.7 Uji Rate Limiting Upstash Redis di Serverless
+    - Buka terminal / Postman / curl, tembak endpoint login dengan kredensial salah lebih dari 10 kali dalam 15 menit:
+      > for ($i=1; $i -le 12; $i++) { Invoke-RestMethod -Uri "https://<domain-anda>/api/auth/login" -Method Post -Body '{"email":"fake@test.com","password":"wrong"}' -ContentType "application/json" }
+    - Request ke-11 harus mengembalikan HTTP 429 Too Many Requests dengan pesan:
+      "Terlalu banyak percobaan masuk. Coba lagi dalam 15 menit."
+    - Respons memuat header standar: RateLimit-Limit, RateLimit-Remaining, RateLimit-Reset.
+
+[ ] 4.8 Uji Endpoint Ingest Data Bot melalui Internet
+    Gunakan kunci API "tsk_..." yang Anda buat di langkah 4.6:
+    (PowerShell):
+    > $headers = @{ "Authorization" = "Bearer tsk_<kunci-api-anda>"; "Content-Type" = "application/json" }
+    > $body = '{"rows":[{"station_id":"T1","date":"2026-03-01","sst":29.1,"chl":0.85,"uo":0.1,"vo":-0.05}]}'
+    > Invoke-RestMethod -Uri "https://<domain-anda>/api/ingest/ocean" -Method Post -Headers $headers -Body $body
+    
+    Verifikasi:
+    - Mengembalikan respons: {"success": true, "count": 1}.
+    - Buka dashboard Admin di web: tabel "Log Ingest Bot (20 Terakhir)" mencatat request ini dengan status 200.
+
+[ ] 4.9 Uji GitHub Actions ML Pipeline
+    - Masuk ke repositori GitHub Anda -> tab **Settings -> Secrets and variables -> Actions**.
+    - Tambahkan Repository Secrets:
+      * TURSO_DATABASE_URL = libsql://<database-anda>.turso.io
+      * TURSO_AUTH_TOKEN   = <token-turso-anda>
+    - Masuk ke tab **Actions** di GitHub -> pilih workflow **ML Pipeline & Artifacts Sync**.
+    - Klik tombol **Run workflow** (manual trigger).
+    - Pantau eksekusi:
+      * Step "Ekspor Observasi Mentah dari Turso" -> sukses mengekstrak CSV.
+      * Step "Validasi Kontrak Data Olahan" -> sukses valid.
+      * Step "Publikasi Hasil Olahan ke Tabel Artifacts Turso" -> sukses menyimpan ke Turso.
+    - Pastikan workflow berstatus centang hijau (Success).
+
+================================================================================
+ SELURUH PENGUJIAN SELESAI
+ Bila semua kotak di atas telah tercentang [X], aplikasi terrasea-stock
+ telah terbukti aman, stabil, dan siap diserahkan kepada pengguna dan mitra.
+================================================================================
+
