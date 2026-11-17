@@ -1,5 +1,5 @@
 # Workflow Pengunduh Data Copernicus Otomatis (Mode Online Cloud)
-# Berjalan otomatis setiap 12 jam atau via tombol manual (workflow_dispatch).
+# Berjalan otomatis setiap 12 jam atau via tombol manual (workflow_dispatch)
 name: Copernicus Ocean Ingest Bot
 
 on:
