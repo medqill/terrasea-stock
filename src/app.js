@@ -92,3 +92,5 @@ export function createApp() {
   });
   return app;
 }
+// Mengekspor aplikasi agar bisa dibaca oleh sistem Vercel
+export default createApp();
