@@ -4,6 +4,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// Di Vercel, public/vendor/ sudah ada dari git — tidak perlu copy ulang.
+if (process.env.VERCEL) {
+  console.log('copy-vendor: lingkungan Vercel terdeteksi, dilewati (vendor sudah ada di git).');
+  process.exit(0);
+}
+
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const nm = (p) => path.join(root, 'node_modules', p);
 const out = path.join(root, 'public', 'vendor');
