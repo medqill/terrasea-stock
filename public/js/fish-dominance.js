@@ -130,12 +130,6 @@ export function computeDominantFish(zoneNum, abundanceByGroup, maxFish = 4) {
  * Komponen kartu ikan kecil untuk mini pin-body.
  */
 function fishCard(fish) {
-  const symEl = h('span', { class: 'abund__sym', 'aria-hidden': 'true' }, fish.abundanceSymbol);
-  const abundBadgeEl = h('div', { class: `mini-fish-card__abund abund--${fish.abundance}` },
-    symEl,
-    h('span', {}, fish.abundanceText)
-  );
-
   const imgEl = h('img', {
     src: fish.image,
     alt: `Foto ikan ${fish.name}`,
@@ -145,13 +139,11 @@ function fishCard(fish) {
 
   return h('article', { class: 'mini-fish-card' },
     h('div', { class: 'mini-fish-card__img-wrap' },
-      imgEl,
-      h('span', { class: 'mini-fish-card__rank', title: `Peringkat #${fish.rank} di kelompok ${fish.groupLabel}` }, `#${fish.rank}`)
+      imgEl
     ),
     h('div', { class: 'mini-fish-card__info' },
       h('h4', { class: 'mini-fish-card__name', title: fish.name }, fish.name),
-      h('span', { class: 'mini-fish-card__group' }, fish.groupLabel),
-      abundBadgeEl
+      h('span', { class: 'mini-fish-card__group' }, fish.groupLabel)
     )
   );
 }
@@ -190,8 +182,8 @@ export function renderMiniPinBody({ zoneId, zoneName, latlng, dominantFish, onCl
   }
 
   const footer = h('div', { class: 'mini-pin-body__footer' },
-    h('span', {}, `${dominantFish.length} jenis ikan terpilih`),
-    h('span', { style: 'font-family:var(--font-mono);' }, 'Maks. 4')
+    h('span', {}, `${dominantFish.length} jenis ikan dominan`),
+    h('span', { style: 'font-family:var(--font-mono);' })
   );
 
   return h('div', { class: 'mini-pin-body', role: 'region', 'aria-label': 'Informasi dominansi ikan pada titik' },
@@ -219,7 +211,6 @@ export function renderFishDominanceBlock({ zoneId, dominantFish }) {
       h('span', { class: 'chip chip--accent', style: 'font-size:11px;' }, zoneId || 'Zona')
     ),
     h('div', { class: gridClass }, dominantFish.map(fishCard)),
-    h('p', { class: 'note', style: 'margin-top:var(--s2);' }, 'Prioritas: Pelagis besar > Pelagis kecil > Demersal. Maksimal 4 jenis sesuai status kelimpahan.')
   );
 }
 

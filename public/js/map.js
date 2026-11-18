@@ -62,7 +62,6 @@ async function showVar(key) {
       grid = await api(`/grids/bathymetry?month=${meta?.month || '2026-11'}`);
       scale = { vmin: 0, vmax: Math.min(grid.vmax, 200) }; // skala visual fokus 0 s.d. 200m untuk batas demersal
       notes.push('Data Batimetri (GEBCO 2026). Kedalaman dasar laut dalam meter. Terang = dangkal, gelap = dalam.');
-      notes.push('Kelimpahan demersal berbasis kedalaman: 40-60m (Sangat Berlimpah ▲), 0-40m (Berlimpah =), >60m (Kurang Berlimpah ▼).');
     } else if (mode === 'ocean') {
       grid = await fetchDgrid(key, currentDay.date);
       scale = ow.scale[key]; // skala TETAP untuk ketujuh hari
@@ -378,7 +377,7 @@ function pointBox(d) {
       }
       return h('div', { class: 'pinbox__row' }, h('span', {}, `${g.label}${extra}`), abundBadge(d.abundance[g.key]));
     }),
-    h('p', { class: 'note' }, 'Kelimpahan demersal berbasis kedalaman: 40-60m (Sangat Berlimpah ▲), 0-40m (Berlimpah =), >60m (Kurang Berlimpah ▼).')));
+    ));
   } else if (d.abundanceError) out.push(h('p', { class: 'note', role: 'status' }, d.abundanceError));
 
   if (selected && lastPoint?.inZone) {
