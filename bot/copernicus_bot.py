@@ -22,6 +22,11 @@ Segitiga Interpolasi:
 Mendukung 2 mode operasional:
 - Mode Sekali Jalan (Online / GitHub Actions / Cron): --mode once
 - Mode Daemon (Offline / Background Service)       : --mode daemon --interval 6
+
+Imputasi Chl-a:
+- Level 1: rata-rata nilai chl ±3 hari terdekat pada batch baru yang sudah diekstrak (interpolasi sesama batch)
+- Level 2: rata-rata historis bulanan per stasiun dari data/raw/observations_ocean.csv (klimatologi)
+- Level 3: tetap None — jangan mengarang data tanpa dasar
 """
 
 import os
@@ -86,8 +91,66 @@ BBOX = {
 
 DEFAULT_START_DATE = os.getenv("COPERNICUS_START_DATE", "2026-10-29")
 CSV_BACKUP_PATH = ROOT_DIR / "data" / "ingest_backup" / "copernicus_ocean.csv"
+# CSV historis (export Turso) — dipakai sebagai basis klimatologi imputasi chl
+HIST_OCEAN_CSV = ROOT_DIR / "data" / "raw" / "observations_ocean.csv"
 API_URL = os.getenv("APP_URL", "http://localhost:3000")
 API_KEY = os.getenv("INGEST_API_KEY", "")
+
+# Pemetaan ID lama (T1–T6) ke format baru (titik_1–titik_6) untuk normalisasi data historis
+STATION_ID_ALIASES = {
+    "T1": "titik_1", "T2": "titik_2", "T3": "titik_3",
+    "T4": "titik_4", "T5": "titik_5", "T6": "titik_6",
+}
+
+
+def build_chl_climatology(csv_path: Path) -> dict:
+    """
+    Membangun tabel rata-rata Chl-a bulanan per stasiun dari data historis.
+
+    Membaca csv_path (export Turso obs_ocean), normalisasi station_id lama (T1–T6)
+    ke format baru (titik_1–titik_6), lalu hitung rata-rata per (station_id, bulan).
+
+    Returns:
+        dict berformat {(station_id, month_int): mean_chl}
+        — kosong jika file tidak ada atau gagal dibaca.
+    """
+    if not csv_path.exists():
+        logger.warning(f"File historis {csv_path} tidak ditemukan. Klimatologi chl tidak tersedia.")
+        return {}
+
+    try:
+        df = pd.read_csv(csv_path)
+        if "chl" not in df.columns or "station_id" not in df.columns or "date" not in df.columns:
+            logger.warning("Kolom chl/station_id/date tidak ditemukan di CSV historis. Klimatologi tidak tersedia.")
+            return {}
+
+        # Normalisasi ID lama T1–T6 → titik_1–titik_6
+        df["station_id"] = df["station_id"].map(lambda s: STATION_ID_ALIASES.get(str(s).strip(), str(s).strip()))
+
+        # Filter hanya baris yang punya nilai chl valid
+        df = df[df["chl"].notna()].copy()
+        df["chl"] = pd.to_numeric(df["chl"], errors="coerce")
+        df = df[df["chl"].between(0, 50)]
+
+        # Ekstrak bulan dari kolom date
+        df["month_int"] = pd.to_datetime(df["date"], errors="coerce").dt.month
+        df = df[df["month_int"].notna()]
+
+        # Hitung rata-rata per (station_id, bulan)
+        grouped = df.groupby(["station_id", "month_int"])["chl"].agg(["mean", "count"]).reset_index()
+        climatology = {}
+        for _, row in grouped.iterrows():
+            key = (row["station_id"], int(row["month_int"]))
+            climatology[key] = round(float(row["mean"]), 4)
+            logger.debug(f"Klimatologi chl {key}: {climatology[key]:.4f} (n={int(row['count'])})")
+
+        total_keys = len(climatology)
+        logger.info(f"Klimatologi chl dibangun: {total_keys} pasangan (stasiun, bulan) dari {len(df)} baris historis valid.")
+        return climatology
+
+    except Exception as e:
+        logger.warning(f"Gagal membangun klimatologi chl dari {csv_path}: {e}")
+        return {}
 
 
 def get_latest_recorded_date(csv_path: Path, default_start: str) -> str:
@@ -159,8 +222,16 @@ def fetch_dataset_for_date_range(dataset_key: str, start_dt: str, end_dt: str, u
     raise RuntimeError(f"Gagal mengunduh file subset {dataset_key} ke {out_file}")
 
 
-def extract_points_from_datasets(ds_chl, ds_sst, ds_swv, target_dates: list[str]) -> list[dict]:
-    """Ekstraksi nilai parameter pada 6 titik koordinat stasiun untuk setiap tanggal."""
+def extract_points_from_datasets(ds_chl, ds_sst, ds_swv, target_dates: list[str],
+                                  chl_climatology: dict | None = None) -> list[dict]:
+    """Ekstraksi nilai parameter pada 6 titik koordinat stasiun untuk setiap tanggal.
+
+    Jika chl tidak tersedia dari dataset Copernicus (NaN dari model), dilakukan imputasi
+    berlapis:
+      Level 1 — rata-rata chl stasiun yang sama dari batch ini dalam jangka ±3 hari
+      Level 2 — rata-rata bulanan historis (klimatologi) dari data/raw/observations_ocean.csv
+      Level 3 — tetap None (tidak mengarang data tanpa dasar)
+    """
     records = []
 
     def get_coord_names(ds):
@@ -241,6 +312,59 @@ def extract_points_from_datasets(ds_chl, ds_sst, ds_swv, target_dates: list[str]
 
             records.append(row)
 
+    # ── Imputasi chl null berlapis (setelah semua baris diekstrak) ──────────────────────
+    # Susun indeks: {(station_id, date): posisi di records} untuk lookup cepat
+    record_index = {(r["station_id"], r["date"]): i for i, r in enumerate(records)}
+
+    null_count = sum(1 for r in records if r["chl"] is None)
+    if null_count > 0:
+        logger.info(f"Imputasi chl: {null_count} baris dengan chl=null ditemukan. Memulai pengisian...")
+
+    for i, row in enumerate(records):
+        if row["chl"] is not None:
+            continue
+
+        st_id = row["station_id"]
+        dt_str = row["date"]
+        try:
+            dt = datetime.date.fromisoformat(dt_str)
+        except ValueError:
+            continue
+
+        imputed = None
+        source = None
+
+        # Level 1: rata-rata nilai chl stasiun yang sama, ±3 hari, dari batch ini
+        nearby_vals = []
+        for delta in range(1, 4):
+            for sign in (-1, 1):
+                neighbor_dt = (dt + datetime.timedelta(days=delta * sign)).isoformat()
+                idx = record_index.get((st_id, neighbor_dt))
+                if idx is not None and records[idx]["chl"] is not None:
+                    nearby_vals.append(records[idx]["chl"])
+        if nearby_vals:
+            imputed = round(sum(nearby_vals) / len(nearby_vals), 4)
+            source = f"interpolasi batch ±3 hari (n={len(nearby_vals)})"
+
+        # Level 2: rata-rata bulanan historis (klimatologi) per stasiun
+        if imputed is None and chl_climatology:
+            month_int = dt.month
+            clim_val = chl_climatology.get((st_id, month_int))
+            if clim_val is not None:
+                imputed = clim_val
+                source = f"rata-rata historis bulan {month_int} (klimatologi)"
+
+        # Level 3: tetap None — tidak mengarang data
+        if imputed is not None:
+            records[i]["chl"] = imputed
+            logger.info(f"[Imputasi] chl {st_id} {dt_str}: null → {imputed} ({source})")
+        else:
+            logger.warning(f"[Imputasi] chl {st_id} {dt_str}: tetap null — tidak ada data acuan yang cukup.")
+
+    filled = sum(1 for r in records if r["chl"] is not None) - (len(records) - null_count)
+    if null_count > 0:
+        logger.info(f"Imputasi selesai: {filled}/{null_count} nilai chl null berhasil diisi.")
+
     return records
 
 
@@ -319,6 +443,9 @@ def run_pipeline(start_date: str, end_date: str, dry_run: bool = False):
 
     logger.info(f"Memulai pipeline pengunduhan Copernicus dari {start_date} s.d. {end_date} ({len(target_dates)} hari, {len(target_dates) * 6} observasi)...")
 
+    # Bangun klimatologi chl dari data historis untuk imputasi nilai null
+    chl_climatology = build_chl_climatology(HIST_OCEAN_CSV)
+
     # Unduh dataset 3 variabel dari Copernicus
     ds_chl = None
     ds_sst = None
@@ -343,8 +470,8 @@ def run_pipeline(start_date: str, end_date: str, dry_run: bool = False):
         logger.error("Tidak ada dataset Copernicus yang berhasil diunduh. Siklus dibatalkan.")
         return False
 
-    # Ekstrak data pada 6 titik koordinat
-    records = extract_points_from_datasets(ds_chl, ds_sst, ds_swv, target_dates)
+    # Ekstrak data pada 6 titik koordinat (imputasi chl null dilakukan di dalam fungsi ini)
+    records = extract_points_from_datasets(ds_chl, ds_sst, ds_swv, target_dates, chl_climatology)
     logger.info(f"Berhasil mengekstrak {len(records)} baris data observasi.")
 
     if dry_run:
