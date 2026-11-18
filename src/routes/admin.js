@@ -246,4 +246,131 @@ r.get('/ingest-logs', asyncHandler(async (req, res) => {
   res.json({ logs });
 }));
 
+// GET /api/admin/monthly-records - Data status pencatatan bulanan tangkapan dan trip
+r.get('/monthly-records', asyncHandler(async (req, res) => {
+  const [filledMonths, maxKarangantu, maxLebak, recentCatches, recentEfforts] = await Promise.all([
+    db.query(
+      `SELECT region, month, SUM(catch_kg) AS total_catch_kg, COUNT(*) AS count_group
+       FROM obs_catch
+       GROUP BY region, month
+       ORDER BY month DESC, region ASC
+       LIMIT 60`
+    ),
+    db.one("SELECT MAX(month) AS m FROM obs_catch WHERE region = 'karangantu'"),
+    db.one("SELECT MAX(month) AS m FROM obs_catch WHERE region = 'lebak'"),
+    db.query(
+      `SELECT region, month, fish_group, catch_kg, updated_at
+       FROM obs_catch
+       ORDER BY updated_at DESC, month DESC
+       LIMIT 20`
+    ),
+    db.query(
+      `SELECT region, month, gear, trips, updated_at
+       FROM obs_effort
+       ORDER BY updated_at DESC, month DESC
+       LIMIT 20`
+    )
+  ]);
+
+  const gears = {
+    karangantu: ['total', 'jaring_insang_tetap', 'jaring_hela_dasar', 'jaring_insang_hanyut', 'bagan_tancap', 'bagan_berperahu', 'bubu', 'pancing', 'jaring_payang', 'lain_lain'],
+    lebak: ['total', 'jaring_insang_tetap', 'pancing', 'jaring_insang_hanyut', 'rawai', 'lainnya', 'trammel_net', 'pukat_cincin', 'payang']
+  };
+
+  res.json({
+    latest_filled_month: {
+      karangantu: maxKarangantu?.m ?? null,
+      lebak: maxLebak?.m ?? null
+    },
+    filled_months: filledMonths,
+    recent_catches: recentCatches,
+    recent_efforts: recentEfforts,
+    gears
+  });
+}));
+
+// POST /api/admin/monthly-records - Pencatatan data tangkapan bulanan dan trip ke database
+r.post('/monthly-records', asyncHandler(async (req, res) => {
+  const { region, month, catches, trips, gear = 'total' } = req.body || {};
+
+  // Validasi wilayah
+  if (!region || !['karangantu', 'lebak'].includes(String(region).toLowerCase())) {
+    return res.status(400).json({ message: 'Wilayah tidak valid. Pilih "karangantu" atau "lebak".' });
+  }
+
+  // Validasi format bulan YYYY-MM
+  if (!month || !/^\d{4}-(0[1-9]|1[0-2])$/.test(String(month))) {
+    return res.status(400).json({ message: 'Format bulan tidak valid. Gunakan format YYYY-MM (misal 2026-11).' });
+  }
+
+  // Validasi data tangkapan
+  const c = catches || {};
+  const pelagisBesar = Number(c.pelagis_besar);
+  const pelagisKecil = Number(c.pelagis_kecil);
+  const demersal = Number(c.demersal);
+
+  if (isNaN(pelagisBesar) || pelagisBesar < 0 || isNaN(pelagisKecil) || pelagisKecil < 0 || isNaN(demersal) || demersal < 0) {
+    return res.status(400).json({ message: 'Nilai tangkapan untuk Pelagis Besar, Pelagis Kecil, dan Demersal harus berupa angka non-negatif.' });
+  }
+
+  // Validasi data trip (effort)
+  const numTrips = Number(trips);
+  if (isNaN(numTrips) || numTrips < 0) {
+    return res.status(400).json({ message: 'Jumlah trip harus berupa angka non-negatif.' });
+  }
+
+  const cleanRegion = String(region).toLowerCase();
+  const cleanGear = String(gear || 'total').trim().toLowerCase();
+
+  // Eksekusi atomik menggunakan db.tx
+  const statements = [
+    {
+      sql: `INSERT INTO obs_catch (region, month, fish_group, catch_kg, created_at, updated_at)
+            VALUES (?, ?, 'pelagis_besar', ?, datetime('now'), datetime('now'))
+            ON CONFLICT(region, month, fish_group) DO UPDATE SET
+              catch_kg = excluded.catch_kg, updated_at = datetime('now')`,
+      args: [cleanRegion, month, pelagisBesar]
+    },
+    {
+      sql: `INSERT INTO obs_catch (region, month, fish_group, catch_kg, created_at, updated_at)
+            VALUES (?, ?, 'pelagis_kecil', ?, datetime('now'), datetime('now'))
+            ON CONFLICT(region, month, fish_group) DO UPDATE SET
+              catch_kg = excluded.catch_kg, updated_at = datetime('now')`,
+      args: [cleanRegion, month, pelagisKecil]
+    },
+    {
+      sql: `INSERT INTO obs_catch (region, month, fish_group, catch_kg, created_at, updated_at)
+            VALUES (?, ?, 'demersal', ?, datetime('now'), datetime('now'))
+            ON CONFLICT(region, month, fish_group) DO UPDATE SET
+              catch_kg = excluded.catch_kg, updated_at = datetime('now')`,
+      args: [cleanRegion, month, demersal]
+    },
+    {
+      sql: `INSERT INTO obs_effort (region, month, gear, trips, created_at, updated_at)
+            VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))
+            ON CONFLICT(region, month, gear) DO UPDATE SET
+              trips = excluded.trips, updated_at = datetime('now')`,
+      args: [cleanRegion, month, cleanGear, Math.round(numTrips)]
+    }
+  ];
+
+  await db.tx(statements);
+
+  res.status(201).json({
+    success: true,
+    message: `Data tangkapan dan trip wilayah ${cleanRegion === 'karangantu' ? 'Karangantu' : 'Lebak'} bulan ${month} berhasil disimpan.`,
+    data: {
+      region: cleanRegion,
+      month,
+      catches: {
+        pelagis_besar: pelagisBesar,
+        pelagis_kecil: pelagisKecil,
+        demersal
+      },
+      trips: Math.round(numTrips),
+      gear: cleanGear
+    }
+  });
+}));
+
 export default r;

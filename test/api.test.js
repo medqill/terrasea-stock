@@ -66,6 +66,7 @@ test('tanpa sesi: API 401 dan halaman diarahkan ke /login', async () => {
   assert.equal(page.status, 302);
   assert.match(page.headers.get('location'), /^\/login/);
   assert.equal((await get('/')).status, 200);
+  assert.equal((await get('/about')).status, 200);
 });
 
 test('halaman tertutup tidak bocor lewat folder statis', async () => {
@@ -218,4 +219,61 @@ test('config: tanpa sesi 401, dengan sesi mengembalikan maptilerKey dan maptiler
   const data = await res.json();
   assert.ok('maptilerKey' in data);
   assert.ok('maptilerMapId' in data);
+});
+
+test('admin: pencatatan bulanan tangkapan dan trip', async () => {
+  const { cookie: admCookie } = await login('adm@uji.id');
+  const { cookie: userCookie } = await login('u2@uji.id');
+
+  // Akses GET tanpa auth -> 401, user biasa -> 403, admin -> 200
+  assert.equal((await get('/api/admin/monthly-records')).status, 401);
+  assert.equal((await get('/api/admin/monthly-records', userCookie)).status, 403);
+  const getRes = await get('/api/admin/monthly-records', admCookie);
+  assert.equal(getRes.status, 200);
+  const getData = await getRes.json();
+  assert.ok(Array.isArray(getData.filled_months));
+  assert.ok('latest_filled_month' in getData);
+
+  // POST validasi: payload salah ditolak
+  assert.equal((await post('/api/admin/monthly-records', { region: 'ngawur', month: '2026-11' }, admCookie)).status, 400);
+  assert.equal((await post('/api/admin/monthly-records', { region: 'karangantu', month: 'invalid-month' }, admCookie)).status, 400);
+  assert.equal((await post('/api/admin/monthly-records', {
+    region: 'karangantu',
+    month: '2026-11',
+    catches: { pelagis_besar: -10, pelagis_kecil: 100, demersal: 100 },
+    trips: 50
+  }, admCookie)).status, 400);
+
+  // POST sukses: simpan data tangkapan dan trip november 2026 ke depan
+  const saveRes = await post('/api/admin/monthly-records', {
+    region: 'karangantu',
+    month: '2026-11',
+    catches: {
+      pelagis_besar: 2150.5,
+      pelagis_kecil: 36200.0,
+      demersal: 27800.0
+    },
+    trips: 1140,
+    gear: 'total'
+  }, admCookie);
+  assert.equal(saveRes.status, 201);
+  const saveJson = await saveRes.json();
+  assert.equal(saveJson.success, true);
+
+  // Verifikasi data tersimpan di obs_catch
+  const pelagisBesarRow = await db.one(
+    "SELECT catch_kg FROM obs_catch WHERE region='karangantu' AND month='2026-11' AND fish_group='pelagis_besar'"
+  );
+  assert.equal(Number(pelagisBesarRow.catch_kg), 2150.5);
+
+  const demersalRow = await db.one(
+    "SELECT catch_kg FROM obs_catch WHERE region='karangantu' AND month='2026-11' AND fish_group='demersal'"
+  );
+  assert.equal(Number(demersalRow.catch_kg), 27800.0);
+
+  // Verifikasi data tersimpan di obs_effort
+  const effortRow = await db.one(
+    "SELECT trips FROM obs_effort WHERE region='karangantu' AND month='2026-11' AND gear='total'"
+  );
+  assert.equal(Number(effortRow.trips), 1140);
 });

@@ -209,6 +209,8 @@ Semua rute disajikan di bawah prefix `/api`.
 | POST | /admin/api-keys | Admin | Buat kunci API bot baru (kunci mentah muncul sekali) |
 | GET | /admin/api-keys | Admin | Daftar kunci API (tanpa menampilkan hash) |
 | DELETE | /admin/api-keys/:id | Admin | Cabut (revoke) kunci API |
+| GET | /admin/monthly-records | Admin | Status kelengkapan pencatatan bulanan tangkapan dan trip |
+| POST | /admin/monthly-records | Admin | Catat tangkapan bulanan (3 kelompok ikan) & trip ke obs_catch & obs_effort |
 | POST | /ingest/ocean | API Key (`observations:write`) | Ingest data observasi oseanografi (maks. 500 baris) |
 | POST | /ingest/catch | API Key (`observations:write`) | Ingest data tangkapan kelompok ikan (maks. 500 baris) |
 | POST | /ingest/catch-species | API Key (`observations:write`) | Ingest data tangkapan spesies (maks. 500 baris) |

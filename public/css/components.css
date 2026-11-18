@@ -78,4 +78,63 @@ dialog .actions { display: flex; gap: var(--s3); justify-content: flex-end; marg
 .hero__dot { width: 24px; height: 4px; border: 0; background: var(--line); cursor: pointer; padding: 0; }
 .hero__dot[aria-current="true"] { background: var(--accent); }
 
-@media (max-width: 960px) { .predict-grid { grid-template-columns: 1fr; } }
+/* landing: pilar tentang */
+.lead { font-size: 18px; line-height: 1.7; color: var(--paper-text); margin-bottom: var(--s6); max-width: 72ch; }
+.pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s5); margin-bottom: var(--s6); }
+.pillar-card { border: 1px solid var(--slate); border-radius: var(--radius); padding: var(--s5); background: transparent; display: flex; flex-direction: column; gap: var(--s2); }
+.pillar-card h3 { color: var(--paper-text); margin-bottom: var(--s2); font-size: 18px; }
+.pillar-card p { color: var(--paper-text); margin: 0; font-size: 14px; line-height: 1.6; }
+
+/* landing: berita nelayan banten */
+.news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--s5); margin-top: var(--s6); }
+.news-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+.news-card__thumb { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.news-card__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; filter: brightness(.95); transition: transform .2s ease-out, filter .2s ease-out; }
+.news-card:hover .news-card__thumb img { filter: brightness(1.05); transform: scale(1.02); }
+.news-card__body { padding: var(--s5); display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
+.news-card__meta { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); margin-bottom: var(--s3); }
+.news-card__source { font: 600 12px var(--font-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--accent); }
+.news-card h3 { font-size: 20px; line-height: 1.35; margin-bottom: var(--s3); color: var(--text); }
+.news-card__desc { font-size: 14px; line-height: 1.6; color: var(--text-muted); margin-bottom: var(--s4); }
+.news-card__solution { background: var(--bg); border-left: 2px solid var(--accent); padding: var(--s3); font-size: 13px; line-height: 1.55; color: var(--text); margin-bottom: var(--s5); border-radius: 0 var(--radius) var(--radius) 0; }
+.news-card__solution strong { color: var(--accent); }
+.news-card__btn { margin-top: auto; justify-content: center; }
+
+/* landing: kontak & aspirasi */
+.contact-details { display: flex; flex-direction: column; gap: var(--s5); margin-top: var(--s5); }
+.contact-item { border-left: 2px solid var(--accent); padding-left: var(--s4); }
+.contact-item h3 { font-size: 16px; margin-bottom: var(--s1); color: var(--paper-text); }
+.contact-item p { font-size: 14px; margin: 0; color: var(--paper-text); }
+.contact-form-panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s5); }
+.contact-form-panel label { color: var(--text); }
+
+/* dashboard monitoring & sidebar */
+.dash-layout { display: grid; grid-template-columns: 260px 1fr; gap: var(--s5); align-items: start; margin-top: var(--s4); }
+.dash-sidebar { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s4); position: sticky; top: calc(var(--header-h) + var(--s4)); }
+.dash-sidebar__header { padding: var(--s1) var(--s2) var(--s3); border-bottom: 1px solid var(--line); margin-bottom: var(--s3); }
+.dash-sidebar__title { font: 600 11px var(--font-ui); text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin: 0; }
+.dash-sidebar__subtitle { font: 600 15px var(--font-display); color: var(--text); margin-top: var(--s1); margin-bottom: 0; }
+.dash-nav { display: flex; flex-direction: column; gap: var(--s1); list-style: none; margin: 0; padding: 0; }
+.dash-nav__btn { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); width: 100%; text-align: left; padding: var(--s2) var(--s3); background: transparent; border: 1px solid transparent; border-radius: var(--radius); color: var(--text-muted); font: 600 13px var(--font-ui); cursor: pointer; transition: background-color .15s ease-out, color .15s ease-out; }
+.dash-nav__btn:hover { background: var(--surface-2); color: var(--text); }
+.dash-nav__btn.is-active { background: var(--surface-2); border-color: var(--accent); color: var(--text); }
+.dash-nav__content { display: flex; align-items: center; gap: var(--s2); }
+.dash-nav__btn .icon { width: 16px; height: 16px; flex: none; }
+.dash-nav__badge { font-family: var(--font-mono); font-size: 11px; padding: 1px 6px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); }
+.dash-nav__badge--new { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.dash-nav__badge--alert { border-color: var(--abund-low); color: var(--abund-low); font-weight: 600; }
+.dash-panel { display: none; }
+.dash-panel.is-active { display: block; }
+.dash-panel > .panel + .panel { margin-top: var(--s5); }
+
+/* formulir pencatatan bulanan */
+.record-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--s4); }
+.record-status-pill { display: inline-flex; align-items: center; gap: var(--s2); font-size: 13px; padding: var(--s1) var(--s3); border-radius: var(--radius); background: var(--surface-2); border: 1px solid var(--line); }
+
+@media (max-width: 960px) {
+  .dash-layout { grid-template-columns: 1fr; }
+  .dash-sidebar { position: static; }
+  .dash-nav { flex-direction: row; flex-wrap: wrap; }
+  .dash-nav__btn { width: auto; }
+  .predict-grid { grid-template-columns: 1fr; }
+}

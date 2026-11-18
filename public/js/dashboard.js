@@ -87,6 +87,12 @@ async function loadStatsAndPending() {
     ['Menunggu verifikasi', s.accounts.pending]
   ].map(([k, v]) => h('div', { class: 'panel' }, h('p', { class: 'label' }, k), h('strong', {}, v))));
 
+  const badgePending = $('#badge-pending');
+  if (badgePending) {
+    badgePending.textContent = s.accounts.pending;
+    badgePending.classList.toggle('dash-nav__badge--alert', s.accounts.pending > 0);
+  }
+
   renderModelStatus(s.model);
 
   const pendingRows = (s.pending || []).map((u) => {
@@ -371,12 +377,174 @@ async function loadIngestLogs() {
   }
 }
 
+let monthlyCache = null;
+
+async function checkMonthStatus() {
+  const region = $('#entry-region')?.value;
+  const month = $('#entry-month')?.value;
+  const dot = $('#month-fill-dot');
+  const text = $('#month-fill-text');
+  if (!region || !month || !text || !dot) return;
+
+  if (!monthlyCache) {
+    try { monthlyCache = await api('/admin/monthly-records'); } catch { /* abaikan */ }
+  }
+
+  const filledList = monthlyCache?.filled_months || [];
+  const found = filledList.find((f) => f.region === region && f.month === month);
+
+  if (found) {
+    dot.style.background = 'var(--abund-mid)';
+    text.innerHTML = `Bulan <strong>${month}</strong> untuk wilayah ${region === 'karangantu' ? 'Karangantu' : 'Lebak'} <strong>sudah terisi</strong> (${Math.round(found.total_catch_kg).toLocaleString('id-ID')} kg). Simpan ulang akan memperbarui data.`;
+  } else {
+    dot.style.background = 'var(--abund-high)';
+    text.innerHTML = `Bulan <strong>${month}</strong> untuk wilayah ${region === 'karangantu' ? 'Karangantu' : 'Lebak'} <strong>belum terisi</strong>. Siap dicatat ke database.`;
+  }
+}
+
+async function loadMonthlyRecords() {
+  try {
+    monthlyCache = await api('/admin/monthly-records');
+    checkMonthStatus();
+
+    // Render tabel ringkasan status bulanan
+    const summaryBox = $('#monthly-status-summary');
+    if (summaryBox) {
+      const filled = monthlyCache.filled_months || [];
+      const monthsToShow = [
+        '2026-09', '2026-10', '2026-11', '2026-12', '2027-01', '2027-02'
+      ];
+
+      const rows = monthsToShow.map((m) => {
+        const kFound = filled.find((f) => f.region === 'karangantu' && f.month === m);
+        const lFound = filled.find((f) => f.region === 'lebak' && f.month === m);
+
+        const kBadge = kFound
+          ? h('span', { class: 'chip', style: 'border-color:var(--abund-high); color:var(--abund-high); font-weight:600;' }, `Terisi (${Math.round(kFound.total_catch_kg).toLocaleString('id-ID')} kg)`)
+          : h('span', { class: 'chip', style: 'border-color:var(--abund-low); color:var(--abund-low);' }, 'Belum terisi');
+
+        const lBadge = lFound
+          ? h('span', { class: 'chip', style: 'border-color:var(--abund-high); color:var(--abund-high); font-weight:600;' }, `Terisi (${Math.round(lFound.total_catch_kg).toLocaleString('id-ID')} kg)`)
+          : h('span', { class: 'chip', style: 'border-color:var(--abund-low); color:var(--abund-low);' }, 'Belum terisi');
+
+        const note = m >= '2026-11'
+          ? h('span', { class: 'dash-nav__badge dash-nav__badge--new' }, 'November ke Depan')
+          : h('span', { class: 'muted' }, 'Historis');
+
+        return [
+          h('strong', { class: 'mono' }, fmtMonth(m)),
+          kBadge,
+          lBadge,
+          note
+        ];
+      });
+
+      clear(summaryBox).append(
+        table(['Bulan Periode', 'Status Karangantu', 'Status Lebak', 'Kelompok Periode'], rows, 'Belum ada data bulanan.')
+      );
+    }
+
+    // Render tabel tangkapan & effort terbaru
+    const recentBox = $('#monthly-recent-catches');
+    if (recentBox) {
+      const recent = (monthlyCache.recent_catches || []).slice(0, 15);
+      const rows = recent.map((c) => [
+        h('strong', {}, c.region === 'karangantu' ? 'Karangantu' : 'Lebak'),
+        h('span', { class: 'mono' }, c.month),
+        c.fish_group.replace('_', ' ').toUpperCase(),
+        `${Number(c.catch_kg).toLocaleString('id-ID')} kg`,
+        fmtDate(c.updated_at)
+      ]);
+      clear(recentBox).append(
+        table(['Wilayah', 'Bulan', 'Kelompok Ikan', 'Tangkapan (kg)', 'Waktu Entri'], rows, 'Belum ada riwayat tangkapan.')
+      );
+    }
+  } catch (err) {
+    console.error('Gagal memuat catatan bulanan:', err);
+  }
+}
+
 async function reloadAll() {
   await Promise.all([
     loadStatsAndPending(),
     loadUsers(),
-    loadDownloads()
+    loadDownloads(),
+    loadMonthlyRecords()
   ]);
+}
+
+// Navigasi Sidebar Tab
+$$('.dash-nav__btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const targetId = btn.dataset.target;
+    if (!targetId) return;
+
+    $$('.dash-nav__btn').forEach((b) => {
+      const active = b === btn;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-selected', String(active));
+    });
+
+    $$('.dash-panel').forEach((panel) => {
+      const active = panel.id === targetId;
+      panel.classList.toggle('is-active', active);
+    });
+
+    if (targetId === 'panel-monthly') {
+      loadMonthlyRecords();
+    }
+  });
+});
+
+// Penanganan formulir pencatatan bulanan
+const formMonthly = $('#form-monthly-record');
+if (formMonthly) {
+  formMonthly.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('#btn-save-record');
+    const msg = $('#record-msg');
+    if (btn) btn.disabled = true;
+    if (msg) {
+      msg.textContent = 'Menyimpan data tangkapan & trip ke database...';
+      msg.className = 'form-msg';
+    }
+
+    const region = $('#entry-region').value;
+    const month = $('#entry-month').value;
+    const pelagis_besar = Number($('#catch-pelagis-besar').value);
+    const pelagis_kecil = Number($('#catch-pelagis-kecil').value);
+    const demersal = Number($('#catch-demersal').value);
+    const trips = Number($('#effort-trips').value);
+    const gear = $('#effort-gear')?.value || 'total';
+
+    try {
+      const res = await api('/admin/monthly-records', {
+        method: 'POST',
+        body: {
+          region,
+          month,
+          catches: { pelagis_besar, pelagis_kecil, demersal },
+          trips,
+          gear
+        }
+      });
+      if (msg) {
+        msg.textContent = res.message;
+        msg.className = 'form-msg form-msg--ok';
+      }
+      await loadMonthlyRecords();
+    } catch (err) {
+      if (msg) {
+        msg.textContent = `Gagal menyimpan: ${err.message}`;
+        msg.className = 'form-msg form-msg--error';
+      }
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  });
+
+  $('#entry-region')?.addEventListener('change', checkMonthStatus);
+  $('#entry-month')?.addEventListener('change', checkMonthStatus);
 }
 
 // Event handlers

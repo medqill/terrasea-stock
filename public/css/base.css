@@ -38,8 +38,9 @@ img, svg { max-width: 100%; }
 /* formulir */
 .field { display: grid; gap: var(--s2); margin-bottom: var(--s4); }
 .field label { font-size: 14px; font-weight: 600; }
-.field input, .field select { background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s3); font: 400 16px var(--font-ui); min-height: 44px; }
-.field input:focus, .field select:focus { border-color: var(--accent); }
+.field input, .field select, .field textarea { background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s3); font: 400 16px var(--font-ui); min-height: 44px; }
+.field textarea { min-height: 100px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
 .form-msg { min-height: 24px; font-size: 14px; }
 .form-msg--error { color: var(--abund-low); }
 .form-msg--ok { color: var(--abund-high); }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard | terrasea-stock</title>
+<title>Dashboard Monitoring Admin | terrasea-stock</title>
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/css/tokens.css">
 <link rel="stylesheet" href="/css/base.css">
@@ -14,104 +14,279 @@
 <a class="skip-link" href="#isi">Lewati ke konten</a>
 <header class="site-header" id="site-header"></header>
 <main id="isi" class="container" style="padding-bottom:var(--s8)">
-  <div class="page-head"><h1>Dashboard admin</h1><p>Akun, antrean verifikasi, log unduhan, dan versi model aktif.</p></div>
-  <div class="stats" id="stats"></div>
-  
-  <section class="panel" id="sec-model">
-    <h2 style="font-size:20px">Status data olahan (Model aktif)</h2>
-    <div id="model-banner" style="margin-bottom:var(--s4)"></div>
-    <div id="model"></div>
-  </section>
+  <div class="page-head">
+    <h1>Dashboard monitoring admin</h1>
+    <p>Pusat pemantauan status data olahan, pencatatan bulanan perikanan, manajemen akun, dan integrasi API.</p>
+  </div>
 
-  <section class="panel" id="sec-pending">
-    <h2 style="font-size:20px">Antrean verifikasi</h2>
-    <p class="muted" style="margin-bottom:var(--s4)">Pendaftaran akun yang belum diverifikasi. Anda dapat mengaktifkan akun secara manual jika pengiriman email terkendala atau menghapus pendaftaran.</p>
-    <div id="pending"></div>
-  </section>
+  <div class="dash-layout">
+    <!-- Sidebar Panel Konteks -->
+    <aside class="dash-sidebar" aria-label="Navigasi panel admin">
+      <div class="dash-sidebar__header">
+        <p class="dash-sidebar__title">Pusat Kendali</p>
+        <h2 class="dash-sidebar__subtitle">Monitoring &amp; Data</h2>
+      </div>
+      <nav>
+        <ul class="dash-nav" role="tablist" aria-orientation="vertical">
+          <li role="presentation">
+            <button type="button" class="dash-nav__btn is-active" id="tab-overview" role="tab" aria-selected="true" aria-controls="panel-overview" data-target="panel-overview">
+              <span class="dash-nav__content" data-icon="grid">Ringkasan &amp; Model</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button type="button" class="dash-nav__btn" id="tab-monthly" role="tab" aria-selected="false" aria-controls="panel-monthly" data-target="panel-monthly">
+              <span class="dash-nav__content" data-icon="edit">Pencatatan Bulanan</span>
+              <span class="dash-nav__badge dash-nav__badge--new">Baru</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button type="button" class="dash-nav__btn" id="tab-pending" role="tab" aria-selected="false" aria-controls="panel-pending" data-target="panel-pending">
+              <span class="dash-nav__content" data-icon="alert">Antrean Verifikasi</span>
+              <span class="dash-nav__badge" id="badge-pending">0</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button type="button" class="dash-nav__btn" id="tab-users" role="tab" aria-selected="false" aria-controls="panel-users" data-target="panel-users">
+              <span class="dash-nav__content" data-icon="users">Manajemen Akun</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button type="button" class="dash-nav__btn" id="tab-downloads" role="tab" aria-selected="false" aria-controls="panel-downloads" data-target="panel-downloads">
+              <span class="dash-nav__content" data-icon="download">Log Unduhan</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button type="button" class="dash-nav__btn" id="tab-api-keys" role="tab" aria-selected="false" aria-controls="panel-api-keys" data-target="panel-api-keys">
+              <span class="dash-nav__content" data-icon="key">Kunci API &amp; Ingest</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
 
-  <section class="panel" id="sec-users">
-    <h2 style="font-size:20px">Manajemen akun</h2>
-    <p class="muted" style="margin-bottom:var(--s4)">Daftar seluruh akun terdaftar. Anda dapat menonaktifkan atau mengaktifkan kembali akses pengguna kapan saja.</p>
-    <div id="users"></div>
-  </section>
+      <div style="margin-top:var(--s6); padding-top:var(--s4); border-top:1px solid var(--line); font-size:12px; color:var(--text-muted)">
+        <p style="margin:0 0 var(--s1)"><strong style="color:var(--text)">Sistem Database:</strong> libSQL Turso</p>
+        <p style="margin:0"><strong style="color:var(--text)">Peran:</strong> Administrator</p>
+      </div>
+    </aside>
 
-  <section class="panel" id="sec-downloads">
-    <h2 style="font-size:20px">Log unduhan</h2>
-    <p class="muted" style="margin-bottom:var(--s4)">Riwayat pengunduhan data oleh pengguna dengan filter periode dan jenis data serta ringkasan unduhan terbanyak.</p>
-    
-    <div id="downloads-summary" style="margin-bottom:var(--s4)"></div>
-
-    <form id="form-filter-downloads" style="display:flex; flex-wrap:wrap; gap:var(--s3); align-items:flex-end; margin-bottom:var(--s4); padding:var(--s3); background:var(--surface-2); border-radius:var(--radius)">
-      <div class="field" style="margin:0; min-width:160px">
-        <label for="filter-type" style="font-size:12px">Jenis data</label>
-        <select id="filter-type" style="padding:var(--s2) var(--s3); font-size:14px">
-          <option value="all">Semua jenis</option>
-          <option value="msy">MSY / TAC (Peramalan)</option>
-          <option value="ocean">Oseanografi</option>
-          <option value="catch">Tangkapan</option>
-          <option value="effort">Upaya Penangkapan</option>
-        </select>
-      </div>
-      <div class="field" style="margin:0; min-width:140px">
-        <label for="filter-from" style="font-size:12px">Dari periode</label>
-        <input type="month" id="filter-from" style="padding:var(--s2) var(--s3); font-size:14px">
-      </div>
-      <div class="field" style="margin:0; min-width:140px">
-        <label for="filter-to" style="font-size:12px">Sampai periode</label>
-        <input type="month" id="filter-to" style="padding:var(--s2) var(--s3); font-size:14px">
-      </div>
-      <div style="display:flex; gap:var(--s2)">
-        <button type="submit" class="btn btn--primary" style="padding:var(--s2) var(--s4); font-size:14px">Filter</button>
-        <button type="button" id="btn-reset-downloads" class="btn btn--outline" style="padding:var(--s2) var(--s4); font-size:14px">Reset</button>
-      </div>
-    </form>
-
-    <div id="downloads"></div>
-  </section>
-  <section class="panel">
-    <h2 style="font-size:20px">Kunci API Bot (Ingest &amp; Pipeline)</h2>
-    <p class="muted" style="margin-bottom:var(--s4)">Digunakan oleh bot ingest observasi atau workflow GitHub Actions pipeline ML.</p>
-    
-    <div id="new-key-box" style="display:none; margin-bottom:var(--s4); padding:var(--s4); border:1px solid var(--accent); border-radius:var(--radius); background:var(--surface-2)">
-      <strong style="color:var(--accent); display:block; margin-bottom:var(--s2)">Kunci API Baru Dibuat:</strong>
-      <div style="display:flex; gap:var(--s2); align-items:center; margin-bottom:var(--s2)">
-        <code id="new-key-val" style="font-family:var(--font-mono); font-size:14px; background:var(--bg); padding:var(--s2) var(--s3); border-radius:var(--radius); flex:1; overflow-x:auto;"></code>
-        <button type="button" class="btn btn--outline" id="btn-copy-key">Salin</button>
-      </div>
-      <small class="muted">Simpan kunci ini sekarang. Nilai rahasia ini tidak akan dapat ditampilkan lagi.</small>
-    </div>
-
-    <form id="form-create-key" style="margin-bottom:var(--s5); display:grid; gap:var(--s3); max-width:560px">
-      <div class="field">
-        <label for="key-name">Nama Kunci (Bot / Workflow)</label>
-        <input type="text" id="key-name" name="name" required placeholder="mis. Bot BMKG Stasiun Serang">
-      </div>
-      <div class="field">
-        <label>Izin (Scopes)</label>
-        <div style="display:flex; flex-wrap:wrap; gap:var(--s3); margin-top:var(--s1)">
-          <label style="display:inline-flex; align-items:center; gap:var(--s1); font-size:14px">
-            <input type="checkbox" name="scopes" value="observations:write" checked> observations:write
-          </label>
-          <label style="display:inline-flex; align-items:center; gap:var(--s1); font-size:14px">
-            <input type="checkbox" name="scopes" value="observations:read" checked> observations:read
-          </label>
-          <label style="display:inline-flex; align-items:center; gap:var(--s1); font-size:14px">
-            <input type="checkbox" name="scopes" value="artifacts:write"> artifacts:write
-          </label>
+    <!-- Konten Panel -->
+    <div class="dash-main">
+      <!-- 1. Panel Ringkasan & Model Aktif -->
+      <section class="dash-panel is-active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+        <div class="stats" id="stats"></div>
+        
+        <div class="panel" id="sec-model">
+          <h2 style="font-size:20px">Status data olahan (Model aktif)</h2>
+          <div id="model-banner" style="margin-bottom:var(--s4)"></div>
+          <div id="model"></div>
         </div>
-      </div>
-      <div>
-        <button type="submit" class="btn btn--primary" id="btn-submit-key">Buat Kunci API</button>
-      </div>
-    </form>
+      </section>
 
-    <div id="api-keys"></div>
-  </section>
+      <!-- 2. Panel Pencatatan Bulanan (Tangkapan & Trip) -->
+      <section class="dash-panel" id="panel-monthly" role="tabpanel" aria-labelledby="tab-monthly">
+        <div class="panel">
+          <h2 style="font-size:20px">Pencatatan data tangkapan bulanan &amp; trip</h2>
+          <p class="muted" style="margin-bottom:var(--s5)">Entri data observasi tangkapan per kelompok ikan dan upaya penangkapan (trip) untuk bulan yang belum terisi (November 2026 ke depan). Data tersimpan otomatis ke dalam tabel database <code>obs_catch</code> dan <code>obs_effort</code>.</p>
 
-  <section class="panel">
-    <h2 style="font-size:20px">Log Ingest Bot (20 Terakhir)</h2>
-    <div id="ingest-logs"></div>
-  </section>
+          <form id="form-monthly-record" style="margin-bottom:var(--s5)">
+            <div class="record-grid" style="margin-bottom:var(--s4)">
+              <div class="field" style="margin:0">
+                <label for="entry-region">Wilayah Penangkapan</label>
+                <select id="entry-region" name="region" required>
+                  <option value="karangantu">Pelabuhan Karangantu (Kota Serang)</option>
+                  <option value="lebak">Pesisir Lebak (Banten Selatan)</option>
+                </select>
+              </div>
+
+              <div class="field" style="margin:0">
+                <label for="entry-month">Bulan Periode (YYYY-MM)</label>
+                <input type="month" id="entry-month" name="month" min="2026-11" value="2026-11" required>
+              </div>
+            </div>
+
+            <!-- Status pengisian bulan -->
+            <div id="month-fill-indicator" style="margin-bottom:var(--s5)">
+              <div class="record-status-pill" id="month-fill-pill">
+                <span id="month-fill-dot" style="width:8px; height:8px; border-radius:50%; background:var(--abund-mid); display:inline-block"></span>
+                <span id="month-fill-text">Memeriksa status bulan...</span>
+              </div>
+            </div>
+
+            <fieldset style="border:1px solid var(--line); border-radius:var(--radius); padding:var(--s4); margin-bottom:var(--s5); background:var(--surface-2)">
+              <legend style="padding:0 var(--s2); font:600 13px var(--font-ui); color:var(--text); text-transform:uppercase; letter-spacing:.08em">1. Data Tangkapan Ikan (kg)</legend>
+              <p class="muted" style="font-size:13px; margin-bottom:var(--s4)">Masukkan berat basah tangkapan dalam satuan kilogram untuk masing-masing kelompok ikan.</p>
+              
+              <div class="record-grid">
+                <div class="field" style="margin:0">
+                  <label for="catch-pelagis-besar">Pelagis Besar (kg)</label>
+                  <input type="number" id="catch-pelagis-besar" name="pelagis_besar" step="any" min="0" required placeholder="Contoh: 2500">
+                  <small class="muted" style="font-size:12px">Tongkol abu-abu, Tenggiri</small>
+                </div>
+
+                <div class="field" style="margin:0">
+                  <label for="catch-pelagis-kecil">Pelagis Kecil (kg)</label>
+                  <input type="number" id="catch-pelagis-kecil" name="pelagis_kecil" step="any" min="0" required placeholder="Contoh: 38200">
+                  <small class="muted" style="font-size:12px">Kembung, Teri</small>
+                </div>
+
+                <div class="field" style="margin:0">
+                  <label for="catch-demersal">Demersal (kg)</label>
+                  <input type="number" id="catch-demersal" name="demersal" step="any" min="0" required placeholder="Contoh: 28400">
+                  <small class="muted" style="font-size:12px">Peperek, Kuniran</small>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset style="border:1px solid var(--line); border-radius:var(--radius); padding:var(--s4); margin-bottom:var(--s5); background:var(--surface-2)">
+              <legend style="padding:0 var(--s2); font:600 13px var(--font-ui); color:var(--text); text-transform:uppercase; letter-spacing:.08em">2. Upaya Penangkapan / Trip (Effort)</legend>
+              <p class="muted" style="font-size:13px; margin-bottom:var(--s4)">Jumlah trip operasional kapal pada bulan tersebut untuk menghitung rasio CPUE (Catch per Unit Effort).</p>
+              
+              <div class="record-grid">
+                <div class="field" style="margin:0">
+                  <label for="effort-trips">Jumlah Trip Penangkapan</label>
+                  <input type="number" id="effort-trips" name="trips" min="0" step="1" required placeholder="Contoh: 1250">
+                  <small class="muted" style="font-size:12px">Satuan: trip operasional nelayan</small>
+                </div>
+
+                <div class="field" style="margin:0">
+                  <label for="effort-gear">Kategori Alat Tangkap</label>
+                  <select id="effort-gear" name="gear">
+                    <option value="total">Total Seluruh Armada (Standar)</option>
+                    <option value="jaring_insang_tetap">Jaring Insang Tetap</option>
+                    <option value="jaring_insang_hanyut">Jaring Insang Hanyut</option>
+                    <option value="pancing">Pancing</option>
+                    <option value="jaring_hela_dasar">Jaring Hela Dasar</option>
+                  </select>
+                  <small class="muted" style="font-size:12px">Disimpan ke kolom <code>gear</code> pada <code>obs_effort</code></small>
+                </div>
+              </div>
+            </fieldset>
+
+            <div style="display:flex; align-items:center; gap:var(--s3); flex-wrap:wrap">
+              <button type="submit" class="btn btn--primary" id="btn-save-record">Simpan ke Database</button>
+              <button type="reset" class="btn btn--ghost" id="btn-reset-record">Bersihkan Formulir</button>
+            </div>
+            <div id="record-msg" class="form-msg" aria-live="polite" style="margin-top:var(--s3)"></div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h2 style="font-size:20px">Status kelengkapan data bulanan</h2>
+          <p class="muted" style="margin-bottom:var(--s4)">Pemantauan status pengisian data tangkapan per wilayah perairan.</p>
+          <div id="monthly-status-summary"></div>
+        </div>
+
+        <div class="panel">
+          <h2 style="font-size:20px">Riwayat catatan bulanan di database</h2>
+          <p class="muted" style="margin-bottom:var(--s4)">Entri terbaru di tabel <code>obs_catch</code> dan <code>obs_effort</code>.</p>
+          <div id="monthly-recent-catches"></div>
+        </div>
+      </section>
+
+      <!-- 3. Panel Antrean Verifikasi -->
+      <section class="dash-panel" id="panel-pending" role="tabpanel" aria-labelledby="tab-pending">
+        <div class="panel" id="sec-pending">
+          <h2 style="font-size:20px">Antrean verifikasi akun</h2>
+          <p class="muted" style="margin-bottom:var(--s4)">Pendaftaran akun yang belum diverifikasi. Anda dapat mengaktifkan akun secara manual jika pengiriman email terkendala atau menghapus pendaftaran.</p>
+          <div id="pending"></div>
+        </div>
+      </section>
+
+      <!-- 4. Panel Manajemen Akun -->
+      <section class="dash-panel" id="panel-users" role="tabpanel" aria-labelledby="tab-users">
+        <div class="panel" id="sec-users">
+          <h2 style="font-size:20px">Manajemen akun pengguna</h2>
+          <p class="muted" style="margin-bottom:var(--s4)">Daftar seluruh akun terdaftar. Anda dapat menonaktifkan atau mengaktifkan kembali akses pengguna kapan saja.</p>
+          <div id="users"></div>
+        </div>
+      </section>
+
+      <!-- 5. Panel Log Unduhan -->
+      <section class="dash-panel" id="panel-downloads" role="tabpanel" aria-labelledby="tab-downloads">
+        <div class="panel" id="sec-downloads">
+          <h2 style="font-size:20px">Log unduhan pengguna</h2>
+          <p class="muted" style="margin-bottom:var(--s4)">Riwayat pengunduhan data oleh pengguna dengan filter periode dan jenis data serta ringkasan unduhan terbanyak.</p>
+          
+          <div id="downloads-summary" style="margin-bottom:var(--s4)"></div>
+
+          <form id="form-filter-downloads" style="display:flex; flex-wrap:wrap; gap:var(--s3); align-items:flex-end; margin-bottom:var(--s4); padding:var(--s3); background:var(--surface-2); border-radius:var(--radius)">
+            <div class="field" style="margin:0; min-width:160px">
+              <label for="filter-type" style="font-size:12px">Jenis data</label>
+              <select id="filter-type" style="padding:var(--s2) var(--s3); font-size:14px">
+                <option value="all">Semua jenis</option>
+                <option value="msy">MSY / TAC (Peramalan)</option>
+                <option value="ocean">Oseanografi</option>
+                <option value="catch">Tangkapan</option>
+                <option value="effort">Upaya Penangkapan</option>
+              </select>
+            </div>
+            <div class="field" style="margin:0; min-width:140px">
+              <label for="filter-from" style="font-size:12px">Dari periode</label>
+              <input type="month" id="filter-from" style="padding:var(--s2) var(--s3); font-size:14px">
+            </div>
+            <div class="field" style="margin:0; min-width:140px">
+              <label for="filter-to" style="font-size:12px">Sampai periode</label>
+              <input type="month" id="filter-to" style="padding:var(--s2) var(--s3); font-size:14px">
+            </div>
+            <div style="display:flex; gap:var(--s2)">
+              <button type="submit" class="btn btn--primary" style="padding:var(--s2) var(--s4); font-size:14px">Filter</button>
+              <button type="button" id="btn-reset-downloads" class="btn btn--outline" style="padding:var(--s2) var(--s4); font-size:14px">Reset</button>
+            </div>
+          </form>
+
+          <div id="downloads"></div>
+        </div>
+      </section>
+
+      <!-- 6. Panel Kunci API & Ingest -->
+      <section class="dash-panel" id="panel-api-keys" role="tabpanel" aria-labelledby="tab-api-keys">
+        <div class="panel">
+          <h2 style="font-size:20px">Kunci API Bot (Ingest &amp; Pipeline)</h2>
+          <p class="muted" style="margin-bottom:var(--s4)">Digunakan oleh bot ingest observasi atau workflow GitHub Actions pipeline ML.</p>
+          
+          <div id="new-key-box" style="display:none; margin-bottom:var(--s4); padding:var(--s4); border:1px solid var(--accent); border-radius:var(--radius); background:var(--surface-2)">
+            <strong style="color:var(--accent); display:block; margin-bottom:var(--s2)">Kunci API Baru Dibuat:</strong>
+            <div style="display:flex; gap:var(--s2); align-items:center; margin-bottom:var(--s2)">
+              <code id="new-key-val" style="font-family:var(--font-mono); font-size:14px; background:var(--bg); padding:var(--s2) var(--s3); border-radius:var(--radius); flex:1; overflow-x:auto;"></code>
+              <button type="button" class="btn btn--outline" id="btn-copy-key">Salin</button>
+            </div>
+            <small class="muted">Simpan kunci ini sekarang. Nilai rahasia ini tidak akan dapat ditampilkan lagi.</small>
+          </div>
+
+          <form id="form-create-key" style="margin-bottom:var(--s5); display:grid; gap:var(--s3); max-width:560px">
+            <div class="field">
+              <label for="key-name">Nama Kunci (Bot / Workflow)</label>
+              <input type="text" id="key-name" name="name" required placeholder="mis. Bot BMKG Stasiun Serang">
+            </div>
+            <div class="field">
+              <label>Izin (Scopes)</label>
+              <div style="display:flex; flex-wrap:wrap; gap:var(--s3); margin-top:var(--s1)">
+                <label style="display:inline-flex; align-items:center; gap:var(--s1); font-size:14px">
+                  <input type="checkbox" name="scopes" value="observations:write" checked> observations:write
+                </label>
+                <label style="display:inline-flex; align-items:center; gap:var(--s1); font-size:14px">
+                  <input type="checkbox" name="scopes" value="observations:read" checked> observations:read
+                </label>
+                <label style="display:inline-flex; align-items:center; gap:var(--s1); font-size:14px">
+                  <input type="checkbox" name="scopes" value="artifacts:write"> artifacts:write
+                </label>
+              </div>
+            </div>
+            <div>
+              <button type="submit" class="btn btn--primary" id="btn-submit-key">Buat Kunci API</button>
+            </div>
+          </form>
+
+          <div id="api-keys"></div>
+        </div>
+
+        <div class="panel">
+          <h2 style="font-size:20px">Log Ingest Bot (20 Terakhir)</h2>
+          <div id="ingest-logs"></div>
+        </div>
+      </section>
+    </div>
+  </div>
 </main>
 <footer class="site-footer" id="site-footer"></footer>
 <script type="module" src="/js/dashboard.js"></script></body></html>

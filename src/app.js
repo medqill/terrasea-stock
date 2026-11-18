@@ -68,10 +68,10 @@ export function createApp() {
   const page = (file) => (req, res) => res.sendFile(path.join(views, file));
   app.get('/', page('index.html'));
   app.get('/login', page('login.html'));
+  app.get('/about', page('about.html'));
   app.get('/marine-stock', requireAuth, page('marine-stock.html'));
   app.get('/stock-prediction', requireAuth, page('stock-prediction.html'));
   app.get('/download', requireAuth, page('download.html'));
-  app.get('/about', requireAuth, page('about.html'));
   app.get('/dashboard', requireAuth, requireAdmin, page('dashboard.html'));
 
   app.use('/api', (req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });

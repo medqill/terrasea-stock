@@ -38,45 +38,179 @@
   <div class="hero__ctrl"></div>
 </section>
 
+<!-- Tentang Terrasea-Stock -->
+<section class="section section--paper" id="tentang">
+  <div class="container">
+    <p class="label">Tentang Terrasea-Stock</p>
+    <h2>Platform WebGIS Integratif Perairan Banten</h2>
+    <p class="lead">Terrasea-Stock merupakan platform WebGIS yang mengintegrasikan analisis parameter oseanografi dan estimasi stok ikan di Perairan Banten. Platform ini menyajikan informasi spasial mengenai kondisi perairan, wilayah potensial penangkapan ikan, serta tingkat pemanfaatan sumber daya ikan sebagai bahan informasi dan pertimbangan pengelolaan perikanan berkelanjutan.</p>
+    
+    <div class="pillars-grid">
+      <article class="pillar-card">
+        <h3>Analisis Oseanografi</h3>
+        <p>Pemantauan parameter oseanografi spasial meliputi klorofil-a, suhu permukaan laut (SST), batimetri kedalaman, dan dinamika kecepatan arus di stasiun observasi perairan Banten.</p>
+      </article>
+      <article class="pillar-card">
+        <h3>Estimasi Stok Hibrida</h3>
+        <p>Penerapan algoritma Random Forest (RF), evaluasi kesesuaian habitat, dan klasterisasi spasial untuk memproyeksikan estimasi biomassa tangkapan ikan pelagis dan demersal.</p>
+      </article>
+      <article class="pillar-card">
+        <h3>Rekomendasi TAC Berkelanjutan</h3>
+        <p>Penetapan nilai Maximum Sustainable Yield (MSY) dan kuota Total Allowable Catch (TAC) dengan batas kehati-hatian 0,8 guna mencegah eksploitasi berlebih (overfishing).</p>
+      </article>
+    </div>
+    
+    <a class="btn btn--primary" href="/about">Profil Selengkapnya &amp; Tim Riset</a>
+  </div>
+</section>
+
+<!-- Modul Inti WebGIS & Pemodelan -->
 <section class="section">
   <div class="container cols">
     <div>
-      <p class="label">Model</p>
+      <p class="label">Model Hibrida</p>
       <h2>Tiga komponen dalam satu model hibrida</h2>
-      <p>Random Forest (RF) menduga besaran tangkapan dan tahan terhadap fitur yang saling berkorelasi, seperti suhu dan suhu bulan lalu. Indeks kesesuaian habitat menentukan sebaran dan kelas kelimpahan. Klaster spasial membentuk zona.</p>
+      <p>Random Forest (RF) menduga besaran tangkapan dan tahan terhadap fitur yang saling berkorelasi, seperti suhu dan suhu bulan lalu. Indeks kesesuaian habitat menentukan sebaran dan kelas kelimpahan. Klaster spasial membentuk zona prioritas pesisir.</p>
       <ul class="plain-list">
         <li>Evaluasi dengan split kronologis 85/15, bukan acak.</li>
-        <li>hindcasting dan Forecasting selalu tampil di samping grafik.</li>
-        <li>TAC ditetapkan 0,8 dari MSY sebagai faktor kehati-hatian.</li>
+        <li>Hindcasting dan forecasting selalu tampil berdampingan pada grafik.</li>
+        <li>TAC ditetapkan 0,8 dari MSY sebagai faktor kehati-hatian pengelolaan.</li>
       </ul>
+      <a class="btn btn--primary" href="/marine-stock">Jelajahi Peta Spasial</a>
     </div>
     <img src="/img/zona-ilustrasi.svg" alt="Ilustrasi garis kontur kedalaman dengan tiga zona pesisir menempel pada garis pantai" width="480" height="360">
   </div>
 </section>
 
-<section class="section section--paper">
-  <div class="container cols">
-    <div>
-      <p class="label">Zona</p>
-      <h2>Zona prioritas pesisir, bukan seluruh perairan</h2>
-      <p>Ada 5 sampai 7 zona. Tiap zona paling luas 350 ha dan harus menempel garis pantai, sehingga total cakupan paling banyak 2.450 ha.</p>
-      <p>Klik zona untuk melihat MSY, TAC, indikator kelimpahan, musim, serta lokasi terumbu karang dan lamun. Klik titik di dalam zona untuk membaca klorofil, suhu, dan arus di titik itu.</p>
-      <a class="btn btn--primary" href="/marine-stock">Buka peta</a>
+<!-- Berita Nelayan Banten -->
+<section class="section" id="berita-nelayan" style="border-top:1px solid var(--line)">
+  <div class="container">
+    <p class="label">Warta Nelayan Banten</p>
+    <h2>Dinamika Nelayan, Cuaca, dan Tantangan Pesisir</h2>
+    <p class="muted">Kompilasi laporan dan warta aktual mengenai dinamika perikanan tangkap, kondisi cuaca maritim, dan tantangan operasional nelayan di pesisir Banten.</p>
+    
+    <div class="news-grid">
+      <!-- Berita 1: BBM Solar -->
+      <article class="news-card">
+        <div class="news-card__thumb">
+          <img src="/img/berita-solar.jpg" alt="Dua perahu nelayan tradisional berlayar di perairan pesisir Banten" width="480" height="270" loading="lazy">
+        </div>
+        <div class="news-card__body">
+          <div>
+            <div class="news-card__meta">
+              <span class="chip">Ekonomi Nelayan</span>
+              <span class="news-card__source">NU Online</span>
+            </div>
+            <h3>Biaya Solar Mahal, Nelayan Terancam Tak Bisa Lagi Melaut</h3>
+            <p class="news-card__desc">Lonjakan harga dan keterbatasan pasokan BBM solar membebani nelayan kecil di kawasan pesisir. Tingginya ongkos operasional bahan bakar yang tidak sebanding dengan hasil tangkapan mengancam keberlangsungan mata pencaharian nelayan tradisional.</p>
+            <div class="news-card__solution">
+              <strong>Dukungan Terrasea-Stock:</strong> Peta zonasi estimasi stok ikan membantu nelayan menentukan target wilayah penangkapan potensial secara presisi, memangkas rute jelajah kapal, dan menekan pemborosan konsumsi BBM solar.
+            </div>
+          </div>
+          <a class="btn btn--outline news-card__btn" href="https://nu.or.id/nasional/biaya-solar-mahal-nelayan-terancam-tak-bisa-lagi-melaut-o7rnS" target="_blank" rel="noopener noreferrer">Buka Berita Lengkap &rarr;</a>
+        </div>
+      </article>
+
+      <!-- Berita 2: Cuaca Pandeglang -->
+      <article class="news-card">
+        <div class="news-card__thumb">
+          <img src="/img/berita-cuaca.jpg" alt="Perahu kayu nelayan bersandar di pesisir akibat gelombang tinggi laut" width="480" height="270" loading="lazy">
+        </div>
+        <div class="news-card__body">
+          <div>
+            <div class="news-card__meta">
+              <span class="chip">Pandeglang &amp; Selat Sunda</span>
+              <span class="news-card__source">RRI Banten</span>
+            </div>
+            <h3>Cuaca Buruk, Nelayan Pandeglang Kesulitan Dapatkan Ikan</h3>
+            <p class="news-card__desc">Angin kencang serta gelombang laut setinggi 2 hingga 3 meter di Teluk Labuan dan Selat Sunda menyulitkan armada kecil melaut ke perairan lepas, mengakibatkan pasokan ikan di TPI merosot tajam.</p>
+            <div class="news-card__solution">
+              <strong>Dukungan Terrasea-Stock:</strong> Integrasi parameter kecepatan arus, suhu permukaan laut (SST), dan klorofil-a menyajikan rujukan kondisi oseanografi sebelum berlayar demi keselamatan dan kepastian tangkapan.
+            </div>
+          </div>
+          <a class="btn btn--outline news-card__btn" href="https://rri.co.id/banten/regional/1835833/cuaca-buruk-nelayan-pandeglang-kesulitan-dapatkan-ikan" target="_blank" rel="noopener noreferrer">Buka Berita Lengkap &rarr;</a>
+        </div>
+      </article>
+
+      <!-- Berita 3: Lebak Paceklik -->
+      <article class="news-card">
+        <div class="news-card__thumb">
+          <img src="/img/berita-lebak.jpg" alt="Ikan hasil tangkapan di atas meja pelelangan ikan saat masa paceklik" width="480" height="270" loading="lazy">
+        </div>
+        <div class="news-card__body">
+          <div>
+            <div class="news-card__meta">
+              <span class="chip">Pesisir Lebak</span>
+              <span class="news-card__source">ANTARA News</span>
+            </div>
+            <h3>Nelayan Lebak Menghadapi Masa Paceklik</h3>
+            <p class="news-card__desc">Gelombang tinggi Samudra Hindia di pesisir Lebak Selatan memicu masa paceklik berkepanjangan bagi nelayan tradisional. Ratusan kapal ditambatkan dan aktivitas pelelangan ikan lesu akibat minimnya tangkapan.</p>
+            <div class="news-card__solution">
+              <strong>Dukungan Terrasea-Stock:</strong> Proyeksi stok bulanan dan analisis tren musiman di platform memandu nelayan mengantisipasi pergeseran kelimpahan ikan serta merencanakan waktu melaut lebih efektif.
+            </div>
+          </div>
+          <a class="btn btn--outline news-card__btn" href="https://www.antaranews.com/berita/169189/nelayan-lebak-paceklik" target="_blank" rel="noopener noreferrer">Buka Berita Lengkap &rarr;</a>
+        </div>
+      </article>
     </div>
-    <img src="/img/kontur.svg" alt="" width="480" height="240" style="background:var(--ink-deep)">
   </div>
 </section>
 
-<section class="section">
-  <div class="container">
-    <p class="label">Limitasi</p>
-    <h2>Yang perlu diketahui sebelum memakai hasilnya</h2>
-    <ul class="plain-list">
-      <li>Data tangkapan beresolusi wilayah dan bulanan; nilai zona adalah hasil alokasi, bukan pengukuran.</li>
-      <li>Model dilatih pada rentang waktu terbatas; akurasi dilaporkan, bukan dijamin.</li>
-      <li>Kelas kelimpahan bersifat relatif dan berbasis aturan.</li>
-      <li>Hasil adalah alat bantu keputusan, bukan regulasi resmi.</li>
-    </ul>
+<!-- Hubungi Kami -->
+<section class="section section--paper" id="hubungi-kami">
+  <div class="container cols">
+    <div>
+      <p class="label">Sekretariat &amp; Kemitraan</p>
+      <h2>Hubungi Kami</h2>
+      <p>Terrasea-Stock terbuka untuk kemitraan riset oseanografi, sinergi kelompok usaha bersama (KUB) nelayan, pertukaran data perikanan, serta penyampaian masukan untuk perbaikan platform.</p>
+      
+      <div class="contact-details">
+        <div class="contact-item">
+          <h3>Laboratorium Sistem Informasi Kelautan</h3>
+          <p>Universitas Pendidikan Indonesia (UPI) Kampus di Serang<br>Jl. Ciracas No. 38, Kotabaru, Kec. Serang, Kota Serang, Banten 42116</p>
+        </div>
+        <div class="contact-item">
+          <h3>Kontak Surel &amp; Komunikasi</h3>
+          <p class="mono">sik_serang@upi.edu<br>kontak@terrasea-stock.id</p>
+        </div>
+        <div class="contact-item">
+          <h3>Jam Layanan Data</h3>
+          <p>Senin &ndash; Jumat, 08.00 &ndash; 16.00 WIB</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel contact-form-panel">
+      <form id="contact-form" class="contact-form">
+        <div class="field">
+          <label for="contact-name">Nama Lengkap</label>
+          <input type="text" id="contact-name" name="name" required placeholder="Nama Anda">
+        </div>
+        <div class="field">
+          <label for="contact-contact">Email atau Nomor Telepon</label>
+          <input type="text" id="contact-contact" name="contact" required placeholder="email@domain.com atau 08xxxxxxxxxx">
+        </div>
+        <div class="field">
+          <label for="contact-org">Instansi / Kelompok Nelayan (KUB)</label>
+          <input type="text" id="contact-org" name="organization" placeholder="Nama instansi atau kelompok nelayan">
+        </div>
+        <div class="field">
+          <label for="contact-category">Topik Kebutuhan</label>
+          <select id="contact-category" name="category">
+            <option value="nelayan">Aspirasi &amp; Kebutuhan Informasi Nelayan</option>
+            <option value="data">Permintaan / Masukan Data Oseanografi</option>
+            <option value="riset">Kolaborasi Riset &amp; Akademik</option>
+            <option value="umum">Pertanyaan Umum</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="contact-message">Pesan atau Aspirasi</label>
+          <textarea id="contact-message" name="message" rows="4" required placeholder="Tuliskan pesan atau kebutuhan informasi Anda..."></textarea>
+        </div>
+        <button type="submit" class="btn btn--primary" style="width:100%">Kirim Pesan</button>
+        <p id="contact-status" class="form-msg" aria-live="polite" style="margin-top:var(--s2);margin-bottom:0"></p>
+      </form>
+    </div>
   </div>
 </section>
 </main>

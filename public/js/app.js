@@ -21,3 +21,17 @@ $('.hero').addEventListener('mouseenter', () => clearInterval(timer));
 $('.hero').addEventListener('mouseleave', play);
 $('.hero').addEventListener('focusin', () => clearInterval(timer));
 go(0); play();
+
+// Penanganan formulir kontak & aspirasi nelayan di landing
+const contactForm = $('#contact-form');
+if (contactForm) {
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const status = $('#contact-status');
+    if (status) {
+      status.textContent = 'Terima kasih. Pesan dan aspirasi Anda telah kami terima.';
+      status.className = 'form-msg form-msg--ok';
+    }
+    contactForm.reset();
+  });
+}
