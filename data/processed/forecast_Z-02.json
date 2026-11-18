@@ -1,9 +1,9 @@
 {
   "zone_id": "Z-02",
   "model_version": "RF-v1.0",
-  "generated_at": "2026-11-18T00:51:36.000Z",
-  "msy": 456.2,
-  "tac": 365.0,
+  "generated_at": "2026-11-18T01:20:31.000Z",
+  "msy": 455.0,
+  "tac": 364.0,
   "tac_factor": 0.8,
   "metrics": {
     "rmse": 32.08,
@@ -16,14 +16,14 @@
       "kind": "hindcast",
       "actual_catch": 618.0,
       "hindcast": 526.5,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 476.0,
           "hindcast": 405.7,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 121.8,
@@ -44,14 +44,14 @@
       "kind": "hindcast",
       "actual_catch": 401.9,
       "hindcast": 453.2,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 329.3,
           "hindcast": 364.6,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 56.1,
@@ -72,14 +72,14 @@
       "kind": "hindcast",
       "actual_catch": 421.1,
       "hindcast": 454.5,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 346.8,
           "hindcast": 369.7,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 54.0,
@@ -100,14 +100,14 @@
       "kind": "hindcast",
       "actual_catch": 575.3,
       "hindcast": 517.4,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 474.3,
           "hindcast": 417.0,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 60.1,
@@ -128,14 +128,14 @@
       "kind": "hindcast",
       "actual_catch": 667.1,
       "hindcast": 586.8,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 547.8,
           "hindcast": 470.8,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 71.1,
@@ -156,14 +156,14 @@
       "kind": "hindcast",
       "actual_catch": 541.8,
       "hindcast": 512.0,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 450.1,
           "hindcast": 406.0,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 49.6,
@@ -184,14 +184,14 @@
       "kind": "hindcast",
       "actual_catch": 374.0,
       "hindcast": 401.9,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 246.8,
           "hindcast": 278.1,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 76.6,
@@ -212,14 +212,14 @@
       "kind": "hindcast",
       "actual_catch": 352.8,
       "hindcast": 366.1,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 221.0,
           "hindcast": 234.8,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 88.4,
@@ -240,14 +240,14 @@
       "kind": "hindcast",
       "actual_catch": 541.5,
       "hindcast": 499.7,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 388.9,
           "hindcast": 347.4,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 108.0,
@@ -268,14 +268,14 @@
       "kind": "hindcast",
       "actual_catch": 527.8,
       "hindcast": 502.1,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 374.3,
           "hindcast": 353.4,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 113.6,
@@ -296,14 +296,14 @@
       "kind": "hindcast",
       "actual_catch": 359.0,
       "hindcast": 394.3,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 229.2,
           "hindcast": 261.3,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 91.4,
@@ -324,14 +324,14 @@
       "kind": "hindcast",
       "actual_catch": 387.5,
       "hindcast": 395.8,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 270.0,
           "hindcast": 274.7,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 76.5,
@@ -352,14 +352,14 @@
       "kind": "hindcast",
       "actual_catch": 449.1,
       "hindcast": 443.4,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 357.6,
           "hindcast": 337.7,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 56.1,
@@ -380,14 +380,14 @@
       "kind": "hindcast",
       "actual_catch": 416.5,
       "hindcast": 431.8,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 358.1,
           "hindcast": 353.4,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 35.1,
@@ -408,14 +408,14 @@
       "kind": "hindcast",
       "actual_catch": 431.7,
       "hindcast": 437.7,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 326.5,
           "hindcast": 332.6,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 69.3,
@@ -436,14 +436,14 @@
       "kind": "hindcast",
       "actual_catch": 585.6,
       "hindcast": 525.7,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 362.9,
           "hindcast": 349.8,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 126.4,
@@ -464,14 +464,14 @@
       "kind": "hindcast",
       "actual_catch": 517.9,
       "hindcast": 497.3,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 277.1,
           "hindcast": 291.2,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 132.1,
@@ -492,14 +492,14 @@
       "kind": "hindcast",
       "actual_catch": 525.4,
       "hindcast": 502.4,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 361.3,
           "hindcast": 332.5,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 112.9,
@@ -520,14 +520,14 @@
       "kind": "hindcast",
       "actual_catch": 314.8,
       "hindcast": 347.6,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 156.2,
           "hindcast": 188.3,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 115.1,
@@ -548,14 +548,14 @@
       "kind": "hindcast",
       "actual_catch": 230.3,
       "hindcast": 275.0,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 98.6,
           "hindcast": 129.9,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 90.7,
@@ -576,14 +576,14 @@
       "kind": "hindcast",
       "actual_catch": 283.3,
       "hindcast": 309.4,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 141.3,
           "hindcast": 157.9,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 106.4,
@@ -604,14 +604,14 @@
       "kind": "hindcast",
       "actual_catch": 368.2,
       "hindcast": 385.4,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 214.0,
           "hindcast": 229.1,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 100.5,
@@ -632,14 +632,14 @@
       "kind": "hindcast",
       "actual_catch": 466.3,
       "hindcast": 446.4,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 272.1,
           "hindcast": 265.5,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 152.5,
@@ -660,14 +660,14 @@
       "kind": "hindcast",
       "actual_catch": 528.7,
       "hindcast": 496.1,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 351.2,
           "hindcast": 320.2,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 110.4,
@@ -688,14 +688,14 @@
       "kind": "hindcast",
       "actual_catch": 404.6,
       "hindcast": 429.1,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 298.1,
           "hindcast": 300.9,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 68.5,
@@ -716,14 +716,14 @@
       "kind": "hindcast",
       "actual_catch": 604.7,
       "hindcast": 568.8,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 455.5,
           "hindcast": 413.8,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 88.2,
@@ -744,14 +744,14 @@
       "kind": "hindcast",
       "actual_catch": 621.7,
       "hindcast": 589.4,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 416.4,
           "hindcast": 388.2,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 120.2,
@@ -772,14 +772,14 @@
       "kind": "hindcast",
       "actual_catch": 585.4,
       "hindcast": 570.2,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 283.1,
           "hindcast": 313.7,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 157.6,
@@ -800,14 +800,14 @@
       "kind": "hindcast",
       "actual_catch": 441.6,
       "hindcast": 479.5,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 236.6,
           "hindcast": 264.4,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 115.0,
@@ -828,14 +828,14 @@
       "kind": "hindcast",
       "actual_catch": 394.9,
       "hindcast": 452.4,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 249.8,
           "hindcast": 259.1,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 82.2,
@@ -856,14 +856,14 @@
       "kind": "hindcast",
       "actual_catch": 661.7,
       "hindcast": 586.8,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 254.6,
           "hindcast": 264.8,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 291.4,
@@ -884,14 +884,14 @@
       "kind": "hindcast",
       "actual_catch": 641.3,
       "hindcast": 602.8,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 311.2,
           "hindcast": 289.9,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 206.0,
@@ -912,14 +912,14 @@
       "kind": "hindcast",
       "actual_catch": 465.5,
       "hindcast": 481.4,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 245.8,
           "hindcast": 247.4,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 125.7,
@@ -940,14 +940,14 @@
       "kind": "hindcast",
       "actual_catch": 309.5,
       "hindcast": 362.0,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 180.7,
           "hindcast": 207.6,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 73.6,
@@ -968,14 +968,14 @@
       "kind": "hindcast",
       "actual_catch": 417.6,
       "hindcast": 396.6,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 221.8,
           "hindcast": 216.4,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 128.6,
@@ -996,14 +996,14 @@
       "kind": "hindcast",
       "actual_catch": 359.6,
       "hindcast": 367.3,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 204.7,
           "hindcast": 210.2,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 100.2,
@@ -1024,14 +1024,14 @@
       "kind": "hindcast",
       "actual_catch": 316.1,
       "hindcast": 335.5,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 183.7,
           "hindcast": 192.0,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 89.4,
@@ -1052,14 +1052,14 @@
       "kind": "hindcast",
       "actual_catch": 418.2,
       "hindcast": 395.9,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 220.4,
           "hindcast": 207.6,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 138.6,
@@ -1080,14 +1080,14 @@
       "kind": "hindcast",
       "actual_catch": 487.2,
       "hindcast": 460.8,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 206.3,
           "hindcast": 208.9,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 226.5,
@@ -1108,14 +1108,14 @@
       "kind": "hindcast",
       "actual_catch": 437.3,
       "hindcast": 434.5,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 192.9,
           "hindcast": 197.3,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 173.7,
@@ -1136,14 +1136,14 @@
       "kind": "hindcast",
       "actual_catch": 423.9,
       "hindcast": 446.5,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 186.8,
           "hindcast": 215.5,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 168.1,
@@ -1164,14 +1164,14 @@
       "kind": "hindcast",
       "actual_catch": 411.2,
       "hindcast": 452.6,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 179.1,
           "hindcast": 207.3,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 164.4,
@@ -1192,14 +1192,14 @@
       "kind": "hindcast",
       "actual_catch": 478.3,
       "hindcast": 466.7,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 246.0,
           "hindcast": 202.1,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 156.5,
@@ -1220,14 +1220,14 @@
       "kind": "hindcast",
       "actual_catch": 454.9,
       "hindcast": 514.3,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 239.4,
           "hindcast": 212.6,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 149.0,
@@ -1248,14 +1248,14 @@
       "kind": "hindcast",
       "actual_catch": 435.5,
       "hindcast": 492.5,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 232.9,
           "hindcast": 209.9,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 141.7,
@@ -1276,14 +1276,14 @@
       "kind": "hindcast",
       "actual_catch": 369.5,
       "hindcast": 437.7,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 207.4,
           "hindcast": 213.7,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 109.8,
@@ -1304,14 +1304,14 @@
       "kind": "hindcast",
       "actual_catch": 483.9,
       "hindcast": 405.1,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 248.9,
           "hindcast": 208.6,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 157.7,
@@ -1332,14 +1332,14 @@
       "kind": "hindcast",
       "actual_catch": 443.1,
       "hindcast": 431.1,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 226.0,
           "hindcast": 232.2,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 144.3,
@@ -1360,14 +1360,14 @@
       "kind": "hindcast",
       "actual_catch": 454.2,
       "hindcast": 464.9,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 230.0,
           "hindcast": 269.0,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 148.9,
@@ -1388,14 +1388,14 @@
       "kind": "hindcast",
       "actual_catch": 397.5,
       "hindcast": 448.2,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 202.9,
           "hindcast": 223.0,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 129.8,
@@ -1416,14 +1416,14 @@
       "kind": "hindcast",
       "actual_catch": 339.1,
       "hindcast": 498.6,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 166.3,
           "hindcast": 279.3,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 113.7,
@@ -1444,14 +1444,14 @@
       "kind": "hindcast",
       "actual_catch": 574.6,
       "hindcast": 466.4,
-      "msy": 456.2,
-      "tac": 365.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 301.9,
           "hindcast": 243.2,
-          "msy": 235.6,
-          "tac": 188.5
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": 182.3,
@@ -1471,15 +1471,15 @@
       "month": "2026-11",
       "kind": "forecast",
       "actual_catch": null,
-      "hindcast": 456.2,
-      "msy": 456.2,
-      "tac": 365.0,
+      "hindcast": 455.0,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": null,
-          "hindcast": 235.6,
-          "msy": 235.6,
-          "tac": 188.5
+          "hindcast": 234.5,
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": null,
@@ -1499,25 +1499,25 @@
       "month": "2026-12",
       "kind": "forecast",
       "actual_catch": null,
-      "hindcast": 463.0,
-      "msy": 456.2,
-      "tac": 365.0,
+      "hindcast": 440.5,
+      "msy": 455.0,
+      "tac": 364.0,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": null,
-          "hindcast": 253.8,
-          "msy": 235.6,
-          "tac": 188.5
+          "hindcast": 232.2,
+          "msy": 234.5,
+          "tac": 187.6
         },
         "pelagis_kecil": {
           "actual_catch": null,
-          "hindcast": 146.0,
+          "hindcast": 145.3,
           "msy": 153.7,
           "tac": 123.0
         },
         "demersal": {
           "actual_catch": null,
-          "hindcast": 63.2,
+          "hindcast": 63.0,
           "msy": 66.9,
           "tac": 53.5
         }
@@ -1951,23 +1951,14 @@
     },
     {
       "month": "2026-11",
-      "chl": 0.4,
+      "chl": 0.32,
       "sst": 30.5,
-      "speed": 0.1,
-      "direction_deg": 274,
+      "speed": 0.09,
+      "direction_deg": 273,
       "direction_label": "Barat"
     }
   ],
   "params_daily": [
-    {
-      "date": "2026-10-19",
-      "month": "2026-10",
-      "chl": 0.238,
-      "sst": 29.792,
-      "speed": 0.169,
-      "direction_deg": 261,
-      "direction_label": "Barat"
-    },
     {
       "date": "2026-10-20",
       "month": "2026-10",
@@ -2061,7 +2052,7 @@
     {
       "date": "2026-10-30",
       "month": "2026-10",
-      "chl": 0.403,
+      "chl": 0.395,
       "sst": 29.99,
       "speed": 0.117,
       "direction_deg": 268,
@@ -2070,7 +2061,7 @@
     {
       "date": "2026-10-31",
       "month": "2026-10",
-      "chl": 0.403,
+      "chl": 0.388,
       "sst": 29.97,
       "speed": 0.143,
       "direction_deg": 260,
@@ -2079,7 +2070,7 @@
     {
       "date": "2026-11-01",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.38,
       "sst": 30.41,
       "speed": 0.156,
       "direction_deg": 229,
@@ -2088,7 +2079,7 @@
     {
       "date": "2026-11-02",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.373,
       "sst": 30.35,
       "speed": 0.118,
       "direction_deg": 263,
@@ -2097,7 +2088,7 @@
     {
       "date": "2026-11-03",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.365,
       "sst": 30.47,
       "speed": 0.164,
       "direction_deg": 258,
@@ -2106,7 +2097,7 @@
     {
       "date": "2026-11-04",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.358,
       "sst": 30.35,
       "speed": 0.152,
       "direction_deg": 263,
@@ -2115,7 +2106,7 @@
     {
       "date": "2026-11-05",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.35,
       "sst": 30.34,
       "speed": 0.124,
       "direction_deg": 284,
@@ -2124,7 +2115,7 @@
     {
       "date": "2026-11-06",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.343,
       "sst": 30.41,
       "speed": 0.119,
       "direction_deg": 269,
@@ -2133,7 +2124,7 @@
     {
       "date": "2026-11-07",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.335,
       "sst": 30.41,
       "speed": 0.087,
       "direction_deg": 286,
@@ -2142,7 +2133,7 @@
     {
       "date": "2026-11-08",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.327,
       "sst": 30.41,
       "speed": 0.142,
       "direction_deg": 254,
@@ -2151,7 +2142,7 @@
     {
       "date": "2026-11-09",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.32,
       "sst": 30.46,
       "speed": 0.075,
       "direction_deg": 266,
@@ -2160,7 +2151,7 @@
     {
       "date": "2026-11-10",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.312,
       "sst": 30.46,
       "speed": 0.09,
       "direction_deg": 284,
@@ -2169,7 +2160,7 @@
     {
       "date": "2026-11-11",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.305,
       "sst": 30.48,
       "speed": 0.096,
       "direction_deg": 290,
@@ -2178,7 +2169,7 @@
     {
       "date": "2026-11-12",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.297,
       "sst": 30.6,
       "speed": 0.108,
       "direction_deg": 262,
@@ -2187,7 +2178,7 @@
     {
       "date": "2026-11-13",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.29,
       "sst": 30.64,
       "speed": 0.138,
       "direction_deg": 245,
@@ -2196,7 +2187,7 @@
     {
       "date": "2026-11-14",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.282,
       "sst": 30.66,
       "speed": 0.081,
       "direction_deg": 317,
@@ -2205,7 +2196,7 @@
     {
       "date": "2026-11-15",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.275,
       "sst": 30.51,
       "speed": 0.181,
       "direction_deg": 353,
@@ -2214,7 +2205,7 @@
     {
       "date": "2026-11-16",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.267,
       "sst": 30.66,
       "speed": 0.115,
       "direction_deg": 309,
@@ -2223,80 +2214,89 @@
     {
       "date": "2026-11-17",
       "month": "2026-11",
-      "chl": 0.403,
+      "chl": 0.259,
       "sst": 30.71,
       "speed": 0.028,
       "direction_deg": 236,
       "direction_label": "Barat Daya"
+    },
+    {
+      "date": "2026-11-18",
+      "month": "2026-11",
+      "chl": 0.252,
+      "sst": 30.68,
+      "speed": 0.042,
+      "direction_deg": 175,
+      "direction_label": "Selatan"
     }
   ],
   "params_forecast": [
     {
-      "date": "2026-11-18",
+      "date": "2026-11-19",
       "day_offset": 1,
       "month": "2026-11",
-      "chl": 0.294,
-      "sst": 29.76,
-      "speed": 0.071,
-      "direction_deg": 190,
-      "direction_label": "Selatan"
-    },
-    {
-      "date": "2026-11-19",
-      "day_offset": 2,
-      "month": "2026-11",
-      "chl": 0.259,
-      "sst": 29.386,
-      "speed": 0.067,
+      "chl": 0.254,
+      "sst": 29.732,
+      "speed": 0.063,
       "direction_deg": 190,
       "direction_label": "Selatan"
     },
     {
       "date": "2026-11-20",
-      "day_offset": 3,
+      "day_offset": 2,
       "month": "2026-11",
-      "chl": 0.221,
-      "sst": 29.298,
-      "speed": 0.053,
+      "chl": 0.248,
+      "sst": 29.357,
+      "speed": 0.059,
       "direction_deg": 190,
       "direction_label": "Selatan"
     },
     {
       "date": "2026-11-21",
-      "day_offset": 4,
+      "day_offset": 3,
       "month": "2026-11",
-      "chl": 0.212,
-      "sst": 29.336,
-      "speed": 0.056,
+      "chl": 0.237,
+      "sst": 29.298,
+      "speed": 0.058,
       "direction_deg": 190,
       "direction_label": "Selatan"
     },
     {
       "date": "2026-11-22",
-      "day_offset": 5,
+      "day_offset": 4,
       "month": "2026-11",
-      "chl": 0.23,
-      "sst": 29.538,
+      "chl": 0.233,
+      "sst": 29.336,
       "speed": 0.052,
       "direction_deg": 190,
       "direction_label": "Selatan"
     },
     {
       "date": "2026-11-23",
-      "day_offset": 6,
+      "day_offset": 5,
       "month": "2026-11",
-      "chl": 0.24,
-      "sst": 30.001,
+      "chl": 0.228,
+      "sst": 29.614,
       "speed": 0.052,
       "direction_deg": 190,
       "direction_label": "Selatan"
     },
     {
       "date": "2026-11-24",
+      "day_offset": 6,
+      "month": "2026-11",
+      "chl": 0.219,
+      "sst": 29.972,
+      "speed": 0.052,
+      "direction_deg": 190,
+      "direction_label": "Selatan"
+    },
+    {
+      "date": "2026-11-25",
       "day_offset": 7,
       "month": "2026-11",
-      "chl": 0.224,
-      "sst": 29.807,
+      "chl": 0.206,
+      "sst": 29.835,
       "speed": 0.052,
       "direction_deg": 190,
       "direction_label": "Selatan"

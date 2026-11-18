@@ -60,10 +60,10 @@ print("=== MEMPROSES PREDIKSI OSEANOGRAFI 6 TITIK (MODEL RF) ===")
 ocean_monthly_all = {}
 ocean_daily_all = {}
 
-# Cek apakah ada berkas observasi baru dari bot / ingest
+# Cek apakah ada berkas observasi baru dari bot / ingest (raw Turso export & backup)
 obs_csv_paths = [
-    ROOT / 'data' / 'ingest_backup' / 'copernicus_ocean.csv',
-    ROOT / 'data' / 'raw' / 'observations_ocean.csv'
+    ROOT / 'data' / 'raw' / 'observations_ocean.csv',
+    ROOT / 'data' / 'ingest_backup' / 'copernicus_ocean.csv'
 ]
 new_obs_df = None
 for o_path in obs_csv_paths:
@@ -81,7 +81,9 @@ for o_path in obs_csv_paths:
             print(f"[WARN] Gagal membaca observasi baru dari {o_path}: {e}")
 
 if new_obs_df is not None:
-    new_obs_df = new_obs_df.drop_duplicates(subset=['station_id', 'date'], keep='last')
+    # Prioritaskan baris yang memiliki nilai chl non-null saat deduplikasi
+    new_obs_df['has_chl'] = new_obs_df['chl'].notna()
+    new_obs_df = new_obs_df.sort_values(by=['station_id', 'date', 'has_chl']).drop_duplicates(subset=['station_id', 'date'], keep='last').drop(columns=['has_chl'])
     print(f"[INFO] Terdeteksi {len(new_obs_df)} baris observasi baru dari bot (rentang: {new_obs_df['date'].min().strftime('%Y-%m-%d')} s.d. {new_obs_df['date'].max().strftime('%Y-%m-%d')})")
 
 for t in range(1, 7):
@@ -93,7 +95,7 @@ for t in range(1, 7):
 
     # Gabungkan dengan observasi harian terbaru dari bot bila ada
     if new_obs_df is not None:
-        st_aliases = [f'titik_{t}', f'titik {t}', f'titik{t}', str(t)]
+        st_aliases = [f'titik_{t}', f'titik {t}', f'titik{t}', str(t), f't{t}']
         sub_obs = new_obs_df[new_obs_df['station_id'].astype(str).str.lower().isin(st_aliases)].copy()
         if len(sub_obs) > 0:
             max_hist = df[col_t].max()
@@ -105,17 +107,15 @@ for t in range(1, 7):
                 append_df['uo'] = pd.to_numeric(new_rows['uo'], errors='coerce').fillna(0.0)
                 append_df['vo'] = pd.to_numeric(new_rows['vo'], errors='coerce').fillna(0.0)
                 append_df['Current Speed (m/s)'] = np.sqrt(append_df['uo']**2 + append_df['vo']**2)
-                
-                chl_vals = pd.to_numeric(new_rows['chl'], errors='coerce')
-                if chl_vals.isna().all():
-                    last_chl = df['Chlorophyll-a (mg m-3)'].dropna().iloc[-1]
-                    chl_vals = chl_vals.fillna(last_chl)
-                else:
-                    chl_vals = chl_vals.bfill().ffill()
-                append_df['Chlorophyll-a (mg m-3)'] = chl_vals
+                append_df['Chlorophyll-a (mg m-3)'] = pd.to_numeric(new_rows['chl'], errors='coerce')
                 
                 df = pd.concat([df, append_df], ignore_index=True)
                 df = df.drop_duplicates(subset=[col_t], keep='last').sort_values(col_t).reset_index(drop=True)
+                
+                # Interpolasi linear agar transisi antara data historis dan observasi baru halus,
+                # sedangkan nilai observasi riil (misal tgl 17 dan 18 Nov) tetap persis seperti di database
+                df['Chlorophyll-a (mg m-3)'] = df['Chlorophyll-a (mg m-3)'].interpolate(method='linear').bfill().ffill()
+                df['SST (degC)'] = df['SST (degC)'].interpolate(method='linear').bfill().ffill()
                 print(f"Titik {t}: ditambahkan {len(new_rows)} baris data observasi baru s.d. {df[col_t].max().strftime('%Y-%m-%d')}")
 
     ocean_daily_all[t] = df.copy()

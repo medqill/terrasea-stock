@@ -27,7 +27,14 @@ function toCsv(rows, headers) {
   return lines.join('\n') + '\n';
 }
 
-const q = (sql) => db.query(sql);
+const q = async (sql) => {
+  try {
+    return await db.query(sql);
+  } catch (err) {
+    if (err.message && err.message.includes('no such table')) return [];
+    throw err;
+  }
+};
 const oceanRows = await q('SELECT station_id, date, chl, sst, uo, vo FROM obs_ocean ORDER BY date ASC, station_id ASC');
 const catchRows = await q('SELECT region, month, fish_group, catch_kg FROM obs_catch ORDER BY month ASC, region ASC, fish_group ASC');
 const speciesRows = await q('SELECT region, month, species, catch_kg FROM obs_catch_species ORDER BY month ASC, region ASC, species ASC');

@@ -3,3 +3,4 @@
 UPDATE api_keys
 SET scopes = 'observations:write,observations:read,artifacts:write'
 WHERE scopes NOT LIKE '%artifacts:write%';
+
