@@ -26,6 +26,7 @@ export function makePanes(map, withPin = true) {
   // 4. zones (440, zona Z-01 & Z-02 di atas daratan & di atas interpolasi)
   // 5. pin (460, pinmarker)
   pane('grid', 410, false);
+  pane('currentFlow', 415, false);
   pane('land', 420, false);
   pane('eco', 430);
   pane('zones', 440);

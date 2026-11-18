@@ -5,6 +5,7 @@ import { svgIcon } from './icons.js';
 import { GROUPS, abundBadge, fmt, fmtMonth, fmtDate, fixtureChip, dirLabel } from './labels.js';
 import { VARS, rampColors, makePanes, addBasemap, addLand, gridOverlay, zoneStyle } from './mapkit.js';
 import { lookupValue, speedAndDirection } from './gridlookup.js';
+import { CurrentFlowLayer } from './current-flow.js';
 import {
   getZoneNumber,
   resolveAbundance,
@@ -16,6 +17,7 @@ import {
 const sidebar = $('#sidebar'), toggleBtn = $('#sidebar-toggle'), panels = $('#panels'), lockbar = $('#lockbar');
 let map, zonesFC, zoneLayer, gridLayer, ecoLayer, pinMarker, meta, ow = null;
 let currentVar = 'sst', ecoOn = false, selected = null, locked = false;
+let flowLayer = null, flowAnimEnabled = true;
 let mode = 'legacy';      // 'ocean' = rentang waktu harian (ocean_window); 'legacy' = grid bulanan
 let currentDay = null;    // entri ocean_window.days yang dipilih
 let lastPoint = null;     // { latlng, inZone, abund }
@@ -79,14 +81,56 @@ async function showVar(key) {
     if (my !== gridSeq) return;
     gridLayer?.remove();
     gridLayer = gridOverlay(grid, key, scale).addTo(map);
+
+    // Animasi aliran partikel arus laut (streamline velocity)
+    flowLayer?.remove();
+    if (key === 'current' && flowAnimEnabled && grid.uo && grid.vo) {
+      flowLayer = new CurrentFlowLayer(grid, { pane: 'currentFlow' }).addTo(map);
+    } else {
+      flowLayer = null;
+    }
+
     const v = VARS[key], mid = (scale.vmin + scale.vmax) / 2;
     const bar = h('div', { class: 'legend__bar', role: 'img', 'aria-label': `Skala ${v.label} dari ${fmt(scale.vmin, v.d)} sampai ${fmt(scale.vmax, v.d)} ${v.unit}` });
     bar.style.background = `linear-gradient(to right, ${rampColors(key).join(',')})`;
-    clear(legend).append(
+
+    const legendNodes = [
       h('p', { class: 'label' }, `${v.label} (${v.unit})`), bar,
       h('div', { class: 'legend__ticks' }, h('span', {}, fmt(scale.vmin, v.d)), h('span', {}, fmt(mid, v.d)), h('span', {}, fmt(scale.vmax, v.d))),
-      ...notes.map((t) => h('p', { class: 'legend__meta' }, t)));
-  } catch (e) { if (my === gridSeq) clear(legend).append(h('p', { class: 'form-msg form-msg--error' }, e.message)); }
+      ...notes.map((t) => h('p', { class: 'legend__meta' }, t))
+    ];
+
+    if (key === 'current' && grid.uo && grid.vo) {
+      const toggle = h('label', {
+        class: 'flow-toggle-label',
+        style: 'margin-top:var(--s3); padding:var(--s2) var(--s3); background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; align-items:center; gap:var(--s2); font-size:13px; cursor:pointer;'
+      },
+        h('input', {
+          type: 'checkbox',
+          checked: flowAnimEnabled,
+          onchange: (e) => {
+            flowAnimEnabled = e.target.checked;
+            flowLayer?.remove();
+            if (flowAnimEnabled && grid.uo && grid.vo) {
+              flowLayer = new CurrentFlowLayer(grid, { pane: 'currentFlow' }).addTo(map);
+            } else {
+              flowLayer = null;
+            }
+          }
+        }),
+        h('span', { style: 'color:var(--text); font-weight:500;' }, 'Animasi aliran partikel arus')
+      );
+      legendNodes.push(toggle);
+    }
+
+    clear(legend).append(...legendNodes);
+  } catch (e) {
+    if (my === gridSeq) {
+      flowLayer?.remove();
+      flowLayer = null;
+      clear(legend).append(h('p', { class: 'form-msg form-msg--error' }, e.message));
+    }
+  }
 }
 
 /* ---------- rentang waktu H-3..H+3 (Slider Timeline) ---------- */
