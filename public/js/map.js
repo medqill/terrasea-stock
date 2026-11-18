@@ -189,18 +189,25 @@ function zoneBox(p) {
   );
 }
 
-const POINT_DAYS = [
-  { date: '2026-10-23', label: '23/10', kind: 'observed' },
-  { date: '2026-10-24', label: '24/10', kind: 'observed' },
-  { date: '2026-10-25', label: '25/10', kind: 'observed' },
-  { date: '2026-10-26', label: '26/10', kind: 'observed' },
-  { date: '2026-10-27', label: '27/10', kind: 'observed' },
-  { date: '2026-10-28', label: '28/10', kind: 'observed' },
-  { date: '2026-10-29', label: '29/10', kind: 'observed' },
-  { date: '2026-10-30', label: '30/10', kind: 'forecast' },
-  { date: '2026-10-31', label: '31/10', kind: 'forecast' },
-  { date: '2026-11-01', label: '01/11', kind: 'forecast' }
-];
+function addDays(isoDate, n) {
+  const d = new Date(`${isoDate}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+// 10 hari dinamis untuk grafik pinbox: 7 hari terukur (H-6..H0) + 3 hari forecast (H+1..H+3)
+function getPointDays() {
+  const refDate = ow?.reference_date || currentDay?.date || '2026-11-18';
+  const offsets = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3];
+  return offsets.map((off) => {
+    const dStr = addDays(refDate, off);
+    return {
+      date: dStr,
+      label: `${dStr.slice(8, 10)}/${dStr.slice(5, 7)}`,
+      kind: off <= 0 ? 'observed' : 'forecast'
+    };
+  });
+}
 
 let pointChartInstance = null;
 function drawPointChart(seriesValues, vKey) {
@@ -210,6 +217,7 @@ function drawPointChart(seriesValues, vKey) {
     pointChartInstance.destroy();
     pointChartInstance = null;
   }
+  const pointDays = getPointDays();
   const v = VARS[vKey] || { label: vKey, unit: '' };
   const obsData = seriesValues.map((val, idx) => (idx <= 6 ? val : null));
   const fcData = seriesValues.map((val, idx) => (idx >= 6 ? val : null));
@@ -222,7 +230,7 @@ function drawPointChart(seriesValues, vKey) {
   pointChartInstance = new window.Chart(canvas.getContext('2d'), {
     type: 'line',
     data: {
-      labels: POINT_DAYS.map((d) => d.label),
+      labels: pointDays.map((d) => d.label),
       datasets: [
         {
           label: 'Terukur (7 Hari)',
@@ -287,8 +295,9 @@ function drawPointChart(seriesValues, vKey) {
 }
 
 async function fetchPointSeries(latlng, vKey) {
+  const pointDays = getPointDays();
   const values = await Promise.all(
-    POINT_DAYS.map(async (pd) => {
+    pointDays.map(async (pd) => {
       try {
         const grid = await fetchDgrid(vKey, pd.date);
         let val = lookupValue(grid, latlng.lng, latlng.lat);
