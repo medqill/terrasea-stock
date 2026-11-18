@@ -10,8 +10,8 @@ import { cleanupOldDgrids, todayJakarta } from '../src/dgrid-cleanup.js';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 let processedDir = path.join(root, 'data', 'processed');
-let apiUrl = process.env.API_URL || null;
-let apiKey = process.env.BOT_API_KEY || null;
+let apiUrl = process.env.API_URL || process.env.APP_URL || null;
+let apiKey = process.env.BOT_API_KEY || process.env.INGEST_API_KEY || null;
 
 const args = process.argv.slice(2);
 for (let i = 0; i < args.length; i++) {
@@ -50,8 +50,12 @@ for (const { full, name } of files) {
     artifactName = 'ecosystem';
   } else if ((m = clean.match(/^forecast_(Z-\d{2})\.json$/))) {
     artifactName = `forecast:${m[1]}`; modelVersion = content.model_version || null; generatedAt = content.generated_at || null;
-  } else if ((m = clean.match(/^(sst|chl|current)_(\d{4}-\d{2})\.json$/))) {
-    artifactName = `grid:${m[1]}:${m[2]}`; month = m[2];
+  } else if ((m = clean.match(/^(sst|chl|current|bathymetry)_(\d{4}-\d{2})\.json$/))) {
+    artifactName = m[1] === 'bathymetry' ? 'grid:bathymetry' : `grid:${m[1]}:${m[2]}`;
+    month = m[2];
+  } else if (clean === 'bathymetry.json') {
+    artifactName = 'grid:bathymetry';
+    month = content.month || null;
   } else if ((m = clean.match(/^abundance_(\d{4}-\d{2})\.json$/))) {
     artifactName = `abundance:${m[1]}`; month = m[1];
   } else if ((m = clean.match(/^dgrid_(sst|chl|current)_(\d{4}-\d{2}-\d{2})\.json$/))) {

@@ -26,7 +26,7 @@ if (!name) {
   process.exit(1);
 }
 
-const defaultScopes = 'observations:write,observations:read';
+const defaultScopes = 'observations:write,observations:read,artifacts:write';
 const finalScopes = scopes || defaultScopes;
 const rawKey = `tsk_${crypto.randomBytes(24).toString('hex')}`;
 const keyHash = crypto.createHash('sha256').update(rawKey).digest('hex');

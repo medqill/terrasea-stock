@@ -7,6 +7,7 @@ Menghasilkan artefak:
 import json
 import math
 import warnings
+from datetime import datetime, timezone
 from pathlib import Path
 import yaml
 import joblib
@@ -27,6 +28,16 @@ with open(ROOT / 'ml' / 'config.yaml') as f:
     cfg_yaml = yaml.safe_load(f)
 TAC_FACTOR = float(cfg_yaml.get('tac_factor', 0.8))
 
+def find_data_file(subpath):
+    """Mencari berkas data di data/baseline/ atau data/unprocessed data/."""
+    p1 = ROOT / 'data' / 'baseline' / subpath
+    if p1.exists():
+        return p1
+    p2 = ROOT / 'data' / 'unprocessed data' / subpath
+    if p2.exists():
+        return p2
+    return p1
+
 # 1. Koordinat 6 Stasiun Sesuai Spesifikasi
 STATIONS = {
     1: {'lon': 106.0994, 'lat': -7.2230, 'name': 'Titik 1 (Banten Selatan Timur)'},
@@ -41,23 +52,72 @@ STATIONS = {
 TRIANGLES_BAWAH = [(1, 2, 4), (2, 3, 4)]
 TRIANGLES_ATAS = [(3, 4, 5), (4, 5, 6)]
 
-TARGET_MONTH = '2026-11'
-NOW_ISO = '2026-11-14T00:00:00.000Z'
 MODEL_VER = 'RF-v1.0'
+NOW_ISO = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z')
 
 print("=== MEMPROSES PREDIKSI OSEANOGRAFI 6 TITIK (MODEL RF) ===")
-# 2. Muat data historis oseanografi & prediksi 2026-11 dan 2026-12
+# 2. Muat data historis oseanografi & observasi baru hasil bot
 ocean_monthly_all = {}
 ocean_daily_all = {}
-ocean_pred_2026_11 = {}
-ocean_pred_2026_12 = {}
+
+# Cek apakah ada berkas observasi baru dari bot / ingest
+obs_csv_paths = [
+    ROOT / 'data' / 'ingest_backup' / 'copernicus_ocean.csv',
+    ROOT / 'data' / 'raw' / 'observations_ocean.csv'
+]
+new_obs_df = None
+for o_path in obs_csv_paths:
+    if o_path.exists():
+        try:
+            tmp_df = pd.read_csv(o_path)
+            if 'date' in tmp_df.columns and len(tmp_df) > 0:
+                tmp_df['date'] = pd.to_datetime(tmp_df['date'], errors='coerce')
+                tmp_df = tmp_df.dropna(subset=['date'])
+                if new_obs_df is None:
+                    new_obs_df = tmp_df
+                else:
+                    new_obs_df = pd.concat([new_obs_df, tmp_df], ignore_index=True)
+        except Exception as e:
+            print(f"[WARN] Gagal membaca observasi baru dari {o_path}: {e}")
+
+if new_obs_df is not None:
+    new_obs_df = new_obs_df.drop_duplicates(subset=['station_id', 'date'], keep='last')
+    print(f"[INFO] Terdeteksi {len(new_obs_df)} baris observasi baru dari bot (rentang: {new_obs_df['date'].min().strftime('%Y-%m-%d')} s.d. {new_obs_df['date'].max().strftime('%Y-%m-%d')})")
 
 for t in range(1, 7):
-    f_path = ROOT / 'data' / 'unprocessed data' / 'Oseanografi' / f'data_log_titik_{t}.xlsx'
+    f_path = find_data_file(f'Oseanografi/data_log_titik_{t}.xlsx')
     df = pd.read_excel(f_path)
     col_t = [c for c in df.columns if 'time' in c.lower() or 'tanggal' in c.lower()][0]
     df[col_t] = pd.to_datetime(df[col_t], errors='coerce')
-    df = df.dropna(subset=[col_t]).reset_index(drop=True)
+    df = df.dropna(subset=[col_t]).sort_values(col_t).reset_index(drop=True)
+
+    # Gabungkan dengan observasi harian terbaru dari bot bila ada
+    if new_obs_df is not None:
+        st_aliases = [f'titik_{t}', f'titik {t}', f'titik{t}', str(t)]
+        sub_obs = new_obs_df[new_obs_df['station_id'].astype(str).str.lower().isin(st_aliases)].copy()
+        if len(sub_obs) > 0:
+            max_hist = df[col_t].max()
+            new_rows = sub_obs[sub_obs['date'] > max_hist].copy()
+            if len(new_rows) > 0:
+                append_df = pd.DataFrame()
+                append_df[col_t] = new_rows['date']
+                append_df['SST (degC)'] = pd.to_numeric(new_rows['sst'], errors='coerce')
+                append_df['uo'] = pd.to_numeric(new_rows['uo'], errors='coerce').fillna(0.0)
+                append_df['vo'] = pd.to_numeric(new_rows['vo'], errors='coerce').fillna(0.0)
+                append_df['Current Speed (m/s)'] = np.sqrt(append_df['uo']**2 + append_df['vo']**2)
+                
+                chl_vals = pd.to_numeric(new_rows['chl'], errors='coerce')
+                if chl_vals.isna().all():
+                    last_chl = df['Chlorophyll-a (mg m-3)'].dropna().iloc[-1]
+                    chl_vals = chl_vals.fillna(last_chl)
+                else:
+                    chl_vals = chl_vals.bfill().ffill()
+                append_df['Chlorophyll-a (mg m-3)'] = chl_vals
+                
+                df = pd.concat([df, append_df], ignore_index=True)
+                df = df.drop_duplicates(subset=[col_t], keep='last').sort_values(col_t).reset_index(drop=True)
+                print(f"Titik {t}: ditambahkan {len(new_rows)} baris data observasi baru s.d. {df[col_t].max().strftime('%Y-%m-%d')}")
+
     ocean_daily_all[t] = df.copy()
     df['YearMonth'] = df[col_t].dt.to_period('M')
     
@@ -70,53 +130,71 @@ for t in range(1, 7):
     df_m.rename(columns={'SST (degC)': 'sst', 'Chlorophyll-a (mg m-3)': 'chl'}, inplace=True)
     df_m['swv'] = np.sqrt(df_m['uo']**2 + df_m['vo']**2)
     ocean_monthly_all[t] = df_m
-    
-    # Peramalan untuk 2026-11 (bulan = 11)
-    b_sin_11 = np.sin(2 * np.pi * 11 / 12)
-    b_cos_11 = np.cos(2 * np.pi * 11 / 12)
-    
-    preds_11 = {}
+
+# Tentukan tanggal acuan terkini secara dinamis berdasarkan data observasi
+all_max_dates = [ocean_daily_all[t][col_t].max() for t in range(1, 7)]
+REF_DATE = max(all_max_dates).date()
+TARGET_MONTH = REF_DATE.strftime('%Y-%m')
+next_m_val = 1 if REF_DATE.month == 12 else REF_DATE.month + 1
+NEXT_MONTH = f"{REF_DATE.year + 1}-01" if REF_DATE.month == 12 else f"{REF_DATE.year}-{next_m_val:02d}"
+
+print(f"\n[DINAMIS] Tanggal Acuan Terukur (REF_DATE) : {REF_DATE}")
+print(f"[DINAMIS] Target Bulan Utama (TARGET_MONTH) : {TARGET_MONTH}")
+print(f"[DINAMIS] Target Bulan Berikut (NEXT_MONTH) : {NEXT_MONTH}")
+
+# Prediksi Oseanografi Bulanan untuk TARGET_MONTH dan NEXT_MONTH
+ocean_pred_target = {}
+ocean_pred_next = {}
+
+target_m_num = REF_DATE.month
+b_sin_target = np.sin(2 * np.pi * target_m_num / 12)
+b_cos_target = np.cos(2 * np.pi * target_m_num / 12)
+
+b_sin_next = np.sin(2 * np.pi * next_m_val / 12)
+b_cos_next = np.cos(2 * np.pi * next_m_val / 12)
+
+for t in range(1, 7):
+    df_m = ocean_monthly_all[t]
+    preds_target = {}
     for var in ['sst', 'chl', 'swv']:
         model = joblib.load(ROOT / f'ml/models/oseanografi/model_rf_titik_{t}_{var}.pkl')
         scaler = joblib.load(ROOT / f'ml/models/oseanografi/scaler_rf_titik_{t}_{var}.pkl')
         vals = df_m[var].iloc[-3:].values # lag3, lag2, lag1
-        feat = np.array([[vals[2], vals[1], vals[0], b_sin_11, b_cos_11]])
+        feat = np.array([[vals[2], vals[1], vals[0], b_sin_target, b_cos_target]])
         scaled_feat = scaler.transform(feat)
         pred = float(model.predict(scaled_feat)[0])
-        preds_11[var] = pred
+        preds_target[var] = pred
         
-    # Estimasi uo & vo berdasarkan arah rata-rata bulan November historis
     uo_mean = float(df_m['uo'].mean())
     vo_mean = float(df_m['vo'].mean())
-    speed_11 = preds_11['swv']
+    speed_target = preds_target['swv']
     curr_norm = math.sqrt(uo_mean**2 + vo_mean**2) or 1.0
-    preds_11['uo'] = speed_11 * (uo_mean / curr_norm)
-    preds_11['vo'] = speed_11 * (vo_mean / curr_norm)
-    preds_11['direction_deg'] = (math.atan2(preds_11['uo'], preds_11['vo']) * 180 / math.pi) % 360
-    ocean_pred_2026_11[t] = preds_11
+    preds_target['uo'] = speed_target * (uo_mean / curr_norm)
+    preds_target['vo'] = speed_target * (vo_mean / curr_norm)
+    preds_target['direction_deg'] = (math.atan2(preds_target['uo'], preds_target['vo']) * 180 / math.pi) % 360
+    ocean_pred_target[t] = preds_target
 
-    # Peramalan untuk 2026-12 (bulan = 12, autoregresif)
-    b_sin_12 = np.sin(2 * np.pi * 12 / 12)
-    b_cos_12 = np.cos(2 * np.pi * 12 / 12)
-    
-    preds_12 = {}
+    preds_next = {}
     for var in ['sst', 'chl', 'swv']:
         model = joblib.load(ROOT / f'ml/models/oseanografi/model_rf_titik_{t}_{var}.pkl')
         scaler = joblib.load(ROOT / f'ml/models/oseanografi/scaler_rf_titik_{t}_{var}.pkl')
         vals = df_m[var].iloc[-3:].values
-        # vals: lag1 = prediksi bulan 11, lag2 = vals[2], lag3 = vals[1]
-        feat_12 = np.array([[preds_11[var], vals[2], vals[1], b_sin_12, b_cos_12]])
-        scaled_feat_12 = scaler.transform(feat_12)
-        pred_12 = float(model.predict(scaled_feat_12)[0])
-        preds_12[var] = pred_12
+        feat_next = np.array([[preds_target[var], vals[2], vals[1], b_sin_next, b_cos_next]])
+        scaled_feat_next = scaler.transform(feat_next)
+        pred_next = float(model.predict(scaled_feat_next)[0])
+        preds_next[var] = pred_next
         
-    speed_12 = preds_12['swv']
-    preds_12['uo'] = speed_12 * (uo_mean / curr_norm)
-    preds_12['vo'] = speed_12 * (vo_mean / curr_norm)
-    preds_12['direction_deg'] = (math.atan2(preds_12['uo'], preds_12['vo']) * 180 / math.pi) % 360
-    ocean_pred_2026_12[t] = preds_12
+    speed_next = preds_next['swv']
+    preds_next['uo'] = speed_next * (uo_mean / curr_norm)
+    preds_next['vo'] = speed_next * (vo_mean / curr_norm)
+    preds_next['direction_deg'] = (math.atan2(preds_next['uo'], preds_next['vo']) * 180 / math.pi) % 360
+    ocean_pred_next[t] = preds_next
 
-    print(f"Titik {t}: Lon={STATIONS[t]['lon']}, Lat={STATIONS[t]['lat']} -> Nov: SST={preds_11['sst']:.2f}°C, Chl={preds_11['chl']:.2f} | Des: SST={preds_12['sst']:.2f}°C, Chl={preds_12['chl']:.2f}")
+    print(f"Titik {t}: Lon={STATIONS[t]['lon']}, Lat={STATIONS[t]['lat']} -> {TARGET_MONTH}: SST={preds_target['sst']:.2f}°C, Chl={preds_target['chl']:.2f} | {NEXT_MONTH}: SST={preds_next['sst']:.2f}°C, Chl={preds_next['chl']:.2f}")
+
+# Alias untuk kompatibilitas ke variabel lama
+ocean_pred_2026_11 = ocean_pred_target
+ocean_pred_2026_12 = ocean_pred_next
 
 
 print("\n=== INTERPOLASI IDW GRID SPASIAL (PERAIRAN BANTEN) ===")
@@ -142,14 +220,29 @@ with open(PROCESSED_DIR / 'Z-02.geojson') as f:
 lons = np.linspace(BBOX[0], BBOX[2], NX)
 lats = np.linspace(BBOX[3], BBOX[1], NY) # Dari utara ke selatan (baris 0 = utara)
 
-# Muat data batimetri GEBCO dari NetCDF
+# Muat data batimetri GEBCO dari NetCDF atau fallback ke bathymetry.json
 bathy_path = ROOT / 'data' / 'raw' / 'batimetri.nc'
 if not bathy_path.exists():
-    bathy_path = Path(r'C:/Users/AQILL/.gemini/antigravity/brain/6f1e459d-a344-4275-99db-57b9b452ba54/.user_uploaded/media_1794840460388_3ac59ffe.nc')
+    fallback_candidates = [
+        ROOT / 'data' / 'processed' / 'batimetri.nc',
+        Path(r'C:/Users/AQILL/.gemini/antigravity/brain/6f1e459d-a344-4275-99db-57b9b452ba54/.user_uploaded/media_1794840460388_3ac59ffe.nc')
+    ]
+    for cand in fallback_candidates:
+        if cand.exists():
+            bathy_path = cand
+            break
 
-ds_bathy = xr.open_dataset(bathy_path)
-elev_da = ds_bathy['elevation']
-interp_elev = elev_da.interp(lon=lons, lat=lats, method='linear').values
+if bathy_path.exists():
+    ds_bathy = xr.open_dataset(bathy_path)
+    elev_da = ds_bathy['elevation']
+    interp_elev = elev_da.interp(lon=lons, lat=lats, method='linear').values
+elif (GRIDS_DIR / 'bathymetry.json').exists():
+    with open(GRIDS_DIR / 'bathymetry.json') as bf:
+        bathy_json = json.load(bf)
+    bathy_vals = [(-v if v is not None else 10.0) for v in bathy_json['values']]
+    interp_elev = np.array(bathy_vals).reshape((NY, NX))
+else:
+    interp_elev = np.zeros((NY, NX))
 
 grid_sst = []
 grid_chl = []
@@ -285,9 +378,8 @@ with open(GRIDS_DIR / f"abundance_{TARGET_MONTH}.json", 'w') as f:
 print(f"Disimpan: abundance_{TARGET_MONTH}.json")
 
 
-print("\n=== INTERPOLASI IDW HARIAN & OCEAN WINDOW DINAMIS (10 HARI: H-6 s.d. H+3) ===")
+print(f"\n=== INTERPOLASI IDW HARIAN & OCEAN WINDOW DINAMIS (10 HARI: H-6 s.d. H+3 untuk acuan {REF_DATE}) ===")
 # Generate dgrid 10 hari (7 hari terukur + 3 hari prakiraan) dan ocean_window dinamis untuk Marine Stock
-REF_DATE = pd.to_datetime('2026-10-29').date()
 offsets_ow = [-3, -2, -1, 0, 1, 2, 3] # Kontrak ocean_window.days tepat 7 hari (H-3..H+3)
 offsets_all = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3] # 10 hari (7 terukur + 3 forecast)
 window_days_info = []
@@ -543,20 +635,23 @@ def process_zone_msy(zone_id, zone_name, lokasi, catch_file, ocean_titik, poly_s
     df_om['chl_lag1'] = df_om['chl'].shift(1)
     
     # Effort data
-    eff_gabungan = ROOT / 'data/unprocessed data/Tangkapan/Data_ML_Effort_Gabungan.xlsx'
+    eff_gabungan = find_data_file('Data_ML_Effort_Gabungan.xlsx')
     if eff_gabungan.exists():
         df_eff = pd.read_excel(eff_gabungan, sheet_name='Data_Effort_ML')
         df_eff = df_eff[df_eff['lokasi'].str.lower() == lokasi.lower()]
     else:
         eff_file = 'Data_ML_Effort_Karangantu.xlsx' if lokasi == 'Karangantu' else 'Data_ML_effort_lebak.xlsx'
-        df_eff = pd.read_excel(ROOT / f'data/unprocessed data/Tangkapan/{eff_file}', sheet_name='Data_ML_Effort')
+        df_eff = pd.read_excel(find_data_file(f'Tangkapan/{eff_file}'), sheet_name='Data_ML_Effort')
     df_eff = df_eff[~df_eff['unit'].str.contains('Total', case=False, na=False)]
     df_eff['YearMonth'] = pd.to_datetime(df_eff['periode']).dt.to_period('M')
     df_piv = df_eff.pivot_table(index='YearMonth', columns='unit', values='trip', aggfunc='sum').reset_index().fillna(0)
     fitur_alat = [c for c in df_piv.columns if c != 'YearMonth']
     
     # Catch data
-    df_c = pd.read_excel(ROOT / f'data/unprocessed data/Tangkapan/{catch_file}')
+    catch_path = find_data_file(f'Tangkapan/{catch_file}')
+    if not catch_path.exists():
+        catch_path = find_data_file(catch_file)
+    df_c = pd.read_excel(catch_path)
     col_tc = [c for c in df_c.columns if 'periode' in c.lower()][0]
     df_c['YearMonth'] = pd.to_datetime(df_c[col_tc], errors='coerce').dt.to_period('M')
     df_c['kelompok'] = df_c['kelompok'].str.strip().str.title()
@@ -601,31 +696,31 @@ def process_zone_msy(zone_id, zone_name, lokasi, catch_file, ocean_titik, poly_s
         rmse = float(np.sqrt(np.mean((y_test - p_test)**2)))
         mae = float(np.mean(np.abs(y_test - p_test)))
         
-        # Prediksi bulan 2026-11
+        # Prediksi bulan TARGET_MONTH
         last_row = df_target.iloc[-1].copy()
         next_feats = last_row[feats].copy()
-        next_feats['bulan_sin'] = np.sin(2 * np.pi * 11 / 12)
-        next_feats['bulan_cos'] = np.cos(2 * np.pi * 11 / 12)
+        next_feats['bulan_sin'] = np.sin(2 * np.pi * target_m_num / 12)
+        next_feats['bulan_cos'] = np.cos(2 * np.pi * target_m_num / 12)
         next_feats['catch_lag1'] = last_row[target_col]
         next_feats['sst_lag1'] = last_row['sst']
         next_feats['chl_lag1'] = last_row['chl']
-        next_feats['sst'] = ocean_pred_2026_11[ocean_titik]['sst']
-        next_feats['chl'] = ocean_pred_2026_11[ocean_titik]['chl']
-        next_feats['current_speed'] = ocean_pred_2026_11[ocean_titik]['swv']
+        next_feats['sst'] = ocean_pred_target[ocean_titik]['sst']
+        next_feats['chl'] = ocean_pred_target[ocean_titik]['chl']
+        next_feats['current_speed'] = ocean_pred_target[ocean_titik]['swv']
         
         X_next = sc.transform(next_feats.values.reshape(1, -1))
         pred_next_ton = float(np.maximum(rf.predict(X_next)[0] * scale_ton, 0))
         
-        # Prediksi bulan 2026-12 (autoregresif)
+        # Prediksi bulan NEXT_MONTH (autoregresif)
         dec_feats = last_row[feats].copy()
-        dec_feats['bulan_sin'] = np.sin(2 * np.pi * 12 / 12)
-        dec_feats['bulan_cos'] = np.cos(2 * np.pi * 12 / 12)
+        dec_feats['bulan_sin'] = np.sin(2 * np.pi * next_m_val / 12)
+        dec_feats['bulan_cos'] = np.cos(2 * np.pi * next_m_val / 12)
         dec_feats['catch_lag1'] = pred_next_ton / scale_ton
-        dec_feats['sst_lag1'] = ocean_pred_2026_11[ocean_titik]['sst']
-        dec_feats['chl_lag1'] = ocean_pred_2026_11[ocean_titik]['chl']
-        dec_feats['sst'] = ocean_pred_2026_12[ocean_titik]['sst']
-        dec_feats['chl'] = ocean_pred_2026_12[ocean_titik]['chl']
-        dec_feats['current_speed'] = ocean_pred_2026_12[ocean_titik]['swv']
+        dec_feats['sst_lag1'] = ocean_pred_target[ocean_titik]['sst']
+        dec_feats['chl_lag1'] = ocean_pred_target[ocean_titik]['chl']
+        dec_feats['sst'] = ocean_pred_next[ocean_titik]['sst']
+        dec_feats['chl'] = ocean_pred_next[ocean_titik]['chl']
+        dec_feats['current_speed'] = ocean_pred_next[ocean_titik]['swv']
         
         X_dec = sc.transform(dec_feats.values.reshape(1, -1))
         pred_dec_ton = float(np.maximum(rf.predict(X_dec)[0] * scale_ton, 0))
@@ -649,7 +744,7 @@ def process_zone_msy(zone_id, zone_name, lokasi, catch_file, ocean_titik, poly_s
                 'tac': round(pred_next_ton * TAC_FACTOR, 1)
             }
             
-        print(f"[{zone_id} {g}] Test RMSE: {rmse:.2f} ton, MAE: {mae:.2f} ton | Forecast 2026-11: {pred_next_ton:.2f} ton | Forecast 2026-12: {pred_dec_ton:.2f} ton")
+        print(f"[{zone_id} {g}] Test RMSE: {rmse:.2f} ton, MAE: {mae:.2f} ton | Forecast {TARGET_MONTH}: {pred_next_ton:.2f} ton | Forecast {NEXT_MONTH}: {pred_dec_ton:.2f} ton")
 
     total_msy = sum(msy_preds.values())
     total_dec = sum(dec_preds.values())
@@ -696,45 +791,45 @@ def process_zone_msy(zone_id, zone_name, lokasi, catch_file, ocean_titik, poly_s
             'by_group': series_by_month[ym]['by_group']
         })
         
-    # Entri forecast bulan November 2026
-    fc_by_group_nov = {}
+    # Entri forecast bulan TARGET_MONTH
+    fc_by_group_target = {}
     for g_slug in ['pelagis_besar', 'pelagis_kecil', 'demersal']:
         p_val = round(msy_preds.get(g_slug, 0.0), 1)
-        fc_by_group_nov[g_slug] = {
+        fc_by_group_target[g_slug] = {
             'actual_catch': None,
             'hindcast': p_val,
             'msy': p_val,
             'tac': round(p_val * TAC_FACTOR, 1)
         }
     series_list.append({
-        'month': '2026-11',
+        'month': TARGET_MONTH,
         'kind': 'forecast',
         'actual_catch': None,
         'hindcast': round(total_msy, 1),
         'msy': round(total_msy, 1),
         'tac': round(total_tac, 1),
-        'by_group': fc_by_group_nov
+        'by_group': fc_by_group_target
     })
 
-    # Entri forecast bulan Desember 2026
-    fc_by_group_dec = {}
+    # Entri forecast bulan NEXT_MONTH
+    fc_by_group_next = {}
     for g_slug in ['pelagis_besar', 'pelagis_kecil', 'demersal']:
         p_val_dec = round(dec_preds.get(g_slug, 0.0), 1)
         p_msy = round(msy_preds.get(g_slug, 0.0), 1)
-        fc_by_group_dec[g_slug] = {
+        fc_by_group_next[g_slug] = {
             'actual_catch': None,
             'hindcast': p_val_dec,
             'msy': p_msy,
             'tac': round(p_msy * TAC_FACTOR, 1)
         }
     series_list.append({
-        'month': '2026-12',
+        'month': NEXT_MONTH,
         'kind': 'forecast',
         'actual_catch': None,
         'hindcast': round(total_dec, 1),
         'msy': round(total_msy, 1),
         'tac': round(total_tac, 1),
-        'by_group': fc_by_group_dec
+        'by_group': fc_by_group_next
     })
     
     # Rata-rata metrik total
@@ -766,15 +861,15 @@ def process_zone_msy(zone_id, zone_name, lokasi, catch_file, ocean_titik, poly_s
     # Prediksi 7 hari ke depan (H+1 s.d. H+7) untuk titik oseanografi
     last_t = tail30.iloc[-1][time_col]
     last_dt = pd.to_datetime(last_t).date()
-    b_sin_nov = np.sin(2 * np.pi * 11 / 12)
-    b_cos_nov = np.cos(2 * np.pi * 11 / 12)
+    b_sin_dyn = np.sin(2 * np.pi * last_dt.month / 12)
+    b_cos_dyn = np.cos(2 * np.pi * last_dt.month / 12)
     preds_7d = {'sst': [], 'chl': [], 'speed': []}
     for var, col in [('sst', 'SST (degC)'), ('chl', 'Chlorophyll-a (mg m-3)'), ('swv', 'Current Speed (m/s)')]:
         rf_var = joblib.load(ROOT / f'ml/models/oseanografi/model_rf_titik_{ocean_titik}_{var}.pkl')
         sc_var = joblib.load(ROOT / f'ml/models/oseanografi/scaler_rf_titik_{ocean_titik}_{var}.pkl')
         curr_vals = list(df_raw[col].tail(10).values)
         for step in range(7):
-            X_in = np.array([[curr_vals[-1], curr_vals[-2], curr_vals[-3], b_sin_nov, b_cos_nov]])
+            X_in = np.array([[curr_vals[-1], curr_vals[-2], curr_vals[-3], b_sin_dyn, b_cos_dyn]])
             X_scaled = sc_var.transform(X_in)
             p_val = float(rf_var.predict(X_scaled)[0])
             v_key = 'speed' if var == 'swv' else var
@@ -861,7 +956,7 @@ def process_zone_msy(zone_id, zone_name, lokasi, catch_file, ocean_titik, poly_s
     }
     return feature
 
-catch_lebak = 'Clean_lebak 2021-2026.xlsx' if (ROOT / 'data/unprocessed data/Tangkapan/Clean_lebak 2021-2026.xlsx').exists() else 'Clean_lebak 2020-2025.xlsx'
+catch_lebak = 'Clean_lebak 2021-2026.xlsx' if find_data_file('Clean_lebak 2021-2026.xlsx').exists() or find_data_file('Tangkapan/Clean_lebak 2021-2026.xlsx').exists() else 'Clean_lebak 2020-2025.xlsx'
 feat_z1 = process_zone_msy('Z-01', 'Teluk Banten & Selat Sunda Utara (Area Atas)', 'Karangantu', 'Clean_Karangantu_2021-2026.xlsx', 6, poly_z1)
 feat_z2 = process_zone_msy('Z-02', 'Selat Sunda Selatan & Banten Selatan (Area Bawah)', 'Lebak', catch_lebak, 4, poly_z2)
 

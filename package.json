@@ -25,7 +25,8 @@
     "migrate-old-accounts": "node scripts/migrate-db-json.js",
     "make-fixtures": "node scripts/make-fixtures.js",
     "bot": "python bot/copernicus_bot.py --mode once",
-    "bot:daemon": "python bot/copernicus_bot.py --mode daemon --interval 6"
+    "bot:daemon": "python bot/copernicus_bot.py --mode daemon --interval 6",
+    "pipeline": "python ml/pipeline_rf.py && node scripts/publish-artifacts.js"
   },
   "author": "Aqill, Devina, Najla, Nazma - UPI SIK",
   "license": "MIT",

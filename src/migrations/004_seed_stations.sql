@@ -7,3 +7,4 @@ INSERT OR IGNORE INTO stations (id, lon, lat) VALUES
   ('titik_4', 105.6083, -6.5007),
   ('titik_5', 105.6736, -5.9519),
   ('titik_6', 106.6378, -5.7564);
+

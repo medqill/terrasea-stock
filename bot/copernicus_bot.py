@@ -192,9 +192,14 @@ def extract_points_from_datasets(ds_chl, ds_sst, ds_swv, target_dates: list[str]
             if ds_chl is not None and "chl" in ds_chl:
                 try:
                     pt_chl = ds_chl["chl"].sel({chl_lon: lon, chl_lat: lat}, method="nearest")
+                    if "depth" in pt_chl.dims:
+                        pt_chl = pt_chl.isel(depth=0)
                     if chl_time in pt_chl.dims:
                         pt_chl = pt_chl.sel({chl_time: dt_str}, method="nearest")
-                    val = float(pt_chl.values.squeeze())
+                    val = pt_chl.values
+                    if hasattr(val, "ndim") and val.ndim > 0:
+                        val = val.flat[0]
+                    val = float(val)
                     if not math.isnan(val) and 0 <= val <= 50:
                         row["chl"] = round(val, 4)
                 except Exception as e:

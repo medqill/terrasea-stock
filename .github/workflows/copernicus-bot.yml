@@ -50,21 +50,45 @@ jobs:
             python bot/copernicus_bot.py --mode once
           fi
 
-      - name: Commit & Push Cadangan Data Terbaru (Bila Ada Perubahan)
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependensi Node
+        run: npm ci
+
+      - name: Install Dependensi ML Pipeline
+        run: |
+          pip install joblib pyyaml scikit-learn shapely openpyxl
+
+      - name: Jalankan Pipeline ML Dinamis (IDW Grids & Stock Forecast)
+        run: |
+          python ml/pipeline_rf.py
+
+      - name: Validasi Kontrak Data Olahan
+        run: |
+          npm run validate
+
+      - name: Publikasi Artefak ke Backend (Database Turso)
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          INGEST_API_KEY: ${{ secrets.INGEST_API_KEY }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+        run: |
+          npm run publish-artifacts
+
+      - name: Commit & Push Cadangan Data & Artefak Terbaru
         run: |
           git config --global user.name "copernicus-bot[bot]"
           git config --global user.email "copernicus-bot@users.noreply.github.com"
-          BACKUP_FILE="data/ingest_backup/copernicus_ocean.csv"
-          if [ -f "$BACKUP_FILE" ]; then
-            git add "$BACKUP_FILE"
-            if git diff --staged --quiet; then
-              echo "Tidak ada data baru untuk di-commit."
-            else
-              git commit -m "Auto: Update observasi oseanografi Copernicus Banten"
-              git pull --rebase origin main
-              git push
-            fi
+          git add data/ingest_backup/copernicus_ocean.csv data/processed/
+          if git diff --staged --quiet; then
+            echo "Tidak ada perubahan data baru untuk di-commit."
           else
-            echo "File cadangan tidak ditemukan: $BACKUP_FILE"
+            git commit -m "Auto: Update observasi oseanografi & hasil olahan ML dinamis"
+            git pull --rebase origin main
+            git push
           fi
 
