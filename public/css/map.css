@@ -70,6 +70,199 @@ legend { padding: 0; margin-bottom: var(--s2); }
 .pinbox__actions { display: flex; gap: var(--s2); flex-wrap: wrap; margin-top: var(--s3); }
 .pin-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 2px solid var(--sand); }
 
+/* Mini Pin-Body Popup (Map Marker) */
+.mini-pin-popup .leaflet-popup-content-wrapper {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 16px rgba(16, 35, 42, 0.6);
+  padding: 0;
+  overflow: hidden;
+}
+.mini-pin-popup .leaflet-popup-content {
+  margin: 0;
+  line-height: 1.4;
+  width: auto !important;
+}
+.mini-pin-popup .leaflet-popup-tip-container {
+  overflow: visible;
+}
+.mini-pin-popup .leaflet-popup-tip {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+
+.mini-pin-body {
+  width: 290px;
+  padding: var(--s3);
+  font-family: var(--font-ui);
+  box-sizing: border-box;
+}
+
+.mini-pin-body__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: var(--s2);
+  margin-bottom: var(--s2);
+}
+
+.mini-pin-body__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.mini-pin-body__title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  margin: 0;
+  color: var(--sand);
+  letter-spacing: -0.01em;
+}
+
+.mini-pin-body__badge {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--accent);
+  font: 600 11px var(--font-mono);
+  padding: 1px 6px;
+  border-radius: var(--radius);
+}
+
+.mini-pin-body__close {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mini-pin-body__coords {
+  font: 400 11px var(--font-mono);
+  color: var(--text-muted);
+}
+
+.mini-pin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s2);
+}
+
+.mini-pin-grid--single {
+  grid-template-columns: 1fr;
+}
+
+.mini-fish-card {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s1);
+  display: flex;
+  flex-direction: column;
+  transition: border-color .15s ease;
+}
+
+.mini-fish-card:hover {
+  border-color: var(--accent);
+}
+
+.mini-fish-card__img-wrap {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.mini-fish-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mini-fish-card__rank {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background: rgba(16, 35, 42, 0.88);
+  color: var(--accent);
+  font: 600 9px var(--font-mono);
+  padding: 1px 4px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+}
+
+.mini-fish-card__info {
+  padding-top: var(--s1);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mini-fish-card__name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sand);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-fish-card__group {
+  font-size: 10px;
+  color: var(--text-muted);
+  display: block;
+  line-height: 1.2;
+}
+
+.mini-fish-card__abund {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.mini-fish-card__abund.abund--high {
+  color: var(--abund-high);
+}
+
+.mini-fish-card__abund.abund--mid {
+  color: var(--abund-mid);
+}
+
+.mini-fish-card__abund.abund--low {
+  color: var(--abund-low);
+}
+
+.mini-pin-body__empty {
+  padding: var(--s3) 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.mini-pin-body__footer {
+  border-top: 1px solid var(--line);
+  margin-top: var(--s2);
+  padding-top: var(--s1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
 .leaflet-tooltip { background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: none; }
 .zone-label-badge { background: rgba(16, 35, 42, 0.9); color: var(--holo-blue); border: 1px solid var(--holo-blue); font: 600 12px var(--font-ui); padding: 4px 8px; border-radius: var(--radius); pointer-events: none; box-shadow: 0 0 10px rgba(0, 210, 255, 0.35); }
 .leaflet-zones-pane path { cursor: pointer; transition: fill-opacity .2s ease-out, stroke-width .2s ease-out; filter: drop-shadow(0 0 4px rgba(0, 210, 255, 0.5)); }

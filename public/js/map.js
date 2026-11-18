@@ -5,6 +5,13 @@ import { svgIcon } from './icons.js';
 import { GROUPS, abundBadge, fmt, fmtMonth, fmtDate, fixtureChip, dirLabel } from './labels.js';
 import { VARS, rampColors, makePanes, addBasemap, addLand, gridOverlay, zoneStyle } from './mapkit.js';
 import { lookupValue, speedAndDirection } from './gridlookup.js';
+import {
+  getZoneNumber,
+  resolveAbundance,
+  computeDominantFish,
+  renderMiniPinBody,
+  renderFishDominanceBlock
+} from './fish-dominance.js';
 
 const sidebar = $('#sidebar'), toggleBtn = $('#sidebar-toggle'), panels = $('#panels'), lockbar = $('#lockbar');
 let map, zonesFC, zoneLayer, gridLayer, ecoLayer, pinMarker, meta, ow = null;
@@ -373,6 +380,13 @@ function pointBox(d) {
     }),
     h('p', { class: 'note' }, 'Kelimpahan demersal berbasis kedalaman: 40-60m (Sangat Berlimpah ▲), 0-40m (Berlimpah =), >60m (Kurang Berlimpah ▼).')));
   } else if (d.abundanceError) out.push(h('p', { class: 'note', role: 'status' }, d.abundanceError));
+
+  if (selected && lastPoint?.inZone) {
+    const zoneNum = getZoneNumber(selected.properties.zone_id, selected.properties.name);
+    const resolvedAbund = resolveAbundance(d.abundance || selected.properties.abundance, d.depth);
+    const dominantFish = computeDominantFish(zoneNum, resolvedAbund, 4);
+    out.push(renderFishDominanceBlock({ zoneId: selected.properties.zone_id, dominantFish }));
+  }
   if (d.series && d.series.some((v) => v != null)) {
     const v = VARS[currentVar];
     out.push(
@@ -417,9 +431,58 @@ async function gridValues(latlng) {
   };
 }
 
+function updateMiniPin(latlng, pointData) {
+  if (!pinMarker) return;
+  if (!selected || !lastPoint?.inZone) {
+    pinMarker.closePopup();
+    pinMarker.unbindPopup();
+    return;
+  }
+
+  const zoneNum = getZoneNumber(selected.properties.zone_id, selected.properties.name);
+  const resolvedAbund = resolveAbundance(pointData?.abundance || selected.properties.abundance, pointData?.depth);
+  const dominantFish = computeDominantFish(zoneNum, resolvedAbund, 4);
+
+  const popupContent = renderMiniPinBody({
+    zoneId: selected.properties.zone_id,
+    zoneName: selected.properties.name,
+    latlng,
+    dominantFish,
+    onClose: cancelPoint
+  });
+
+  if (pinMarker.getPopup()) {
+    pinMarker.setPopupContent(popupContent);
+    if (!pinMarker.isPopupOpen()) pinMarker.openPopup();
+  } else {
+    pinMarker.bindPopup(popupContent, {
+      className: 'mini-pin-popup',
+      closeButton: false,
+      autoClose: false,
+      closeOnClick: false,
+      autoPan: true,
+      autoPanPadding: [20, 20],
+      offset: [0, -10],
+      minWidth: 280,
+      maxWidth: 320
+    }).openPopup();
+  }
+}
+
 function placePin(latlng) {
   pinMarker?.remove();
   pinMarker = L.marker(latlng, { pane: 'pin', icon: L.divIcon({ className: '', html: '<div class="pin-dot"></div>', iconSize: [14, 14], iconAnchor: [7, 7] }), keyboard: false }).addTo(map);
+
+  pinMarker.on('click', () => {
+    if (pinMarker.getPopup()) {
+      if (pinMarker.isPopupOpen()) pinMarker.closePopup();
+      else pinMarker.openPopup();
+    }
+  });
+
+  if (selected && lastPoint?.inZone) {
+    updateMiniPin(latlng, null);
+  }
 }
 
 async function handlePoint(latlng, inZone) {
@@ -454,9 +517,11 @@ async function refreshPoint() {
       } catch (e) { d.abundanceError = e.message; }
     }
     if (my !== pointSeq) return;
+    updateMiniPin(latlng, d);
     renderPanels(selected, pointBox(d), d.series);
   } catch (e) {
     if (my === pointSeq) {
+      if (selected && lastPoint?.inZone) updateMiniPin(latlng, null);
       renderPanels(selected, h('section', { class: 'pinbox', 'aria-label': 'Hasil titik' },
         h('div', { style: 'display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s2);' },
           h('span', { class: 'label' }, 'Galat Titik'),
