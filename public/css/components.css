@@ -128,8 +128,12 @@ dialog .actions { display: flex; gap: var(--s3); justify-content: flex-end; marg
 .dash-panel > .panel + .panel { margin-top: var(--s5); }
 
 /* formulir pencatatan bulanan */
-.record-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--s4); }
-.record-status-pill { display: inline-flex; align-items: center; gap: var(--s2); font-size: 13px; padding: var(--s1) var(--s3); border-radius: var(--radius); background: var(--surface-2); border: 1px solid var(--line); }
+.record-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s4); }
+.record-grid--3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s4); }
+.record-grid .field, .record-grid--3 .field { display: flex; flex-direction: column; gap: var(--s2); margin: 0; }
+.record-grid .field input, .record-grid .field select,
+.record-grid--3 .field input, .record-grid--3 .field select { height: 44px; min-height: 44px; width: 100%; }
+.record-status-pill { display: inline-flex; align-items: center; gap: var(--s2); font-size: 13px; padding: var(--s2) var(--s3); border-radius: var(--radius); background: var(--surface-2); border: 1px solid var(--line); line-height: 1.4; }
 
 @media (max-width: 960px) {
   .dash-layout { grid-template-columns: 1fr; }
@@ -137,4 +141,5 @@ dialog .actions { display: flex; gap: var(--s3); justify-content: flex-end; marg
   .dash-nav { flex-direction: row; flex-wrap: wrap; }
   .dash-nav__btn { width: auto; }
   .predict-grid { grid-template-columns: 1fr; }
+  .record-grid, .record-grid--3 { grid-template-columns: 1fr; }
 }

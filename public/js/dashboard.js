@@ -490,6 +490,9 @@ $$('.dash-nav__btn').forEach((btn) => {
       panel.classList.toggle('is-active', active);
     });
 
+    // Reset posisi gulir ke paling atas agar panel tampil penuh
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     if (targetId === 'panel-monthly') {
       loadMonthlyRecords();
     }
