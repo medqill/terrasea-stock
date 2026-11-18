@@ -92,12 +92,18 @@ jobs:
         run: |
           git config --global user.name "copernicus-bot[bot]"
           git config --global user.email "copernicus-bot@users.noreply.github.com"
+
+          # Stage semua file output yang akan di-commit
           git add data/ingest_backup/copernicus_ocean.csv data/processed/
+
           if git diff --staged --quiet; then
             echo "Tidak ada perubahan data baru untuk di-commit."
           else
+            # Rebase SEBELUM commit agar tidak konflik dengan commit dari remote
+            # --autostash otomatis stash/unstash perubahan unstaged selama rebase
+            git pull --rebase --autostash origin main
+
             git commit -m "Auto: Update observasi oseanografi & hasil olahan ML dinamis"
-            git pull --rebase origin main
             git push
           fi
 
