@@ -4,7 +4,7 @@ import { asyncHandler } from '../async-handler.js';
 import { requireApiKey, logIngest } from '../middleware.js';
 import { validateOcean, validateCatch, validateCatchSpecies, validateEffort } from '../ingest-schema.js';
 import { validateArtifact, isKnownArtifactName, DGRID_NAME_RE } from '../contract.js';
-import { ingestIpLimiter, ingestKeyLimiter } from '../ratelimit.js';
+import { ingestIpLimiter, ingestKeyLimiter, artifactKeyLimiter } from '../ratelimit.js';
 
 const r = Router();
 r.use(ingestIpLimiter);
@@ -114,7 +114,7 @@ r.get('/export', requireApiKey('observations:read'), ingestKeyLimiter, asyncHand
 // PUT /api/ingest/artifacts/:name - publikasi hasil pipeline ML ke tabel artifacts.
 // (GET artifacts dihapus: tidak terautentikasi dan memakai db.get yang tidak ada.
 //  Pembacaan untuk klien lewat /api/ocean-window dan /api/dgrids/:var di routes/map.js, di balik requireAuth.)
-r.put('/artifacts/:name', requireApiKey('artifacts:write'), ingestKeyLimiter, asyncHandler(async (req, res) => {
+r.put('/artifacts/:name', requireApiKey('artifacts:write'), artifactKeyLimiter, asyncHandler(async (req, res) => {
   const { name } = req.params;
   const { content, model_version, generated_at, month, is_fixture = 0 } = req.body || {};
 
@@ -152,7 +152,7 @@ r.put('/artifacts/:name', requireApiKey('artifacts:write'), ingestKeyLimiter, as
 }));
 
 // DELETE /api/ingest/artifacts/:name - hanya untuk pembersihan dgrid:{var}:{YYYY-MM-DD}
-r.delete('/artifacts/:name', requireApiKey('artifacts:write'), ingestKeyLimiter, asyncHandler(async (req, res) => {
+r.delete('/artifacts/:name', requireApiKey('artifacts:write'), artifactKeyLimiter, asyncHandler(async (req, res) => {
   const { name } = req.params;
   if (!DGRID_NAME_RE.test(name)) {
     await logIngest(req.apiKey.id, req.originalUrl, 400, 0, 'Hapus ditolak: bukan dgrid');

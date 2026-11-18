@@ -86,21 +86,38 @@ if (ow) {
   if (missing.length) { console.error('[GAGAL] ocean_window merujuk grid yang tidak ada:', missing.join(', ')); process.exit(1); }
 }
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// Throttle: 50 request/menit aman (di bawah batas 60) → jedakan 1,2 detik per request
+const THROTTLE_MS = 1200;
+
 if (apiUrl && apiKey) {
   const base = apiUrl.replace(/\/$/, '');
   const headers = { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' };
-  console.log(`\nMengirim ${toPublish.length} artifact via API...`);
-  for (const art of toPublish) {
-    const res = await fetch(`${base}/api/ingest/artifacts/${encodeURIComponent(art.name)}`, {
-      method: 'PUT', headers,
-      body: JSON.stringify({ content: JSON.parse(art.content), month: art.month, model_version: art.modelVersion, generated_at: art.generatedAt, is_fixture: art.isFixture })
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      console.error(`[GAGAL] ${art.name}: HTTP ${res.status} - ${err.message || 'Error'}`);
-      process.exit(1);
+  console.log(`\nMengirim ${toPublish.length} artifact via API (throttle: 1 req / ${THROTTLE_MS}ms)...`);
+  for (let i = 0; i < toPublish.length; i++) {
+    const art = toPublish[i];
+    // Throttle: tunggu sebelum request agar tidak kena 429
+    if (i > 0) await sleep(THROTTLE_MS);
+    let retries = 3;
+    while (retries > 0) {
+      const res = await fetch(`${base}/api/ingest/artifacts/${encodeURIComponent(art.name)}`, {
+        method: 'PUT', headers,
+        body: JSON.stringify({ content: JSON.parse(art.content), month: art.month, model_version: art.modelVersion, generated_at: art.generatedAt, is_fixture: art.isFixture })
+      });
+      if (res.status === 429) {
+        console.warn(`[429] ${art.name}: rate limit, menunggu 60 detik...`);
+        await sleep(60_000);
+        retries--;
+        continue;
+      }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error(`[GAGAL] ${art.name}: HTTP ${res.status} - ${err.message || 'Error'}`);
+        process.exit(1);
+      }
+      console.log(`[OK] ${i + 1}/${toPublish.length} ${art.name}`);
+      break;
     }
-    console.log(`[OK] ${art.name}`);
   }
   if (ow) {
     // Mode API tidak punya daftar artifact: hapus jendela 15..21 hari lalu (cukup untuk pipeline harian).

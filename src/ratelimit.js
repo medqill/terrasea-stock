@@ -161,7 +161,7 @@ export const ingestIpLimiter = createRateLimiter({
   message: 'Batas frekuensi permintaan ingest per IP terlampaui. Coba lagi dalam 1 menit.'
 });
 
-// 5. Ingest Key Limiter: 60 req / 1 menit per API Key
+// 5. Ingest Key Limiter: 60 req / 1 menit per API Key (untuk endpoint observasi rows)
 export const ingestKeyLimiter = createRateLimiter({
   prefix: 'ingest_key',
   max: 60,
@@ -169,5 +169,15 @@ export const ingestKeyLimiter = createRateLimiter({
   windowMs: 60 * 1000,
   keyGenerator: (req) => `key_${req.apiKey?.id || req.headers['x-forwarded-for'] || req.ip || 'anon'}`,
   message: 'Batas frekuensi permintaan ingest untuk kunci API ini terlampaui (maks. 60/menit).'
+});
+
+// 6. Artifact Key Limiter: 200 req / 1 menit per API Key (untuk PUT/DELETE artifacts dari pipeline ML)
+export const artifactKeyLimiter = createRateLimiter({
+  prefix: 'artifact_key',
+  max: 200,
+  windowDuration: '1 m',
+  windowMs: 60 * 1000,
+  keyGenerator: (req) => `artkey_${req.apiKey?.id || req.headers['x-forwarded-for'] || req.ip || 'anon'}`,
+  message: 'Batas frekuensi permintaan artifact untuk kunci API ini terlampaui (maks. 200/menit).'
 });
 
