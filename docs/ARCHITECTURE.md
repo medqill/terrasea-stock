@@ -198,6 +198,7 @@ Semua rute disajikan di bawah prefix `/api`.
 | GET | /land | Sesi aktif | Layer daratan GeoJSON (data/geo/land.geojson) |
 | GET | /grids/:var?month= | Sesi aktif | Grid interpolasi dari artifacts |
 | GET | /point?lat&lng&month= | Sesi aktif | Lookup nilai titik dalam zona |
+| GET | /fisherman-spots?zone_id&date=&month= | Sesi aktif | Rekomendasi titik fishing ground nelayan (dinamis harian/bulanan, buffer 5 km) |
 | GET | /forecast/:zoneId | Sesi aktif | Forecast & hindcast dari artifacts |
 | GET | /download?type&from&to&group= | Sesi aktif (Rate limit: 20/10m) | Unduh file Excel laporan |
 | GET | /admin/stats | Admin | Statistik sistem, model aktif, dan antrean verifikasi |

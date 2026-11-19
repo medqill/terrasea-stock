@@ -151,13 +151,15 @@ function fishCard(fish) {
 /**
  * Render popover/overlay mini pin-body di atas peta.
  */
-export function renderMiniPinBody({ zoneId, zoneName, latlng, dominantFish, onClose }) {
+export function renderMiniPinBody({ zoneId, zoneName, latlng, dominantFish, spotInfo, onClose }) {
   const coordText = latlng ? `${Number(latlng.lat).toFixed(4)}, ${Number(latlng.lng).toFixed(4)}` : '';
+
+  const titleText = spotInfo ? spotInfo.title : 'Ikan Dominan';
 
   const header = h('div', { class: 'mini-pin-body__header' },
     h('div', { class: 'mini-pin-body__title-wrap' },
       h('span', { class: 'mini-pin-body__badge' }, zoneId || 'Zona'),
-      h('h3', { class: 'mini-pin-body__title' }, 'Ikan Dominan')
+      h('h3', { class: 'mini-pin-body__title' }, titleText)
     ),
     h('div', { style: 'display:flex;align-items:center;gap:var(--s2);' },
       coordText ? h('span', { class: 'mini-pin-body__coords' }, coordText) : null,
@@ -181,14 +183,26 @@ export function renderMiniPinBody({ zoneId, zoneName, latlng, dominantFish, onCl
     content = h('div', { class: gridClass }, dominantFish.map(fishCard));
   }
 
+  let spotBlock = null;
+  if (spotInfo) {
+    spotBlock = h('div', { class: `mini-pin-spot mini-pin-spot--${spotInfo.color || 'blue'}` },
+      h('div', { class: 'mini-pin-spot__header' },
+        h('span', { class: 'mini-pin-spot__rank' }, `Rank #${spotInfo.rank}`),
+        h('span', { class: 'mini-pin-spot__cat' }, spotInfo.categoryLabel || 'Fishing Ground')
+      ),
+      h('p', { class: 'mini-pin-spot__desc' }, spotInfo.desc)
+    );
+  }
+
   const footer = h('div', { class: 'mini-pin-body__footer' },
-    h('span', {}, `${dominantFish.length} jenis ikan dominan`),
-    h('span', { style: 'font-family:var(--font-mono);' })
+    h('span', {}, `${dominantFish ? dominantFish.length : 0} jenis ikan dominan`),
+    spotInfo ? h('span', { class: 'mini-pin-spot__badge-indicator' }, `Fisherman View`) : h('span', { style: 'font-family:var(--font-mono);' })
   );
 
   return h('div', { class: 'mini-pin-body', role: 'region', 'aria-label': 'Informasi dominansi ikan pada titik' },
     header,
     content,
+    spotBlock,
     footer
   );
 }
@@ -196,9 +210,21 @@ export function renderMiniPinBody({ zoneId, zoneName, latlng, dominantFish, onCl
 /**
  * Render blok dominansi ikan untuk disematkan di dalam pinbox panel sebelah kanan.
  */
-export function renderFishDominanceBlock({ zoneId, dominantFish }) {
+export function renderFishDominanceBlock({ zoneId, dominantFish, spotInfo }) {
+  let spotHeader = null;
+  if (spotInfo) {
+    spotHeader = h('div', { class: `mini-pin-spot mini-pin-spot--${spotInfo.color || 'blue'}`, style: 'margin-bottom:var(--s3);' },
+      h('div', { class: 'mini-pin-spot__header' },
+        h('span', { class: 'mini-pin-spot__rank' }, `Rank #${spotInfo.rank}`),
+        h('span', { class: 'mini-pin-spot__cat' }, spotInfo.categoryLabel || spotInfo.title)
+      ),
+      h('p', { class: 'mini-pin-spot__desc' }, spotInfo.desc)
+    );
+  }
+
   if (!dominantFish || dominantFish.length === 0) {
     return h('div', { class: 'pinbox__block' },
+      spotHeader,
       h('p', { class: 'label' }, 'Dominansi Ikan di Titik'),
       h('p', { class: 'note' }, 'Tidak ada jenis ikan dominan pada status kelimpahan saat ini.')
     );
@@ -206,6 +232,7 @@ export function renderFishDominanceBlock({ zoneId, dominantFish }) {
 
   const gridClass = dominantFish.length === 1 ? 'mini-pin-grid mini-pin-grid--single' : 'mini-pin-grid';
   return h('div', { class: 'pinbox__block' },
+    spotHeader,
     h('div', { style: 'display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s2);' },
       h('p', { class: 'label', style: 'margin:0;' }, 'Spesies Ikan Dominan'),
       h('span', { class: 'chip chip--accent', style: 'font-size:11px;' }, zoneId || 'Zona')

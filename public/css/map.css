@@ -320,3 +320,153 @@ legend { padding: 0; margin-bottom: var(--s2); }
 .conservation-info-popup .leaflet-popup-tip-container {
   display: none;
 }
+
+
+/* ============================================================
+   FISHERMAN VIEW — Tombol Lockbar, Marker Peta & Spot Info
+   ============================================================ */
+.lockbar__btn {
+  height: 28px;
+  padding: 0 var(--s3);
+  font: 500 12px var(--font-ui);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.lockbar__btn:hover {
+  border-color: var(--accent);
+  color: var(--sand);
+}
+.lockbar__btn[aria-pressed="true"] {
+  background: var(--surface-2);
+  border-color: var(--accent);
+  color: var(--accent-hover);
+  box-shadow: 0 0 8px rgba(181, 136, 99, 0.35);
+}
+
+.fisherman-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 28px;
+  height: 36px;
+  cursor: pointer;
+  user-select: none;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+  transition: transform 0.15s ease;
+}
+.fisherman-marker:hover {
+  transform: translateY(-4px) scale(1.1);
+  z-index: 1000 !important;
+}
+
+.fisherman-marker__pin {
+  width: 26px;
+  height: 26px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--ink-deep);
+  box-sizing: border-box;
+}
+
+.fisherman-marker__rank {
+  transform: rotate(45deg);
+  font: 700 11px var(--font-mono);
+  color: var(--ink-deep);
+  line-height: 1;
+}
+
+.fisherman-marker--red .fisherman-marker__pin {
+  background: var(--fish-pin-red);
+}
+.fisherman-marker--blue .fisherman-marker__pin {
+  background: var(--fish-pin-blue);
+}
+.fisherman-marker--green .fisherman-marker__pin {
+  background: var(--fish-pin-green);
+}
+.fisherman-marker--yellow .fisherman-marker__pin {
+  background: var(--fish-pin-yellow);
+}
+
+.mini-pin-spot {
+  border-radius: var(--radius);
+  padding: var(--s2) var(--s3);
+  margin: var(--s2) 0;
+  font-family: var(--font-ui);
+}
+.mini-pin-spot--red {
+  border: 1px solid var(--fish-pin-red);
+  background: rgba(217, 105, 94, 0.15);
+}
+.mini-pin-spot--red .mini-pin-spot__rank {
+  background: var(--fish-pin-red);
+  color: var(--ink-deep);
+}
+
+.mini-pin-spot--blue {
+  border: 1px solid var(--fish-pin-blue);
+  background: rgba(0, 210, 255, 0.15);
+}
+.mini-pin-spot--blue .mini-pin-spot__rank {
+  background: var(--fish-pin-blue);
+  color: var(--ink-deep);
+}
+
+.mini-pin-spot--green {
+  border: 1px solid var(--fish-pin-green);
+  background: rgba(125, 184, 138, 0.15);
+}
+.mini-pin-spot--green .mini-pin-spot__rank {
+  background: var(--fish-pin-green);
+  color: var(--ink-deep);
+}
+
+.mini-pin-spot--yellow {
+  border: 1px solid var(--fish-pin-yellow);
+  background: rgba(224, 184, 74, 0.15);
+}
+.mini-pin-spot--yellow .mini-pin-spot__rank {
+  background: var(--fish-pin-yellow);
+  color: var(--ink-deep);
+}
+
+.mini-pin-spot__header {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin-bottom: var(--s1);
+}
+.mini-pin-spot__rank {
+  font: 700 10px var(--font-mono);
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  letter-spacing: 0.05em;
+}
+.mini-pin-spot__cat {
+  font: 600 12px var(--font-ui);
+  color: var(--text);
+}
+.mini-pin-spot__desc {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--sand);
+  margin: 0;
+}
+.mini-pin-spot__badge-indicator {
+  font: 600 10px var(--font-mono);
+  padding: 2px 6px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--accent);
+}

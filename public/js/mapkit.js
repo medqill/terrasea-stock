@@ -24,15 +24,17 @@ export function makePanes(map, withPin = true) {
   // 2. currentFlow (415, animasi partikel arus)
   // 3. land (420, daratan Indonesia putih solid menutupi interpolasi)
   // 4. eco (430, terumbu karang / lamun)
-  // 5. conservation (445, zona konservasi — di atas zona tangkap, di bawah pin)
-  // 6. zones (440, zona Z-01 & Z-02 di atas daratan & di atas interpolasi)
-  // 7. pin (460, pinmarker)
+  // 5. zones (440, zona Z-01 & Z-02 di atas daratan & di atas interpolasi)
+  // 6. conservation (445, zona konservasi — di atas zona tangkap, di bawah pin)
+  // 7. fisherman (450, pin rekomendasi nelayan / fisherman view)
+  // 8. pin (460, pinmarker)
   pane('grid', 410, false);
   pane('currentFlow', 415, false);
   pane('land', 420, false);
   pane('eco', 430);
-  pane('conservation', 445, false);
   pane('zones', 440);
+  pane('conservation', 445, false);
+  pane('fisherman', 450);
   if (withPin) pane('pin', 460);
 }
 

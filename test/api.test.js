@@ -127,6 +127,26 @@ test('/point hanya valid di dalam zona', async () => {
   assert.ok(['high', 'mid', 'low'].includes((await res.json()).abundance.pelagis_besar));
 });
 
+test('/fisherman-spots: tanpa parameter 400, valid mengembalikan titik nelayan', async () => {
+  await addUser('fisher@uji.id');
+  const { cookie } = await login('fisher@uji.id');
+  assert.equal((await get('/api/fisherman-spots', cookie)).status, 400);
+  const res = await get('/api/fisherman-spots?zone_id=Z-01', cookie);
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.zone_id, 'Z-01');
+  assert.ok(Array.isArray(body.spots));
+  assert.ok(body.count > 0);
+  assert.ok(body.spots[0].rank >= 1);
+
+  // Uji parameter tanggal harian dinamis
+  const resDaily = await get('/api/fisherman-spots?zone_id=Z-02&date=2026-11-18', cookie);
+  assert.equal(resDaily.status, 200);
+  const bodyDaily = await resDaily.json();
+  assert.equal(bodyDaily.date, '2026-11-18');
+  assert.ok(bodyDaily.spots.length > 0);
+});
+
 test('admin: user biasa 403, admin 200', async () => {
   await addUser('u2@uji.id');
   await addUser('adm@uji.id', { role: 'admin' });

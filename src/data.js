@@ -126,6 +126,14 @@ export async function getLand() {
   return val;
 }
 
+export async function getConservation() {
+  const hit = cache.get('conservation');
+  if (hit && Date.now() < hit.expiresAt) return hit.value;
+  let val = loadFile(GEO, 'wilayah-konservasi.geojson');
+  if (val) cache.set('conservation', { value: val, expiresAt: Date.now() + TTL_MS });
+  return val;
+}
+
 export async function meta() {
   const z = await getZones();
   const p = z?.data?.features?.[0]?.properties;

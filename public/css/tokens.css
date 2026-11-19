@@ -14,6 +14,12 @@
 
   --holo-blue: #00D2FF; --holo-blue-glow: #38BDF8; --holo-blue-fill: rgba(0, 210, 255, 0.32);
 
+  /* Fisherman View Pin & Spot Tokens */
+  --fish-pin-red: var(--abund-low);
+  --fish-pin-blue: var(--holo-blue);
+  --fish-pin-green: var(--abund-high);
+  --fish-pin-yellow: var(--abund-mid);
+
   /* ramp peta sekuensial: gelap = rendah */
   --sst-0: #2E4A62; --sst-1: #6F8A93; --sst-2: #A79E93; --sst-3: #B58863; --sst-4: #E0A06A;
   --chl-0: #10232A; --chl-1: #2F6F6A; --chl-2: #8FBF9F; --chl-3: #E3E39A;

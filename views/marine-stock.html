@@ -47,10 +47,21 @@
       <div id="legend" class="legend" aria-live="polite"></div>
     </div>
   </aside>
-  <div class="lockbar" id="lockbar" hidden><span id="lockbar-label"></span><button class="icon-btn" id="lockbar-close" type="button" aria-label="Lepas kunci zona"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="lockbar" id="lockbar" hidden>
+    <span id="lockbar-label"></span>
+    <button class="btn btn--ghost btn--sm lockbar__btn" id="fisherman-btn" type="button" aria-pressed="false" title="Tampilkan rekomendasi titik tangkap terbaik nelayan">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+      Fisherman View
+    </button>
+    <button class="icon-btn" id="lockbar-close" type="button" aria-label="Lepas kunci zona"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
   <div id="map" role="application" aria-label="Peta zona perairan pesisir Banten"></div>
   <div class="panels" id="panels" aria-live="polite"></div>
 </main>
 <script src="/vendor/chart.umd.js"></script>
 <script src="/vendor/leaflet/leaflet.js"></script>
-<script type="module" src="/js/map.js?v=3.0"></script></body></html>
+<script type="module" src="/js/map.js?v=3.3"></script></body></html>

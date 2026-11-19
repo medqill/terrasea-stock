@@ -18,6 +18,7 @@ const sidebar = $('#sidebar'), toggleBtn = $('#sidebar-toggle'), panels = $('#pa
 let map, zonesFC, zoneLayer, gridLayer, ecoLayer, conservationLayer, _conservationGeo, pinMarker, meta, ow = null;
 let currentVar = 'sst', ecoOn = false, selected = null, locked = false;
 let flowLayer = null, flowAnimEnabled = true;
+let fishermanOn = false, fishermanLayerGroup = null, currentFishermanSpot = null;
 let mode = 'legacy';      // 'ocean' = rentang waktu harian (ocean_window); 'legacy' = grid bulanan
 let currentDay = null;    // entri ocean_window.days yang dipilih
 let lastPoint = null;     // { latlng, inZone, abund }
@@ -156,6 +157,9 @@ function updateDayFromSlider(idx) {
 
   showVar(currentVar);
   refreshPoint();
+  if (fishermanOn) {
+    loadFishermanSpots();
+  }
 }
 
 function setupTimeSlider() {
@@ -378,6 +382,7 @@ function pointNotes(d) {
 
 function cancelPoint() {
   lastPoint = null;
+  currentFishermanSpot = null;
   pinMarker?.remove();
   pinMarker = null;
   if (pointChartInstance) {
@@ -426,7 +431,11 @@ function pointBox(d) {
     const zoneNum = getZoneNumber(selected.properties.zone_id, selected.properties.name);
     const resolvedAbund = resolveAbundance(d.abundance || selected.properties.abundance, d.depth);
     const dominantFish = computeDominantFish(zoneNum, resolvedAbund, 4);
-    out.push(renderFishDominanceBlock({ zoneId: selected.properties.zone_id, dominantFish }));
+    out.push(renderFishDominanceBlock({
+      zoneId: selected.properties.zone_id,
+      dominantFish,
+      spotInfo: d.spotInfo || currentFishermanSpot
+    }));
   }
   if (d.series && d.series.some((v) => v != null)) {
     const v = VARS[currentVar];
@@ -489,6 +498,7 @@ function updateMiniPin(latlng, pointData) {
     zoneName: selected.properties.name,
     latlng,
     dominantFish,
+    spotInfo: currentFishermanSpot,
     onClose: cancelPoint
   });
 
@@ -526,7 +536,7 @@ function placePin(latlng) {
   }
 }
 
-async function handlePoint(latlng, inZone) {
+async function handlePoint(latlng, inZone, spotInfo = null) {
   // Blokir interaksi di dalam zona konservasi
   if (conservationLayer && _conservationGeo && isInsideConservation(latlng)) {
     L.popup({ closeButton: true, autoClose: true, className: 'conservation-info-popup' })
@@ -538,7 +548,8 @@ async function handlePoint(latlng, inZone) {
       .openOn(map);
     return;
   }
-  lastPoint = { latlng, inZone };
+  currentFishermanSpot = spotInfo;
+  lastPoint = { latlng, inZone, spotInfo };
   placePin(latlng);
   await refreshPoint();
 }
@@ -546,7 +557,7 @@ async function handlePoint(latlng, inZone) {
 async function refreshPoint() {
   if (!lastPoint) return;
   const my = ++pointSeq;
-  const { latlng, inZone } = lastPoint;
+  const { latlng, inZone, spotInfo } = lastPoint;
   try {
     const d = { lat: latlng.lat, lng: latlng.lng };
     if (mode === 'ocean') {
@@ -558,14 +569,29 @@ async function refreshPoint() {
     }
     if (inZone && selected) {
       try {
-        if (!lastPoint.abund) {
-          const a = await api(`/point?lat=${latlng.lat}&lng=${latlng.lng}&month=${meta.month}`);
-          if (a.zone_id !== selected.properties.zone_id) throw new Error('Titik berada di zona lain. Lepas kunci untuk memilih zona itu.');
-          lastPoint.abund = a;
+        if (spotInfo) {
+          d.abundance = spotInfo.abundance;
+          if (spotInfo.depth != null) d.depth = spotInfo.depth;
+          if (mode !== 'ocean') {
+            Object.assign(d, {
+              sst: spotInfo.sst,
+              chl: spotInfo.chl,
+              speed: spotInfo.speed,
+              direction_deg: spotInfo.direction_deg,
+              depth: spotInfo.depth
+            });
+          }
+          d.spotInfo = spotInfo;
+        } else {
+          if (!lastPoint.abund) {
+            const a = await api(`/point?lat=${latlng.lat}&lng=${latlng.lng}&month=${meta.month}`);
+            if (a.zone_id !== selected.properties.zone_id) throw new Error('Titik berada di zona lain. Lepas kunci untuk memilih zona itu.');
+            lastPoint.abund = a;
+          }
+          d.abundance = lastPoint.abund.abundance;
+          if (lastPoint.abund.depth != null) d.depth = lastPoint.abund.depth;
+          if (mode !== 'ocean') Object.assign(d, { sst: lastPoint.abund.sst, chl: lastPoint.abund.chl, speed: lastPoint.abund.speed, direction_deg: lastPoint.abund.direction_deg, depth: lastPoint.abund.depth });
         }
-        d.abundance = lastPoint.abund.abundance;
-        if (lastPoint.abund.depth != null) d.depth = lastPoint.abund.depth;
-        if (mode !== 'ocean') Object.assign(d, { sst: lastPoint.abund.sst, chl: lastPoint.abund.chl, speed: lastPoint.abund.speed, direction_deg: lastPoint.abund.direction_deg, depth: lastPoint.abund.depth });
       } catch (e) { d.abundanceError = e.message; }
     }
     if (my !== pointSeq) return;
@@ -590,6 +616,7 @@ function styleAll() { zoneLayers.forEach((ly, id) => ly.setStyle(zoneStyle(selec
 
 function selectZone(f) {
   selected = f; locked = true; lastPoint = null;
+  clearFishermanView();
   setCollapsed(true);
   toggleBtn.setAttribute('aria-disabled', 'true');
   $('#lockbar-label').textContent = `Zona ${f.properties.zone_id} terkunci`;
@@ -604,6 +631,7 @@ function selectZone(f) {
 
 function unlock() {
   selected = null; locked = false; lastPoint = null;
+  clearFishermanView();
   lockbar.hidden = true; clearEco();
   pinMarker?.remove(); pinMarker = null;
   toggleBtn.removeAttribute('aria-disabled');
@@ -611,6 +639,89 @@ function unlock() {
   map.fitBounds(zoneLayer.getBounds(), { padding: [40, 40], animate: !reducedMotion() });
 }
 $('#lockbar-close').addEventListener('click', unlock);
+$('#fisherman-btn')?.addEventListener('click', toggleFishermanView);
+
+/* ---------- fisherman view (rekomendasi titik tangkap) ---------- */
+function clearFishermanView() {
+  if (fishermanLayerGroup) {
+    fishermanLayerGroup.remove();
+    fishermanLayerGroup = null;
+  }
+  fishermanOn = false;
+  const btn = $('#fisherman-btn');
+  if (btn) btn.setAttribute('aria-pressed', 'false');
+  currentFishermanSpot = null;
+}
+
+function handleFishermanSpot(spot) {
+  if (!selected || selected.properties.zone_id !== spot.zone_id) return;
+  const latlng = L.latLng(spot.lat, spot.lng);
+  handlePoint(latlng, true, spot);
+}
+
+async function loadFishermanSpots() {
+  if (!selected || !fishermanOn) return;
+  try {
+    const zid = selected.properties.zone_id;
+    const query = (mode === 'ocean' && currentDay?.date)
+      ? `/fisherman-spots?zone_id=${zid}&date=${currentDay.date}`
+      : `/fisherman-spots?zone_id=${zid}&month=${meta.month}`;
+
+    const res = await api(query);
+    if (!fishermanOn) return;
+
+    if (fishermanLayerGroup) fishermanLayerGroup.remove();
+    fishermanLayerGroup = L.layerGroup([], { pane: 'fisherman' });
+
+    for (const spot of res.spots || []) {
+      const icon = L.divIcon({
+        className: 'fisherman-div-icon',
+        html: `<div class="fisherman-marker fisherman-marker--${spot.color}" title="${spot.title}: ${spot.desc}"><div class="fisherman-marker__pin"><span class="fisherman-marker__rank">${spot.rank}</span></div></div>`,
+        iconSize: [28, 36],
+        iconAnchor: [14, 36],
+        popupAnchor: [0, -36]
+      });
+
+      const marker = L.marker([spot.lat, spot.lng], {
+        icon,
+        pane: 'fisherman',
+        title: `${spot.title} (${spot.categoryLabel})`
+      });
+
+      marker.on('click', (e) => {
+        L.DomEvent.stopPropagation(e);
+        handleFishermanSpot(spot);
+      });
+
+      marker.addTo(fishermanLayerGroup);
+    }
+
+    fishermanLayerGroup.addTo(map);
+
+    // Jika sedang memilih salah satu spot nelayan, sinkronkan posisinya dengan hari yang baru
+    if (currentFishermanSpot) {
+      const matching = (res.spots || []).find((s) => s.id === currentFishermanSpot.id);
+      if (matching) {
+        handleFishermanSpot(matching);
+      }
+    }
+  } catch (e) {
+    console.error('Gagal memuat fisherman view:', e);
+  }
+}
+
+async function toggleFishermanView() {
+  if (!selected) return;
+  fishermanOn = !fishermanOn;
+  const btn = $('#fisherman-btn');
+  if (btn) btn.setAttribute('aria-pressed', String(fishermanOn));
+
+  if (fishermanOn) {
+    await loadFishermanSpots();
+  } else {
+    clearFishermanView();
+  }
+}
 
 function clearEco() {
   ecoLayer?.remove(); ecoLayer = null;
