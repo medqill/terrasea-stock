@@ -285,3 +285,38 @@ legend { padding: 0; margin-bottom: var(--s2); }
   .panels { top: auto; right: 0; left: 0; bottom: 48px; width: auto; max-height: 55%; z-index: 700; background: var(--bg); padding: var(--s2); border-top: 1px solid var(--line); }
   .download-grid { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   ZONA KONSERVASI — tooltip badge & info popup
+   ============================================================ */
+.conservation-label-badge {
+  background: rgba(16, 35, 42, 0.92);
+  color: var(--abund-low);
+  border: 1px solid var(--abund-low);
+  font: 600 12px var(--font-ui);
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(217, 105, 94, 0.3);
+  white-space: nowrap;
+}
+.conservation-label-badge::before {
+  /* hapus panah default Leaflet tooltip */
+  display: none;
+}
+
+.conservation-info-popup .leaflet-popup-content-wrapper {
+  background: var(--surface);
+  color: var(--text);
+  border: 1.5px solid var(--abund-low);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(16, 35, 42, 0.65);
+  padding: var(--s3) var(--s4);
+  max-width: 260px;
+}
+.conservation-info-popup .leaflet-popup-content {
+  margin: 0;
+}
+.conservation-info-popup .leaflet-popup-tip-container {
+  display: none;
+}

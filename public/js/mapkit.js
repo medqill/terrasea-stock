@@ -21,14 +21,17 @@ export function makePanes(map, withPin = true) {
   const pane = (name, z, interactive = true) => { const p = map.createPane(name); p.style.zIndex = z; if (!interactive) p.style.pointerEvents = 'none'; };
   // Urutan z-index:
   // 1. grid (410, interpolasi laut di dasar)
-  // 2. land (420, daratan Indonesia putih solid menutupi interpolasi)
-  // 3. eco (430, terumbu karang / lamun)
-  // 4. zones (440, zona Z-01 & Z-02 di atas daratan & di atas interpolasi)
-  // 5. pin (460, pinmarker)
+  // 2. currentFlow (415, animasi partikel arus)
+  // 3. land (420, daratan Indonesia putih solid menutupi interpolasi)
+  // 4. eco (430, terumbu karang / lamun)
+  // 5. conservation (445, zona konservasi — di atas zona tangkap, di bawah pin)
+  // 6. zones (440, zona Z-01 & Z-02 di atas daratan & di atas interpolasi)
+  // 7. pin (460, pinmarker)
   pane('grid', 410, false);
   pane('currentFlow', 415, false);
   pane('land', 420, false);
   pane('eco', 430);
+  pane('conservation', 445, false);
   pane('zones', 440);
   if (withPin) pane('pin', 460);
 }

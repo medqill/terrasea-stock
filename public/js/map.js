@@ -15,7 +15,7 @@ import {
 } from './fish-dominance.js';
 
 const sidebar = $('#sidebar'), toggleBtn = $('#sidebar-toggle'), panels = $('#panels'), lockbar = $('#lockbar');
-let map, zonesFC, zoneLayer, gridLayer, ecoLayer, pinMarker, meta, ow = null;
+let map, zonesFC, zoneLayer, gridLayer, ecoLayer, conservationLayer, _conservationGeo, pinMarker, meta, ow = null;
 let currentVar = 'sst', ecoOn = false, selected = null, locked = false;
 let flowLayer = null, flowAnimEnabled = true;
 let mode = 'legacy';      // 'ocean' = rentang waktu harian (ocean_window); 'legacy' = grid bulanan
@@ -224,7 +224,6 @@ async function initTimeWindow() {
 function zoneBox(p) {
   const rows = GROUPS.map((g) => h('div', { class: 'pinbox__row' },
     h('span', {}, g.label), h('span', { class: 'mono muted' }, `${fmt(p.msy[g.key])} / ${fmt(p.tac[g.key])}`), abundBadge(p.abundance[g.key])));
-  const ecoBtn = h('button', { class: 'btn btn--ghost', 'aria-pressed': 'false', onclick: () => toggleEco(p.zone_id, ecoBtn) }, svgIcon('leaf'), 'Ekosistem');
   return h('section', { class: 'pinbox', 'aria-labelledby': 'zone-title' },
     h('p', { class: 'label' }, `Zona ${p.zone_id}`), h('h2', { id: 'zone-title' }, p.name),
     h('p', { class: 'muted', style: 'font-size:14px;margin:0' }, `${fmt(p.area_ha, 0)} ha, menempel garis pantai`),
@@ -234,8 +233,7 @@ function zoneBox(p) {
       h('p', { class: 'note' }, 'Nilai zona adalah alokasi dari MSY wilayah, bukan pengukuran.')),
     h('div', { class: 'pinbox__block' }, h('p', { class: 'label' }, 'Kelompok ikan: MSY / TAC (ton)'), rows,
       h('p', { class: 'note' }, 'Indeks berbasis aturan: kelas relatif, bukan jumlah ikan.')),
-    h('div', { class: 'pinbox__block' }, h('span', { class: 'chip', title: p.season.note }, `Musim ${fmtMonth(p.month)}: ${p.season.label}`),
-      h('div', { class: 'pinbox__actions' }, ecoBtn))
+    h('div', { class: 'pinbox__block' }, h('span', { class: 'chip', title: p.season.note }, `Musim ${fmtMonth(p.month)}: ${p.season.label}`))
   );
 }
 
@@ -529,6 +527,17 @@ function placePin(latlng) {
 }
 
 async function handlePoint(latlng, inZone) {
+  // Blokir interaksi di dalam zona konservasi
+  if (conservationLayer && _conservationGeo && isInsideConservation(latlng)) {
+    L.popup({ closeButton: true, autoClose: true, className: 'conservation-info-popup' })
+      .setLatLng(latlng)
+      .setContent(
+        '<p style="font:600 13px var(--font-ui);margin:0;color:var(--abund-low)">Zona Konservasi</p>' +
+        '<p style="font:400 12px var(--font-ui);margin:var(--s1) 0 0;color:var(--text-muted)">Wilayah ini merupakan <strong>Zona Konservasi Ujung Kulon</strong>. Data kelimpahan tidak tersedia di kawasan ini.</p>'
+      )
+      .openOn(map);
+    return;
+  }
   lastPoint = { latlng, inZone };
   placePin(latlng);
   await refreshPoint();
@@ -585,7 +594,10 @@ function selectZone(f) {
   toggleBtn.setAttribute('aria-disabled', 'true');
   $('#lockbar-label').textContent = `Zona ${f.properties.zone_id} terkunci`;
   lockbar.hidden = false;
-  styleAll(); clearEco(); pinMarker?.remove(); pinMarker = null;
+  styleAll();
+  // Hanya hapus eco (karang/lamun) saat zona dikunci — conservation tetap tampil di atas zona
+  ecoLayer?.remove(); ecoLayer = null;
+  pinMarker?.remove(); pinMarker = null;
   renderPanels(f);
   map.flyToBounds(zoneLayers.get(f.properties.zone_id).getBounds(), { padding: [90, 90], maxZoom: 13, duration: 0.6, animate: !reducedMotion() });
 }
@@ -600,19 +612,64 @@ function unlock() {
 }
 $('#lockbar-close').addEventListener('click', unlock);
 
-async function toggleEco(zoneId, btn) {
-  if (ecoLayer) { clearEco(); btn.setAttribute('aria-pressed', 'false'); return; }
-  try {
-    const eco = await api('/ecosystem');
-    ecoLayer = L.geoJSON({ ...eco, features: eco.features.filter((f) => f.properties.zone_id === zoneId) }, {
-      pane: 'eco',
-      style: (f) => ({ color: cssVar(f.properties.type === 'coral' ? '--cur-2' : '--chl-2'), weight: 2, fillOpacity: 0.4, fillColor: cssVar(f.properties.type === 'coral' ? '--cur-2' : '--chl-2'), dashArray: f.properties.type === 'coral' ? null : '4 3' }),
-      onEachFeature: (f, ly) => ly.bindTooltip(`${f.properties.type === 'coral' ? 'Terumbu karang' : 'Lamun'}: ${f.properties.name ?? ''}`, { sticky: true })
-    }).addTo(map);
-    btn.setAttribute('aria-pressed', 'true');
-  } catch (e) { alert(e.message); }
+function clearEco() {
+  ecoLayer?.remove(); ecoLayer = null;
+  conservationLayer?.remove(); conservationLayer = null; _conservationGeo = null;
+  // Reset eco-btn state agar konsisten dengan tidak adanya layer
+  ecoOn = false;
+  const ecoBtn = document.getElementById('eco-btn');
+  if (ecoBtn) ecoBtn.setAttribute('aria-pressed', 'false');
 }
-function clearEco() { ecoLayer?.remove(); ecoLayer = null; panels.querySelectorAll('[aria-pressed]').forEach((b) => b.setAttribute('aria-pressed', 'false')); }
+
+/* ---------- zona konservasi ---------- */
+async function loadConservationLayer() {
+  if (conservationLayer) return;
+  try {
+    const geo = await fetch('/geo/wilayah-konservasi.geojson').then((r) => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    });
+    _conservationGeo = geo;
+    conservationLayer = L.geoJSON(geo, {
+      pane: 'conservation',
+      interactive: false,
+      style: {
+        color: cssVar('--abund-low'),
+        weight: 3,
+        opacity: 0.9,
+        fillOpacity: 0,        // tanpa fill — hanya garis batas, zona di bawahnya tetap normal
+        dashArray: '10 7'
+      },
+      onEachFeature: (_f, ly) => {
+        ly.bindTooltip('Zona Konservasi Ujung Kulon', {
+          sticky: true,
+          className: 'conservation-label-badge'
+        });
+      }
+    }).addTo(map);
+  } catch (e) {
+    console.error('Gagal memuat zona konservasi:', e);
+  }
+}
+
+/* ---------- point-in-polygon untuk zona konservasi ---------- */
+function isInsideConservation(latlng) {
+  if (!_conservationGeo) return false;
+  return _conservationGeo.features.some((f) => _pointInGeometry(f.geometry, latlng));
+}
+function _pointInGeometry(geom, latlng) {
+  const pt = [latlng.lng, latlng.lat];
+  const polys = geom.type === 'MultiPolygon' ? geom.coordinates : [geom.coordinates];
+  return polys.some((poly) => _raycast(pt, poly[0]));
+}
+function _raycast(pt, ring) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+    if (((yi > pt[1]) !== (yj > pt[1])) && (pt[0] < ((xj - xi) * (pt[1] - yi)) / (yj - yi) + xi)) inside = !inside;
+  }
+  return inside;
+}
 
 /* ---------- inisialisasi ---------- */
 async function init() {
@@ -681,7 +738,7 @@ document.querySelectorAll('input[name="var"]').forEach((r) => r.addEventListener
   showVar(r.value);
   if (lastPoint) refreshPoint();
 }));
-$('#eco-btn').addEventListener('click', (e) => {
+$('#eco-btn').addEventListener('click', async (e) => {
   ecoOn = !ecoOn;
   e.currentTarget.setAttribute('aria-pressed', String(ecoOn));
   if (ecoOn) {
@@ -692,7 +749,11 @@ $('#eco-btn').addEventListener('click', (e) => {
         map.fitBounds(zoneLayer.getBounds(), { padding: [50, 50], animate: !reducedMotion() });
       } catch {}
     }
+    // Tampilkan zona konservasi saat eco aktif
+    await loadConservationLayer();
   } else {
+    // Sembunyikan zona konservasi saat eco dimatikan
+    conservationLayer?.remove(); conservationLayer = null; _conservationGeo = null;
     if (locked) unlock();
     if (zoneLayer && map.hasLayer(zoneLayer)) zoneLayer.remove();
   }

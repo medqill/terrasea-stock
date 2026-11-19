@@ -53,7 +53,7 @@ export function createApp() {
   });
 
   // Hanya subfolder aset yang disajikan langsung dari public/ (tanpa cache di mode dev agar perubahan langsung tampak).
-  for (const dir of ['css', 'js', 'vendor', 'img']) {
+  for (const dir of ['css', 'js', 'vendor', 'img', 'geo']) {
     app.use(`/${dir}`, express.static(path.join(pub, dir), {
       etag: false,
       maxAge: 0,
