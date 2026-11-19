@@ -135,6 +135,36 @@ dialog .actions { display: flex; gap: var(--s3); justify-content: flex-end; marg
 .record-grid--3 .field input, .record-grid--3 .field select { height: 44px; min-height: 44px; width: 100%; }
 .record-status-pill { display: inline-flex; align-items: center; gap: var(--s2); font-size: 13px; padding: var(--s2) var(--s3); border-radius: var(--radius); background: var(--surface-2); border: 1px solid var(--line); line-height: 1.4; }
 
+/* fieldset legend pencatatan — cegah overflow ke luar border */
+.record-fieldset { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s3) var(--s4); margin-bottom: var(--s4); background: var(--surface-2); min-width: 0; box-sizing: border-box; }
+.record-fieldset legend { padding: 0 var(--s2); font: 600 13px var(--font-ui); color: var(--text); text-transform: uppercase; letter-spacing: .08em; white-space: normal; word-break: break-word; max-width: 100%; box-sizing: border-box; }
+
+/* tab ikan dengan sparkline & tren */
+.fish-tab { display: inline-flex; align-items: center; gap: var(--s2); flex-wrap: wrap; }
+.fish-tab__label { font-weight: 600; }
+.fish-tab__meta { display: inline-flex; align-items: center; gap: var(--s2); margin-left: var(--s1); }
+.fish-tab__spark { width: 44px; height: 16px; color: var(--sand); opacity: 0.8; display: inline-block; vertical-align: middle; }
+.tab[aria-selected="true"] .fish-tab__spark { color: var(--copper); opacity: 1; }
+
+.trend-pill { display: inline-flex; align-items: center; padding: 2px var(--s2); font: 600 11px var(--font-mono); border-radius: var(--radius); line-height: 1.2; letter-spacing: .02em; }
+.trend-pill--up { color: var(--abund-high); background: rgba(125, 184, 138, 0.12); border: 1px solid rgba(125, 184, 138, 0.35); }
+.trend-pill--flat { color: var(--abund-mid); background: rgba(224, 184, 74, 0.12); border: 1px solid rgba(224, 184, 74, 0.35); }
+.trend-pill--down { color: var(--abund-low); background: rgba(217, 105, 94, 0.12); border: 1px solid rgba(217, 105, 94, 0.35); }
+
+/* layout panel radar kesehatan ekosistem */
+.radar-layout { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: var(--s5); align-items: center; }
+.radar-chart-wrap { width: 100%; }
+.radar-details { display: flex; flex-direction: column; gap: var(--s4); }
+.radar-score-box { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s3) var(--s4); }
+.radar-metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--s3); }
+.radar-metric-item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s2) var(--s3); display: flex; flex-direction: column; gap: var(--s1); }
+.radar-metric-item__header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.radar-metric-item__label { font-weight: 600; color: var(--text); }
+.radar-metric-item__val { font-family: var(--font-mono); font-weight: 600; }
+.radar-metric-item__bar { height: 4px; background: rgba(211, 195, 185, 0.15); border-radius: var(--radius); overflow: hidden; }
+.radar-metric-item__bar-fill { height: 100%; border-radius: var(--radius); transition: width 0.4s ease-out; }
+.radar-metric-item__desc { font-size: 11px; color: var(--text-muted); }
+
 @media (max-width: 960px) {
   .dash-layout { grid-template-columns: 1fr; }
   .dash-sidebar { position: static; }
@@ -142,4 +172,8 @@ dialog .actions { display: flex; gap: var(--s3); justify-content: flex-end; marg
   .dash-nav__btn { width: auto; }
   .predict-grid { grid-template-columns: 1fr; }
   .record-grid, .record-grid--3 { grid-template-columns: 1fr; }
+  .radar-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: var(--s1); }
 }

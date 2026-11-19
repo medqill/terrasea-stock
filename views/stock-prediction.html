@@ -22,9 +22,18 @@
     <div class="predict-grid">
       <section class="panel" aria-labelledby="t-main">
         <div class="tabs" id="fish-tabs" role="tablist" aria-label="Kelompok Ikan">
-          <button class="tab fish-tab" role="tab" data-group="pelagis_besar" aria-selected="true">Pelagis Besar</button>
-          <button class="tab fish-tab" role="tab" data-group="pelagis_kecil" aria-selected="false">Pelagis Kecil</button>
-          <button class="tab fish-tab" role="tab" data-group="demersal" aria-selected="false">Demersal</button>
+          <button class="tab fish-tab" role="tab" data-group="pelagis_besar" aria-selected="true">
+            <span class="fish-tab__label">Pelagis Besar</span>
+            <span class="fish-tab__meta" id="tab-meta-pelagis_besar"></span>
+          </button>
+          <button class="tab fish-tab" role="tab" data-group="pelagis_kecil" aria-selected="false">
+            <span class="fish-tab__label">Pelagis Kecil</span>
+            <span class="fish-tab__meta" id="tab-meta-pelagis_kecil"></span>
+          </button>
+          <button class="tab fish-tab" role="tab" data-group="demersal" aria-selected="false">
+            <span class="fish-tab__label">Demersal</span>
+            <span class="fish-tab__meta" id="tab-meta-demersal"></span>
+          </button>
         </div>
         <h2 id="t-main" style="font-size:20px">Tangkapan vs MSY <span id="fixture-mark"></span></h2>
         <div class="chart-box"><canvas id="main-chart" role="img" aria-label="Grafik tangkapan aktual, forecast, dan MSY per bulan"></canvas></div>
@@ -49,6 +58,41 @@
         <h2 id="sub-title" style="font-size:16px"></h2>
         <div class="chart-box"><canvas id="sub-chart" role="img" aria-label="Grafik parameter oseanografi harian dan prediksi"></canvas></div>
         <div id="windrose" style="display:flex;flex-direction:column;align-items:center;margin-top:var(--s4)"></div>
+      </section>
+
+      <!-- 3. Radar Kesehatan Ekosistem & Potensi Stok -->
+      <section class="panel" aria-labelledby="radar-panel-title">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--s2);border-bottom:1px solid var(--line);margin-bottom:var(--s4);padding-bottom:var(--s3)">
+          <div>
+            <h2 id="radar-panel-title" style="font-size:18px;margin:0 0 var(--s1) 0">Indeks Kesehatan Ekosistem &amp; Potensi Stok</h2>
+            <p class="muted" style="font-size:13px;margin:0">Evaluasi multi-parameter 5 sumbu (stok, klorofil, suhu, arus, dan margin TAC) untuk zona terpilih.</p>
+          </div>
+          <span class="badge" id="radar-health-badge" style="font:600 12px var(--font-mono);padding:var(--s1) var(--s3);border-radius:var(--radius);border:1px solid var(--line);text-transform:uppercase"></span>
+        </div>
+
+        <div class="radar-layout">
+          <div class="radar-chart-wrap">
+            <div class="chart-box chart-box--radar" style="position:relative;height:320px;max-width:380px;margin:0 auto">
+              <canvas id="radar-chart" role="img" aria-label="Diagram radar kesehatan ekosistem dan potensi stok zona"></canvas>
+            </div>
+            <p class="muted" style="text-align:center;font-size:11px;margin-top:var(--s2);letter-spacing:.04em">SKALA NORMALISASI 0–100 PER SUMBU</p>
+          </div>
+
+          <div class="radar-details">
+            <div class="radar-score-box">
+              <div class="radar-score-box__main">
+                <span class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:600">Skor Komposit Ekosistem</span>
+                <div style="display:flex;align-items:baseline;gap:var(--s2);margin:var(--s1) 0">
+                  <strong id="radar-composite-num" style="font:400 36px var(--font-mono);color:var(--text);line-height:1">--</strong>
+                  <span class="muted" style="font:400 16px var(--font-mono)">/ 100</span>
+                </div>
+              </div>
+              <p id="radar-composite-desc" class="muted" style="font-size:13px;margin:0;line-height:1.5"></p>
+            </div>
+
+            <div class="radar-metrics-grid" id="radar-metrics-list"></div>
+          </div>
+        </div>
       </section>
     </div>
   </div>
