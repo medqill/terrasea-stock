@@ -3658,15 +3658,15 @@
         "month": "2026-11",
         "msy": {
           "pelagis_besar": 1.7,
-          "pelagis_kecil": 28.4,
+          "pelagis_kecil": 29.2,
           "demersal": 14.6,
-          "total": 44.7
+          "total": 45.5
         },
         "tac": {
           "pelagis_besar": 1.4,
-          "pelagis_kecil": 22.7,
+          "pelagis_kecil": 23.3,
           "demersal": 11.7,
-          "total": 35.8
+          "total": 36.4
         },
         "abundance": {
           "pelagis_besar": "mid",
@@ -3678,7 +3678,7 @@
           "note": "Wilayah tangkapan perairan Karangantu"
         },
         "model_version": "RF-v1.0",
-        "generated_at": "2026-11-20T19:21:53.000Z"
+        "generated_at": "2026-11-21T04:36:23.000Z"
       }
     },
     {
@@ -10563,7 +10563,7 @@
           "note": "Wilayah tangkapan perairan Lebak"
         },
         "model_version": "RF-v1.0",
-        "generated_at": "2026-11-20T19:21:53.000Z"
+        "generated_at": "2026-11-21T04:36:23.000Z"
       }
     }
   ]
