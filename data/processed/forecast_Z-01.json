@@ -1,9 +1,9 @@
 {
   "zone_id": "Z-01",
   "model_version": "RF-v1.0",
-  "generated_at": "2026-11-21T18:24:03.000Z",
-  "msy": 45.5,
-  "tac": 36.4,
+  "generated_at": "2026-11-22T03:50:02.000Z",
+  "msy": 45.3,
+  "tac": 36.2,
   "tac_factor": 0.8,
   "metrics": {
     "rmse": 8.4,
@@ -16,8 +16,8 @@
       "kind": "hindcast",
       "actual_catch": 49.5,
       "hindcast": 56.5,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.5,
@@ -28,8 +28,8 @@
         "pelagis_kecil": {
           "actual_catch": 17.4,
           "hindcast": 22.2,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 31.7,
@@ -44,8 +44,8 @@
       "kind": "hindcast",
       "actual_catch": 45.1,
       "hindcast": 48.5,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.4,
@@ -56,8 +56,8 @@
         "pelagis_kecil": {
           "actual_catch": 12.7,
           "hindcast": 15.2,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 32.0,
@@ -72,8 +72,8 @@
       "kind": "hindcast",
       "actual_catch": 43.9,
       "hindcast": 45.2,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.8,
@@ -84,8 +84,8 @@
         "pelagis_kecil": {
           "actual_catch": 12.1,
           "hindcast": 13.8,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 30.9,
@@ -100,8 +100,8 @@
       "kind": "hindcast",
       "actual_catch": 47.7,
       "hindcast": 50.9,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.8,
@@ -112,8 +112,8 @@
         "pelagis_kecil": {
           "actual_catch": 16.2,
           "hindcast": 17.8,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 30.8,
@@ -128,8 +128,8 @@
       "kind": "hindcast",
       "actual_catch": 57.6,
       "hindcast": 57.9,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.9,
@@ -140,8 +140,8 @@
         "pelagis_kecil": {
           "actual_catch": 16.6,
           "hindcast": 17.5,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 40.2,
@@ -156,8 +156,8 @@
       "kind": "hindcast",
       "actual_catch": 70.9,
       "hindcast": 65.9,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.9,
@@ -168,8 +168,8 @@
         "pelagis_kecil": {
           "actual_catch": 25.5,
           "hindcast": 22.5,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 43.5,
@@ -184,8 +184,8 @@
       "kind": "hindcast",
       "actual_catch": 76.6,
       "hindcast": 72.6,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.6,
@@ -196,8 +196,8 @@
         "pelagis_kecil": {
           "actual_catch": 19.3,
           "hindcast": 21.4,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 56.7,
@@ -212,8 +212,8 @@
       "kind": "hindcast",
       "actual_catch": 60.5,
       "hindcast": 61.1,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 4.4,
@@ -224,8 +224,8 @@
         "pelagis_kecil": {
           "actual_catch": 11.3,
           "hindcast": 13.5,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 44.8,
@@ -240,8 +240,8 @@
       "kind": "hindcast",
       "actual_catch": 74.7,
       "hindcast": 70.6,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 2.3,
@@ -252,8 +252,8 @@
         "pelagis_kecil": {
           "actual_catch": 18.6,
           "hindcast": 17.9,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 53.7,
@@ -268,8 +268,8 @@
       "kind": "hindcast",
       "actual_catch": 64.8,
       "hindcast": 61.5,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.5,
@@ -280,8 +280,8 @@
         "pelagis_kecil": {
           "actual_catch": 25.9,
           "hindcast": 22.3,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 37.4,
@@ -296,8 +296,8 @@
       "kind": "hindcast",
       "actual_catch": 60.3,
       "hindcast": 62.3,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.1,
@@ -308,8 +308,8 @@
         "pelagis_kecil": {
           "actual_catch": 34.1,
           "hindcast": 31.1,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 25.1,
@@ -324,8 +324,8 @@
       "kind": "hindcast",
       "actual_catch": 41.5,
       "hindcast": 51.3,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.5,
@@ -336,8 +336,8 @@
         "pelagis_kecil": {
           "actual_catch": 16.5,
           "hindcast": 25.0,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 24.6,
@@ -352,8 +352,8 @@
       "kind": "hindcast",
       "actual_catch": 28.9,
       "hindcast": 33.0,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.4,
@@ -364,8 +364,8 @@
         "pelagis_kecil": {
           "actual_catch": 11.1,
           "hindcast": 13.9,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 17.5,
@@ -380,8 +380,8 @@
       "kind": "hindcast",
       "actual_catch": 50.2,
       "hindcast": 49.3,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.3,
@@ -392,8 +392,8 @@
         "pelagis_kecil": {
           "actual_catch": 17.7,
           "hindcast": 17.0,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 32.1,
@@ -408,8 +408,8 @@
       "kind": "hindcast",
       "actual_catch": 41.1,
       "hindcast": 39.0,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.7,
@@ -420,8 +420,8 @@
         "pelagis_kecil": {
           "actual_catch": 17.5,
           "hindcast": 16.9,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 22.9,
@@ -436,8 +436,8 @@
       "kind": "hindcast",
       "actual_catch": 28.5,
       "hindcast": 33.4,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 2.0,
@@ -448,8 +448,8 @@
         "pelagis_kecil": {
           "actual_catch": 16.4,
           "hindcast": 16.7,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 10.1,
@@ -464,8 +464,8 @@
       "kind": "hindcast",
       "actual_catch": 30.0,
       "hindcast": 33.5,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.8,
@@ -476,8 +476,8 @@
         "pelagis_kecil": {
           "actual_catch": 17.0,
           "hindcast": 20.3,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 11.2,
@@ -492,8 +492,8 @@
       "kind": "hindcast",
       "actual_catch": 28.3,
       "hindcast": 35.8,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 2.7,
@@ -504,8 +504,8 @@
         "pelagis_kecil": {
           "actual_catch": 14.7,
           "hindcast": 22.0,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 10.9,
@@ -520,8 +520,8 @@
       "kind": "hindcast",
       "actual_catch": 33.3,
       "hindcast": 31.8,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 2.6,
@@ -532,8 +532,8 @@
         "pelagis_kecil": {
           "actual_catch": 16.8,
           "hindcast": 17.0,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 13.9,
@@ -548,8 +548,8 @@
       "kind": "hindcast",
       "actual_catch": 29.6,
       "hindcast": 30.8,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 3.2,
@@ -560,8 +560,8 @@
         "pelagis_kecil": {
           "actual_catch": 13.5,
           "hindcast": 16.1,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 12.8,
@@ -576,8 +576,8 @@
       "kind": "hindcast",
       "actual_catch": 46.1,
       "hindcast": 44.4,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 3.1,
@@ -588,8 +588,8 @@
         "pelagis_kecil": {
           "actual_catch": 38.3,
           "hindcast": 30.5,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 4.6,
@@ -604,8 +604,8 @@
       "kind": "hindcast",
       "actual_catch": 74.2,
       "hindcast": 59.5,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.7,
@@ -616,8 +616,8 @@
         "pelagis_kecil": {
           "actual_catch": 64.6,
           "hindcast": 48.8,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 8.0,
@@ -632,8 +632,8 @@
       "kind": "hindcast",
       "actual_catch": 111.2,
       "hindcast": 84.2,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 2.4,
@@ -644,8 +644,8 @@
         "pelagis_kecil": {
           "actual_catch": 93.7,
           "hindcast": 68.9,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 15.0,
@@ -660,8 +660,8 @@
       "kind": "hindcast",
       "actual_catch": 69.7,
       "hindcast": 66.4,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.2,
@@ -672,8 +672,8 @@
         "pelagis_kecil": {
           "actual_catch": 50.5,
           "hindcast": 49.1,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 18.0,
@@ -688,8 +688,8 @@
       "kind": "hindcast",
       "actual_catch": 69.9,
       "hindcast": 64.4,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.9,
@@ -700,8 +700,8 @@
         "pelagis_kecil": {
           "actual_catch": 43.9,
           "hindcast": 37.8,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 24.0,
@@ -716,8 +716,8 @@
       "kind": "hindcast",
       "actual_catch": 61.2,
       "hindcast": 58.2,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.4,
@@ -728,8 +728,8 @@
         "pelagis_kecil": {
           "actual_catch": 32.8,
           "hindcast": 32.5,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 27.0,
@@ -744,8 +744,8 @@
       "kind": "hindcast",
       "actual_catch": 49.7,
       "hindcast": 49.8,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.0,
@@ -756,8 +756,8 @@
         "pelagis_kecil": {
           "actual_catch": 24.4,
           "hindcast": 26.7,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 24.3,
@@ -772,8 +772,8 @@
       "kind": "hindcast",
       "actual_catch": 61.6,
       "hindcast": 55.0,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.8,
@@ -784,8 +784,8 @@
         "pelagis_kecil": {
           "actual_catch": 38.9,
           "hindcast": 33.5,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 21.0,
@@ -800,8 +800,8 @@
       "kind": "hindcast",
       "actual_catch": 31.8,
       "hindcast": 46.4,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 3.6,
@@ -812,8 +812,8 @@
         "pelagis_kecil": {
           "actual_catch": 8.3,
           "hindcast": 18.8,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 19.9,
@@ -828,8 +828,8 @@
       "kind": "hindcast",
       "actual_catch": 38.2,
       "hindcast": 35.7,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 3.9,
@@ -840,8 +840,8 @@
         "pelagis_kecil": {
           "actual_catch": 19.2,
           "hindcast": 16.5,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 15.1,
@@ -856,8 +856,8 @@
       "kind": "hindcast",
       "actual_catch": 22.7,
       "hindcast": 28.1,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.8,
@@ -868,8 +868,8 @@
         "pelagis_kecil": {
           "actual_catch": 11.4,
           "hindcast": 14.5,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 9.5,
@@ -884,8 +884,8 @@
       "kind": "hindcast",
       "actual_catch": 16.8,
       "hindcast": 25.1,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.8,
@@ -896,8 +896,8 @@
         "pelagis_kecil": {
           "actual_catch": 7.6,
           "hindcast": 14.2,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 7.3,
@@ -912,8 +912,8 @@
       "kind": "hindcast",
       "actual_catch": 36.1,
       "hindcast": 35.3,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 2.2,
@@ -924,8 +924,8 @@
         "pelagis_kecil": {
           "actual_catch": 26.4,
           "hindcast": 24.4,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 7.4,
@@ -940,8 +940,8 @@
       "kind": "hindcast",
       "actual_catch": 47.8,
       "hindcast": 45.2,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 3.5,
@@ -952,8 +952,8 @@
         "pelagis_kecil": {
           "actual_catch": 34.8,
           "hindcast": 32.9,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 9.5,
@@ -968,8 +968,8 @@
       "kind": "hindcast",
       "actual_catch": 36.9,
       "hindcast": 39.1,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.9,
@@ -980,8 +980,8 @@
         "pelagis_kecil": {
           "actual_catch": 25.6,
           "hindcast": 27.8,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 9.4,
@@ -996,8 +996,8 @@
       "kind": "hindcast",
       "actual_catch": 31.6,
       "hindcast": 35.2,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.9,
@@ -1008,8 +1008,8 @@
         "pelagis_kecil": {
           "actual_catch": 21.9,
           "hindcast": 24.1,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 8.8,
@@ -1024,8 +1024,8 @@
       "kind": "hindcast",
       "actual_catch": 25.1,
       "hindcast": 26.9,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.1,
@@ -1036,8 +1036,8 @@
         "pelagis_kecil": {
           "actual_catch": 15.7,
           "hindcast": 16.4,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 8.3,
@@ -1052,8 +1052,8 @@
       "kind": "hindcast",
       "actual_catch": 13.3,
       "hindcast": 17.7,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.5,
@@ -1064,8 +1064,8 @@
         "pelagis_kecil": {
           "actual_catch": 5.4,
           "hindcast": 8.9,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 6.4,
@@ -1080,8 +1080,8 @@
       "kind": "hindcast",
       "actual_catch": 20.0,
       "hindcast": 19.8,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.6,
@@ -1092,8 +1092,8 @@
         "pelagis_kecil": {
           "actual_catch": 10.3,
           "hindcast": 10.0,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 8.1,
@@ -1108,8 +1108,8 @@
       "kind": "hindcast",
       "actual_catch": 21.1,
       "hindcast": 21.0,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.8,
@@ -1120,8 +1120,8 @@
         "pelagis_kecil": {
           "actual_catch": 9.1,
           "hindcast": 9.6,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 10.2,
@@ -1136,8 +1136,8 @@
       "kind": "hindcast",
       "actual_catch": 28.9,
       "hindcast": 27.0,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 2.3,
@@ -1148,8 +1148,8 @@
         "pelagis_kecil": {
           "actual_catch": 2.0,
           "hindcast": 5.2,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 24.6,
@@ -1164,8 +1164,8 @@
       "kind": "hindcast",
       "actual_catch": 43.5,
       "hindcast": 43.1,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.8,
@@ -1176,8 +1176,8 @@
         "pelagis_kecil": {
           "actual_catch": 1.3,
           "hindcast": 5.6,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 40.5,
@@ -1192,8 +1192,8 @@
       "kind": "hindcast",
       "actual_catch": 16.6,
       "hindcast": 23.6,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 2.4,
@@ -1204,8 +1204,8 @@
         "pelagis_kecil": {
           "actual_catch": 5.1,
           "hindcast": 9.1,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 9.1,
@@ -1220,8 +1220,8 @@
       "kind": "hindcast",
       "actual_catch": 53.3,
       "hindcast": 22.8,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 3.0,
@@ -1232,8 +1232,8 @@
         "pelagis_kecil": {
           "actual_catch": 41.6,
           "hindcast": 10.7,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 8.7,
@@ -1248,8 +1248,8 @@
       "kind": "hindcast",
       "actual_catch": 46.2,
       "hindcast": 41.6,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 3.1,
@@ -1260,8 +1260,8 @@
         "pelagis_kecil": {
           "actual_catch": 25.8,
           "hindcast": 29.6,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 17.4,
@@ -1276,8 +1276,8 @@
       "kind": "hindcast",
       "actual_catch": 65.5,
       "hindcast": 42.7,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 2.6,
@@ -1288,8 +1288,8 @@
         "pelagis_kecil": {
           "actual_catch": 47.7,
           "hindcast": 26.2,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 15.2,
@@ -1304,8 +1304,8 @@
       "kind": "hindcast",
       "actual_catch": 55.7,
       "hindcast": 58.1,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.6,
@@ -1316,8 +1316,8 @@
         "pelagis_kecil": {
           "actual_catch": 46.3,
           "hindcast": 45.9,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 8.8,
@@ -1332,8 +1332,8 @@
       "kind": "hindcast",
       "actual_catch": 66.1,
       "hindcast": 43.2,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 0.4,
@@ -1344,8 +1344,8 @@
         "pelagis_kecil": {
           "actual_catch": 54.4,
           "hindcast": 31.7,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 11.3,
@@ -1360,8 +1360,8 @@
       "kind": "hindcast",
       "actual_catch": 76.6,
       "hindcast": 62.4,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.6,
@@ -1372,8 +1372,8 @@
         "pelagis_kecil": {
           "actual_catch": 55.8,
           "hindcast": 50.4,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 19.1,
@@ -1388,8 +1388,8 @@
       "kind": "hindcast",
       "actual_catch": 98.1,
       "hindcast": 65.1,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 2.3,
@@ -1400,8 +1400,8 @@
         "pelagis_kecil": {
           "actual_catch": 69.1,
           "hindcast": 51.8,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 26.7,
@@ -1416,8 +1416,8 @@
       "kind": "hindcast",
       "actual_catch": 64.7,
       "hindcast": 70.9,
-      "msy": 45.5,
-      "tac": 36.4,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": 1.9,
@@ -1428,8 +1428,8 @@
         "pelagis_kecil": {
           "actual_catch": 35.3,
           "hindcast": 54.5,
-          "msy": 29.2,
-          "tac": 23.3
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": 27.5,
@@ -1443,9 +1443,9 @@
       "month": "2026-11",
       "kind": "forecast",
       "actual_catch": null,
-      "hindcast": 45.5,
-      "msy": 45.5,
-      "tac": 36.4,
+      "hindcast": 45.3,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": null,
@@ -1455,9 +1455,9 @@
         },
         "pelagis_kecil": {
           "actual_catch": null,
-          "hindcast": 29.2,
-          "msy": 29.2,
-          "tac": 23.4
+          "hindcast": 28.9,
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": null,
@@ -1471,9 +1471,9 @@
       "month": "2026-12",
       "kind": "forecast",
       "actual_catch": null,
-      "hindcast": 36.0,
-      "msy": 45.5,
-      "tac": 36.4,
+      "hindcast": 36.1,
+      "msy": 45.3,
+      "tac": 36.2,
       "by_group": {
         "pelagis_besar": {
           "actual_catch": null,
@@ -1484,8 +1484,8 @@
         "pelagis_kecil": {
           "actual_catch": null,
           "hindcast": 22.7,
-          "msy": 29.2,
-          "tac": 23.4
+          "msy": 28.9,
+          "tac": 23.1
         },
         "demersal": {
           "actual_catch": null,
@@ -1923,23 +1923,14 @@
     },
     {
       "month": "2026-11",
-      "chl": 0.18,
+      "chl": 0.19,
       "sst": 30.7,
-      "speed": 0.25,
+      "speed": 0.23,
       "direction_deg": 235,
       "direction_label": "Barat Daya"
     }
   ],
   "params_daily": [
-    {
-      "date": "2026-10-23",
-      "month": "2026-10",
-      "chl": 0.196,
-      "sst": 30.314,
-      "speed": 0.317,
-      "direction_deg": 244,
-      "direction_label": "Barat Daya"
-    },
     {
       "date": "2026-10-24",
       "month": "2026-10",
@@ -2200,61 +2191,70 @@
       "speed": 0.147,
       "direction_deg": 51,
       "direction_label": "Barat"
+    },
+    {
+      "date": "2026-11-22",
+      "month": "2026-11",
+      "chl": 0.362,
+      "sst": 30.96,
+      "speed": 0.2,
+      "direction_deg": 55,
+      "direction_label": "Barat"
     }
   ],
   "params_forecast": [
     {
-      "date": "2026-11-22",
+      "date": "2026-11-23",
       "day_offset": 1,
       "month": "2026-11",
-      "chl": 0.356,
-      "sst": 29.736,
-      "speed": 0.107,
-      "direction_deg": 240,
-      "direction_label": "Barat Daya"
-    },
-    {
-      "date": "2026-11-23",
-      "day_offset": 2,
-      "month": "2026-11",
       "chl": 0.334,
-      "sst": 29.408,
-      "speed": 0.118,
-      "direction_deg": 240,
-      "direction_label": "Barat Daya"
-    },
-    {
-      "date": "2026-11-24",
-      "day_offset": 3,
-      "month": "2026-11",
-      "chl": 0.31,
-      "sst": 29.326,
-      "speed": 0.105,
-      "direction_deg": 240,
-      "direction_label": "Barat Daya"
-    },
-    {
-      "date": "2026-11-25",
-      "day_offset": 4,
-      "month": "2026-11",
-      "chl": 0.333,
-      "sst": 29.458,
+      "sst": 29.736,
       "speed": 0.123,
       "direction_deg": 240,
       "direction_label": "Barat Daya"
     },
     {
-      "date": "2026-11-26",
-      "day_offset": 5,
+      "date": "2026-11-24",
+      "day_offset": 2,
       "month": "2026-11",
-      "chl": 0.317,
-      "sst": 30.186,
-      "speed": 0.121,
+      "chl": 0.329,
+      "sst": 29.408,
+      "speed": 0.098,
+      "direction_deg": 240,
+      "direction_label": "Barat Daya"
+    },
+    {
+      "date": "2026-11-25",
+      "day_offset": 3,
+      "month": "2026-11",
+      "chl": 0.323,
+      "sst": 29.326,
+      "speed": 0.101,
+      "direction_deg": 240,
+      "direction_label": "Barat Daya"
+    },
+    {
+      "date": "2026-11-26",
+      "day_offset": 4,
+      "month": "2026-11",
+      "chl": 0.323,
+      "sst": 29.458,
+      "speed": 0.109,
       "direction_deg": 240,
       "direction_label": "Barat Daya"
     },
     {
       "date": "2026-11-27",
+      "day_offset": 5,
+      "month": "2026-11",
+      "chl": 0.317,
+      "sst": 30.186,
+      "speed": 0.122,
+      "direction_deg": 240,
+      "direction_label": "Barat Daya"
+    },
+    {
+      "date": "2026-11-28",
       "day_offset": 6,
       "month": "2026-11",
       "chl": 0.315,
@@ -2264,12 +2264,12 @@
       "direction_label": "Barat Daya"
     },
     {
-      "date": "2026-11-28",
+      "date": "2026-11-29",
       "day_offset": 7,
       "month": "2026-11",
-      "chl": 0.326,
+      "chl": 0.315,
       "sst": 29.76,
-      "speed": 0.109,
+      "speed": 0.122,
       "direction_deg": 240,
       "direction_label": "Barat Daya"
     }
