@@ -3678,7 +3678,7 @@
           "note": "Wilayah tangkapan perairan Karangantu"
         },
         "model_version": "RF-v1.0",
-        "generated_at": "2026-11-23T04:28:45.000Z"
+        "generated_at": "2026-11-23T23:00:00.000Z"
       }
     },
     {
@@ -10563,7 +10563,7 @@
           "note": "Wilayah tangkapan perairan Lebak"
         },
         "model_version": "RF-v1.0",
-        "generated_at": "2026-11-23T04:28:45.000Z"
+        "generated_at": "2026-11-23T23:00:00.000Z"
       }
     }
   ]
