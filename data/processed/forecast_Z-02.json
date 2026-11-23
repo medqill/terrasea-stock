@@ -1,7 +1,7 @@
 {
   "zone_id": "Z-02",
   "model_version": "RF-v1.0",
-  "generated_at": "2026-11-22T18:47:09.000Z",
+  "generated_at": "2026-11-23T04:28:45.000Z",
   "msy": 449.8,
   "tac": 359.8,
   "tac_factor": 0.8,
@@ -1954,20 +1954,11 @@
       "chl": 0.27,
       "sst": 30.5,
       "speed": 0.08,
-      "direction_deg": 276,
+      "direction_deg": 271,
       "direction_label": "Barat"
     }
   ],
   "params_daily": [
-    {
-      "date": "2026-10-24",
-      "month": "2026-10",
-      "chl": 0.415,
-      "sst": 29.558,
-      "speed": 0.158,
-      "direction_deg": 264,
-      "direction_label": "Barat"
-    },
     {
       "date": "2026-10-25",
       "month": "2026-10",
@@ -2228,74 +2219,83 @@
       "speed": 0.062,
       "direction_deg": 279,
       "direction_label": "Barat"
+    },
+    {
+      "date": "2026-11-23",
+      "month": "2026-11",
+      "chl": 0.278,
+      "sst": 30.47,
+      "speed": 0.164,
+      "direction_deg": 212,
+      "direction_label": "Barat Daya"
     }
   ],
   "params_forecast": [
     {
-      "date": "2026-11-23",
+      "date": "2026-11-24",
       "day_offset": 1,
       "month": "2026-11",
-      "chl": 0.235,
-      "sst": 29.472,
-      "speed": 0.07,
-      "direction_deg": 190,
-      "direction_label": "Selatan"
-    },
-    {
-      "date": "2026-11-24",
-      "day_offset": 2,
-      "month": "2026-11",
-      "chl": 0.233,
-      "sst": 29.317,
-      "speed": 0.064,
+      "chl": 0.251,
+      "sst": 29.474,
+      "speed": 0.114,
       "direction_deg": 190,
       "direction_label": "Selatan"
     },
     {
       "date": "2026-11-25",
-      "day_offset": 3,
+      "day_offset": 2,
       "month": "2026-11",
-      "chl": 0.232,
-      "sst": 29.419,
-      "speed": 0.054,
+      "chl": 0.252,
+      "sst": 29.317,
+      "speed": 0.066,
       "direction_deg": 190,
       "direction_label": "Selatan"
     },
     {
       "date": "2026-11-26",
-      "day_offset": 4,
+      "day_offset": 3,
       "month": "2026-11",
-      "chl": 0.22,
-      "sst": 29.523,
-      "speed": 0.058,
+      "chl": 0.245,
+      "sst": 29.419,
+      "speed": 0.055,
       "direction_deg": 190,
       "direction_label": "Selatan"
     },
     {
       "date": "2026-11-27",
-      "day_offset": 5,
+      "day_offset": 4,
       "month": "2026-11",
-      "chl": 0.21,
-      "sst": 29.874,
+      "chl": 0.237,
+      "sst": 29.523,
       "speed": 0.057,
       "direction_deg": 190,
       "direction_label": "Selatan"
     },
     {
       "date": "2026-11-28",
-      "day_offset": 6,
+      "day_offset": 5,
       "month": "2026-11",
-      "chl": 0.204,
-      "sst": 29.792,
+      "chl": 0.233,
+      "sst": 29.874,
       "speed": 0.052,
       "direction_deg": 190,
       "direction_label": "Selatan"
     },
     {
       "date": "2026-11-29",
+      "day_offset": 6,
+      "month": "2026-11",
+      "chl": 0.217,
+      "sst": 29.792,
+      "speed": 0.052,
+      "direction_deg": 190,
+      "direction_label": "Selatan"
+    },
+    {
+      "date": "2026-11-30",
       "day_offset": 7,
       "month": "2026-11",
-      "chl": 0.23,
+      "chl": 0.203,
       "sst": 29.377,
       "speed": 0.052,
       "direction_deg": 190,
