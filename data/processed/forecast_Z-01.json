@@ -1,7 +1,7 @@
 {
   "zone_id": "Z-01",
   "model_version": "RF-v1.0",
-  "generated_at": "2026-11-24T21:39:18.000Z",
+  "generated_at": "2026-11-25T05:54:48.000Z",
   "msy": 45.3,
   "tac": 36.2,
   "tac_factor": 0.8,
@@ -1923,23 +1923,14 @@
     },
     {
       "month": "2026-11",
-      "chl": 0.21,
+      "chl": 0.22,
       "sst": 30.7,
-      "speed": 0.21,
-      "direction_deg": 232,
+      "speed": 0.2,
+      "direction_deg": 231,
       "direction_label": "Barat Daya"
     }
   ],
   "params_daily": [
-    {
-      "date": "2026-10-26",
-      "month": "2026-10",
-      "chl": 0.199,
-      "sst": 30.432,
-      "speed": 0.356,
-      "direction_deg": 240,
-      "direction_label": "Barat Daya"
-    },
     {
       "date": "2026-10-27",
       "month": "2026-10",
@@ -2200,76 +2191,85 @@
       "speed": 0.107,
       "direction_deg": 155,
       "direction_label": "Barat"
+    },
+    {
+      "date": "2026-11-25",
+      "month": "2026-11",
+      "chl": 0.465,
+      "sst": 30.52,
+      "speed": 0.204,
+      "direction_deg": 104,
+      "direction_label": "Barat"
     }
   ],
   "params_forecast": [
     {
-      "date": "2026-11-25",
+      "date": "2026-11-26",
       "day_offset": 1,
       "month": "2026-11",
-      "chl": 0.4,
-      "sst": 29.736,
-      "speed": 0.103,
-      "direction_deg": 240,
-      "direction_label": "Barat Daya"
-    },
-    {
-      "date": "2026-11-26",
-      "day_offset": 2,
-      "month": "2026-11",
-      "chl": 0.406,
-      "sst": 29.408,
-      "speed": 0.122,
+      "chl": 0.434,
+      "sst": 29.583,
+      "speed": 0.128,
       "direction_deg": 240,
       "direction_label": "Barat Daya"
     },
     {
       "date": "2026-11-27",
-      "day_offset": 3,
+      "day_offset": 2,
       "month": "2026-11",
-      "chl": 0.359,
-      "sst": 29.326,
+      "chl": 0.439,
+      "sst": 29.383,
       "speed": 0.122,
       "direction_deg": 240,
       "direction_label": "Barat Daya"
     },
     {
       "date": "2026-11-28",
-      "day_offset": 4,
+      "day_offset": 3,
       "month": "2026-11",
-      "chl": 0.357,
-      "sst": 29.458,
-      "speed": 0.12,
+      "chl": 0.396,
+      "sst": 29.305,
+      "speed": 0.096,
       "direction_deg": 240,
       "direction_label": "Barat Daya"
     },
     {
       "date": "2026-11-29",
-      "day_offset": 5,
+      "day_offset": 4,
       "month": "2026-11",
-      "chl": 0.321,
-      "sst": 30.186,
-      "speed": 0.122,
+      "chl": 0.363,
+      "sst": 29.442,
+      "speed": 0.108,
       "direction_deg": 240,
       "direction_label": "Barat Daya"
     },
     {
       "date": "2026-11-30",
-      "day_offset": 6,
+      "day_offset": 5,
       "month": "2026-11",
-      "chl": 0.337,
-      "sst": 30.468,
-      "speed": 0.122,
+      "chl": 0.362,
+      "sst": 30.077,
+      "speed": 0.121,
       "direction_deg": 240,
       "direction_label": "Barat Daya"
     },
     {
       "date": "2026-12-01",
+      "day_offset": 6,
+      "month": "2026-12",
+      "chl": 0.341,
+      "sst": 30.465,
+      "speed": 0.122,
+      "direction_deg": 240,
+      "direction_label": "Barat Daya"
+    },
+    {
+      "date": "2026-12-02",
       "day_offset": 7,
       "month": "2026-12",
-      "chl": 0.324,
-      "sst": 29.76,
-      "speed": 0.121,
+      "chl": 0.344,
+      "sst": 29.779,
+      "speed": 0.122,
       "direction_deg": 240,
       "direction_label": "Barat Daya"
     }
